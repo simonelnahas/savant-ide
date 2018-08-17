@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bn.js": "^4.11.8",
     "connected-react-router": "^4.4.1",
     "immutable": "^3.8.2",
     "react": "^16.4.2",
@@ -19,6 +20,7 @@
   "scripts": {
     "start": "react-scripts-ts start",
     "build": "react-scripts-ts build",
+    "build:parser": "pegjs -o lib/parser.js src/util/parser.pegjs ",
     "test": "react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject"
   },
@@ -28,6 +30,7 @@
     "@types/react": "^16.4.10",
     "@types/react-dom": "^16.0.7",
     "@types/react-router-redux": "^5.0.15",
+    "pegjs": "^0.10.0",
     "redux-devtools-extension": "^2.13.5",
     "typescript": "^3.0.1"
   }
