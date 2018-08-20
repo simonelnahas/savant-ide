@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
+//tslint:disable
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { History } from 'history';
 import { createRootReducer, rootSaga } from './store/index';

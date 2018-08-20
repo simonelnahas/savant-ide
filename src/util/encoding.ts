@@ -113,7 +113,7 @@ export const deserialise = (field: Field): any => {
 
     case ADTypeKind.List: {
       let tail = field.value;
-      let res: any[] = [];
+      const res: any[] = [];
 
       // avoid recursion in case of stack overflow
       while (tail.constructor === 'Cons') {

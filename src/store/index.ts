@@ -1,8 +1,6 @@
-// import {all, fork} from 'redux-saga/effects';
+import { all } from 'redux-saga/effects';
 import { combineReducers } from 'redux';
-// reducers
 import { blockchainReducer } from './blockchain/reducer';
-// sagas
 // import contractSaga from './contract/saga';
 // import walletSaga from './wallet/saga';
 
@@ -19,6 +17,6 @@ export const createRootReducer = () => {
   });
 };
 
-// export function* rootSaga() {
-//   yield all([fork(contractSaga), fork(walletSaga)]);
-// }
+export function* rootSaga() {
+  yield all([]);
+}
