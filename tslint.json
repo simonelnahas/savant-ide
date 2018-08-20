@@ -29,7 +29,9 @@
       "always",
       "ignore-bound-class-methods"
     ],
-    "jsx-boolean-value": false
+    "jsx-boolean-value": false,
+    "no-object-literal-type-assertion": false,
+    "no-angle-bracket-type-assertion": false
   },
   "linterOptions": {
     "exclude": [
