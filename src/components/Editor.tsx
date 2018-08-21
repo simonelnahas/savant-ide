@@ -17,8 +17,9 @@ export default class ScillaEditor extends React.Component<any> {
         mode="ocaml"
         theme="github"
         onChange={this.onChange}
-        name="UNIQUE_ID_OF_DIV"
+        name="scilla-editor"
         editorProps={{ $blockScrolling: true }}
+        style={{ flexGrow: 1, width: '100%', minHeight: '100%', height: '' }}
       />
     );
   }
