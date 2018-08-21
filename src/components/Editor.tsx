@@ -3,8 +3,8 @@ import * as React from 'react';
 // @ts-ignore
 import * as brace from 'brace';
 import AceEditor from 'react-ace';
+import 'ayu-ace/mirage';
 import 'brace/mode/ocaml';
-import 'brace/theme/github';
 
 export default class ScillaEditor extends React.Component<any> {
   onChange = (value: any): void => {
@@ -15,7 +15,7 @@ export default class ScillaEditor extends React.Component<any> {
     return (
       <AceEditor
         mode="ocaml"
-        theme="github"
+        theme="ayu-mirage"
         onChange={this.onChange}
         name="scilla-editor"
         editorProps={{ $blockScrolling: true }}
