@@ -1,19 +1,18 @@
 import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
+// import { connectRouter, routerMiddleware } from 'connected-react-router';
 //tslint:disable
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { History } from 'history';
 import { createRootReducer, rootSaga } from './store/index';
 
-export default function configureStore(history: History, initialState = {}) {
+export default function configureStore(initialState = {}) {
   const sagaMiddleware = createSagaMiddleware();
   const rootReducer = createRootReducer();
   const composeEnhancers = composeWithDevTools({});
   const store = createStore(
-    connectRouter(history)(rootReducer),
+    rootReducer,
     initialState,
-    composeEnhancers(applyMiddleware(routerMiddleware(history), sagaMiddleware)),
+    composeEnhancers(applyMiddleware(sagaMiddleware)),
   );
 
   sagaMiddleware.run(rootSaga);

@@ -2,10 +2,16 @@ import * as React from 'react';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { Store } from 'redux';
+import { Provider } from 'react-redux';
 import styled from 'styled-components';
 
 import Navigator from './components/Navigator';
 import ScillaEditor from './components/Editor';
+
+interface Props {
+  store: Store<any>;
+}
 
 const theme = createMuiTheme({
   palette: {
@@ -40,18 +46,18 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-class App extends React.Component {
-  public render() {
+class App extends React.Component<Props> {
+  render() {
     return (
-      <React.Fragment>
+      <Provider store={this.props.store}>
         <Wrapper className="App">
           <CssBaseline />
           <MuiThemeProvider theme={theme}>
-            <Navigator files={[]} />
+            <Navigator />
             <ScillaEditor />
           </MuiThemeProvider>
         </Wrapper>
-      </React.Fragment>
+      </Provider>
     );
   }
 }

@@ -2,6 +2,8 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { injectGlobal } from 'styled-components';
 
+import createStore from './store';
+
 // @ts-ignore
 // tslint:disable
 injectGlobal`
@@ -22,5 +24,7 @@ injectGlobal`
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root') as HTMLElement);
+const store = createStore({});
+
+ReactDOM.render(<App store={store} />, document.getElementById('root') as HTMLElement);
 registerServiceWorker();

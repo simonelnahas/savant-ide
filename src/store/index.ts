@@ -1,22 +1,19 @@
-import { all } from 'redux-saga/effects';
+import { all, fork } from 'redux-saga/effects';
 import { combineReducers } from 'redux';
-import { blockchainReducer } from './blockchain/reducer';
-// import contractSaga from './contract/saga';
-// import walletSaga from './wallet/saga';
-
-// state interfaces for combination into RootState
-import { BlockchainState } from './blockchain/types';
+import fsReducer from './fs/reducer';
+import fsSaga from './fs/saga';
+import { FSState } from './fs/types';
 
 export interface ApplicationState {
-  blockchain: BlockchainState;
+  fs: FSState;
 }
 
 export const createRootReducer = () => {
   return combineReducers<ApplicationState>({
-    blockchain: blockchainReducer,
+    fs: fsReducer,
   });
 };
 
 export function* rootSaga() {
-  yield all([]);
+  yield all([fork(fsSaga)]);
 }

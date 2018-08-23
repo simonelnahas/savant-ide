@@ -7,3 +7,4 @@ export interface Contract {
   fields: any;
   transitions: any;
 }
+
