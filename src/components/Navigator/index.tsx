@@ -33,6 +33,7 @@ interface DispatchProps {
   init: typeof fsActions.init;
   addContract: typeof fsActions.add;
   selectContract: typeof fsActions.setSelectedContract;
+  deleteContract: typeof fsActions.deleteContract;
 }
 
 type Props = OwnProps & MappedProps & DispatchProps;
@@ -48,7 +49,7 @@ const ZDrawer = styled(Drawer)`
     transition: width 50ms ease-in;
 
     &.open {
-      width: 200px;
+      width: 250px;
     }
 
     &.closed {
@@ -118,12 +119,16 @@ class Navigator extends React.Component<Props, State> {
     }
   };
 
-  handleSelect = (name: string) => {
+  handleSelect = (address: string) => {
     // don't select an already-active contract
-    if (this.props.activeContract !== name) {
-      this.props.selectContract(name);
+    if (this.props.activeContract !== address) {
+      this.props.selectContract(address);
       return;
     }
+  };
+
+  handleDelete = (address: string) => {
+    this.props.deleteContract(address);
   };
 
   render() {
@@ -154,18 +159,22 @@ class Navigator extends React.Component<Props, State> {
             {isAdding ? (
               <File
                 key="pending"
-                text=""
+                address=""
+                name=""
                 handlePersist={this.handlePersist}
                 handleSelect={this.handleSelect}
+                handleDelete={this.handleDelete}
               />
             ) : null}
             {this.props.contracts.map((file) => {
               return (
                 <File
-                  key={file.hash}
-                  text={file.name}
+                  key={file.name}
+                  address={file.address}
+                  name={file.name}
                   handlePersist={this.handlePersist}
                   handleSelect={this.handleSelect}
+                  handleDelete={this.handleDelete}
                 />
               );
             })}
@@ -186,11 +195,12 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   init: () => dispatch(fsActions.init()),
   addContract: (name: string, code: string) => dispatch(fsActions.add(name, code)),
   selectContract: (name: string) => dispatch(fsActions.setSelectedContract(name)),
+  deleteContract: (address: string) => dispatch(fsActions.deleteContract(address)),
 });
 
 const mapStateToProps = (state: ApplicationState) => {
-  const contractsArr: ContractSrcFile[] = Object.keys(state.fs.contracts).map((name) => {
-    return state.fs.contracts[name];
+  const contractsArr: ContractSrcFile[] = Object.keys(state.fs.contracts).map((address) => {
+    return state.fs.contracts[address];
   });
 
   return {

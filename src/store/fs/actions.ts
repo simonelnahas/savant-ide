@@ -8,6 +8,11 @@ export const initSuccess = createAction(FSActionTypes.INIT_SUCCESS, (resolve) =>
 });
 export const initError = createAction(FSActionTypes.INIT_ERROR);
 
+
+export const setSelectedContract = createAction(FSActionTypes.SET_SELECTED_CONTRACT, (resolve) => {
+  return (address: string) => resolve({ address });
+});
+
 export const add = createAction(FSActionTypes.ADD, (resolve) => {
   return (name: string, code: string) => resolve({ name, code });
 });
@@ -18,6 +23,12 @@ export const addError = createAction(FSActionTypes.ADD_ERROR, (resolve) => {
   return (name: string, err: string) => resolve({ name, error: err });
 });
 
-export const setSelectedContract = createAction(FSActionTypes.SET_SELECTED_CONTRACT, (resolve) => {
+export const deleteContract = createAction(FSActionTypes.DELETE, (resolve) => {
+  return (address: string) => resolve({ address });
+});
+export const deleteContractSuccess = createAction(FSActionTypes.DELETE_SUCCESS, (resolve) => {
+  return (name: string) => resolve({ name });
+});
+export const deleteContractError = createAction(FSActionTypes.DELETE_ERROR, (resolve) => {
   return (name: string) => resolve({ name });
 });

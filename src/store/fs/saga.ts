@@ -20,11 +20,19 @@ export function* initFs() {
   yield put(fsActions.initSuccess(contracts));
 
   // block on _all_ actions
-  const chan = yield actionChannel([FSActionTypes.ADD]);
+  const chan = yield actionChannel([FSActionTypes.ADD, FSActionTypes.DELETE]);
   while (true) {
-    const action = yield take<FsAction>(chan);
+    const action: FsAction = yield take<FsAction>(chan);
     // call the appropriate actions, passing the instance of db along
-    yield call(createContract, action, db);
+    switch (action.type) {
+      case FSActionTypes.ADD:
+        yield call(createContract, action, db);
+        break;
+      case FSActionTypes.DELETE:
+        yield call(deleteContract, action, db);
+        break;
+      default:
+    }
   }
 }
 
@@ -38,6 +46,17 @@ function* createContract(action: ActionType<typeof fsActions.add>, db: FSStore) 
   } catch (err) {
     console.log(err);
     yield put(fsActions.addError(action.payload.name, err));
+  }
+}
+
+function* deleteContract(action: ActionType<typeof fsActions.deleteContract>, db: FSStore) {
+  try {
+    const { address } = action.payload;
+    yield db.delete(address);
+    yield put(fsActions.deleteContractSuccess(address));
+  } catch (err) {
+    console.log(err);
+    yield put(fsActions.deleteContractError(err));
   }
 }
 

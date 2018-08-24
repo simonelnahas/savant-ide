@@ -17,7 +17,7 @@ export const enum FSActionTypes {
 export interface ContractSrcFile {
   name: string;
   code: string;
-  hash: string; // murmur hash?
+  address: string;
 }
 
 export interface FSState {

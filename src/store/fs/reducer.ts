@@ -25,7 +25,7 @@ const fsReducer: Reducer<FSState, FsAction> = (state = initialState, action) => 
         contracts: {
           ...state.contracts,
           ...action.payload.contracts.reduce((acc, contract) => {
-            return { ...acc, [contract.name]: contract };
+            return { ...acc, [contract.address]: contract };
           }, {}),
         },
       };
@@ -34,7 +34,7 @@ const fsReducer: Reducer<FSState, FsAction> = (state = initialState, action) => 
     case getType(fsActions.addSuccess): {
       return {
         ...state,
-        contracts: { ...state.contracts, [action.payload.name]: action.payload },
+        contracts: { ...state.contracts, [action.payload.address]: action.payload },
         loading: false,
       };
     }
@@ -42,7 +42,7 @@ const fsReducer: Reducer<FSState, FsAction> = (state = initialState, action) => 
     case getType(fsActions.setSelectedContract): {
       return {
         ...state,
-        activeContract: action.payload.name,
+        activeContract: action.payload.address,
       };
     }
 

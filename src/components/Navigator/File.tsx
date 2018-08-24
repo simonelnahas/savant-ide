@@ -6,29 +6,39 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Menu from './Menu';
 
 interface Props {
-  text: string;
+  address: string;
+  name: string;
   handleSelect: (name: string) => void;
   handlePersist: (name: string) => void;
+  handleDelete: (address: string) => void;
 }
 
 interface State {
-  text: string;
+  name: string;
   isRenaming: boolean;
   isMenuOpen: boolean;
 }
 
 export default class File extends React.Component<Props, State> {
   textNode = React.createRef<HTMLParagraphElement>();
-  state: State = { isRenaming: false, isMenuOpen: false, text: '' };
+  state: State = { isRenaming: false, isMenuOpen: false, name: '' };
 
   componentDidMount() {
-    const { text } = this.props;
+    const { name } = this.props;
 
-    if (!text || (text.length && text.length === 0)) {
+    if (!name || (name.length && name.length === 0)) {
       this.setRenaming();
     }
 
-    this.setState({ text });
+    this.setState({ name });
+  }
+
+  shouldComponentUpdate(_: Props, nextState: State) {
+    return (
+      nextState.name !== (this.textNode.current && this.textNode.current.innerText) ||
+      this.state.isRenaming !== nextState.isRenaming ||
+      this.state.isMenuOpen !== nextState.isMenuOpen
+    );
   }
 
   setRenaming = () => {
@@ -43,10 +53,11 @@ export default class File extends React.Component<Props, State> {
   };
 
   handleChange: React.ChangeEventHandler<HTMLParagraphElement> = (e) => {
-    this.setState({ text: e.currentTarget.innerText });
+    this.setState({ name: e.currentTarget.innerText });
   };
 
   handleDelete = () => {
+    this.props.handleDelete(this.props.address);
     console.log('deleted file');
   };
 
@@ -54,7 +65,7 @@ export default class File extends React.Component<Props, State> {
     e.preventDefault();
     // left click
     if (e.button === 0) {
-      this.props.handleSelect(this.props.text);
+      this.props.handleSelect(this.props.address);
       return;
     }
 
@@ -95,14 +106,13 @@ export default class File extends React.Component<Props, State> {
     /* e.preventDefault(); */
     if (this.state.isRenaming && this.textNode.current) {
       this.textNode.current.contentEditable = 'false';
-      this.props.handlePersist(this.state.text);
+      this.props.handlePersist(this.state.name);
+      console.log(this.state.name);
       this.setState({ isRenaming: false });
     }
   };
 
   render() {
-    const { text } = this.state;
-
     return (
       <React.Fragment>
         <ClickAwayListener onClickAway={this.handleBlur}>
@@ -111,10 +121,11 @@ export default class File extends React.Component<Props, State> {
               <p
                 tabIndex={this.state.isRenaming ? 0 : undefined}
                 ref={this.textNode}
+                onInput={this.handleChange}
                 onFocus={this.handleFocus}
                 onKeyDown={this.handleKeyDown}
               >
-                {text}
+                {this.state.name}
               </p>
             </ListItemText>
           </ListItem>

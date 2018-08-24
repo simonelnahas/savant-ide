@@ -3,7 +3,7 @@ import * as React from 'react';
 // @ts-ignore
 import * as brace from 'brace';
 import AceEditor from 'react-ace';
-import 'ayu-ace/mirage';
+import 'ayu-ace/light';
 import 'brace/mode/ocaml';
 import { connect } from 'react-redux';
 
@@ -24,7 +24,7 @@ type Props = OwnProps & MappedProps;
 class ScillaEditor extends React.Component<Props, State> {
   static getDerivedStateFromProps(props: Props, state: State) {
     // a new contract has been loaded
-    if (state && state.contract && state.contract.hash !== props.contract.hash) {
+    if (state && state.contract && state.contract.address !== props.contract.address) {
       return { ...state, contract: props.contract };
     }
 
@@ -34,7 +34,7 @@ class ScillaEditor extends React.Component<Props, State> {
   state: State = {
     contract: {
       name: '',
-      hash: '',
+      address: '',
       code: '',
     },
   };
@@ -49,7 +49,7 @@ class ScillaEditor extends React.Component<Props, State> {
     return (
       <AceEditor
         mode="ocaml"
-        theme="ayu-mirage"
+        theme="ayu-light"
         onChange={this.onChange}
         name="scilla-editor"
         editorProps={{ $blockScrolling: true }}
@@ -64,7 +64,7 @@ const mapStateToProps = (state: ApplicationState) => ({
   contract:
     state.fs.activeContract && state.fs.activeContract.length > 1
       ? state.fs.contracts[state.fs.activeContract]
-      : { name: '', hash: '', code: '' },
+      : { name: '', address: '', code: '' },
 });
 
 export default connect(mapStateToProps)(ScillaEditor);
