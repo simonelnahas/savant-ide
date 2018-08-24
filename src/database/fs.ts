@@ -5,7 +5,7 @@ const FS_STORE_NAME = 'scilla-ide-fs';
 
 interface ContractDataObject {
   name: string;
-  hash: string;
+  address: string;
   code: string;
 }
 

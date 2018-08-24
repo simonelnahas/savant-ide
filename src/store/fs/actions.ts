@@ -12,7 +12,7 @@ export const add = createAction(FSActionTypes.ADD, (resolve) => {
   return (name: string, code: string) => resolve({ name, code });
 });
 export const addSuccess = createAction(FSActionTypes.ADD_SUCCESS, (resolve) => {
-  return (name: string, code: string, hash: string) => resolve({ name, code, hash });
+  return (name: string, code: string, address: string) => resolve({ name, code, address });
 });
 export const addError = createAction(FSActionTypes.ADD_ERROR, (resolve) => {
   return (name: string, err: string) => resolve({ name, error: err });

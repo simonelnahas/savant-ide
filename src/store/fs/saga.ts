@@ -1,4 +1,4 @@
-import murmur from 'murmurhash3js';
+import { Zilliqa } from 'zilliqa-js';
 import { actionChannel, call, fork, put, take } from 'redux-saga/effects';
 import { ActionType } from 'typesafe-actions';
 
@@ -7,6 +7,8 @@ import { FSActionTypes } from '../../store/fs/types';
 import FSStore from '../../database/fs';
 
 type FsAction = ActionType<typeof fsActions>;
+
+const util = new Zilliqa({ nodeUrl: '' }).util;
 
 export function* initFs() {
   // instantiate a call to the virtual fs IDB store
@@ -29,9 +31,10 @@ export function* initFs() {
 function* createContract(action: ActionType<typeof fsActions.add>, db: FSStore) {
   try {
     const { name, code } = action.payload;
-    const hash = murmur.x86.hash32(name.concat(code));
-    yield db.set(hash, { ...action.payload, hash });
-    yield put(fsActions.addSuccess(name, code, hash));
+    // @ts-ignore
+    const address = util.getAddressFromPrivateKey(util.generatePrivateKey());
+    yield db.set(address, { ...action.payload, address });
+    yield put(fsActions.addSuccess(name, code, address));
   } catch (err) {
     console.log(err);
     yield put(fsActions.addError(action.payload.name, err));
