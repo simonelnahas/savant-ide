@@ -169,7 +169,7 @@ class Navigator extends React.Component<Props, State> {
             {this.props.contracts.map((file) => {
               return (
                 <File
-                  key={file.name}
+                  key={file.address}
                   address={file.address}
                   name={file.name}
                   handlePersist={this.handlePersist}

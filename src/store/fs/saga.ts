@@ -20,7 +20,7 @@ export function* initFs() {
   yield put(fsActions.initSuccess(contracts));
 
   // block on _all_ actions
-  const chan = yield actionChannel([FSActionTypes.ADD, FSActionTypes.DELETE]);
+  const chan = yield actionChannel([FSActionTypes.ADD, FSActionTypes.DELETE, FSActionTypes.UPDATE]);
   while (true) {
     const action: FsAction = yield take<FsAction>(chan);
     // call the appropriate actions, passing the instance of db along
@@ -30,6 +30,9 @@ export function* initFs() {
         break;
       case FSActionTypes.DELETE:
         yield call(deleteContract, action, db);
+        break;
+      case FSActionTypes.UPDATE:
+        yield call(updateContract, action, db);
         break;
       default:
     }
@@ -46,6 +49,16 @@ function* createContract(action: ActionType<typeof fsActions.add>, db: FSStore) 
   } catch (err) {
     console.log(err);
     yield put(fsActions.addError(action.payload.name, err));
+  }
+}
+
+function* updateContract(action: ActionType<typeof fsActions.update>, db: FSStore) {
+  try {
+    const data = action.payload;
+    yield db.set(data.address, data);
+    yield put(fsActions.updateSuccess(data.name, data.code, data.address));
+  } catch (err) {
+    console.log(err);
   }
 }
 

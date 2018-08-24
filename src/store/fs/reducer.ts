@@ -35,7 +35,7 @@ const fsReducer: Reducer<FSState, FsAction> = (state = initialState, action) => 
     case getType(fsActions.addSuccess): {
       return {
         ...state,
-        contracts: { ...state.contracts, [action.payload.address]: action.payload },
+        contracts: { [action.payload.address]: action.payload, ...state.contracts },
         loading: false,
       };
     }
@@ -54,6 +54,16 @@ const fsReducer: Reducer<FSState, FsAction> = (state = initialState, action) => 
           (contract: any) => contract.address !== action.payload.address,
           state.contracts,
         ),
+      };
+    }
+
+    case getType(fsActions.updateSuccess): {
+      return {
+        ...state,
+        contracts: {
+          ...state.contracts,
+          [action.payload.address]: action.payload,
+        },
       };
     }
 
