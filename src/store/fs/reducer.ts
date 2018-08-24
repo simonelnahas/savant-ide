@@ -1,3 +1,4 @@
+import { filter } from 'ramda';
 import { Reducer } from 'redux';
 import { ActionType, getType } from 'typesafe-actions';
 
@@ -43,6 +44,16 @@ const fsReducer: Reducer<FSState, FsAction> = (state = initialState, action) => 
       return {
         ...state,
         activeContract: action.payload.address,
+      };
+    }
+
+    case getType(fsActions.deleteContractSuccess): {
+      return {
+        ...state,
+        contracts: filter(
+          (contract: any) => contract.address !== action.payload.address,
+          state.contracts,
+        ),
       };
     }
 

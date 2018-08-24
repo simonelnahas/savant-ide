@@ -27,7 +27,7 @@ export const deleteContract = createAction(FSActionTypes.DELETE, (resolve) => {
   return (address: string) => resolve({ address });
 });
 export const deleteContractSuccess = createAction(FSActionTypes.DELETE_SUCCESS, (resolve) => {
-  return (name: string) => resolve({ name });
+  return (address: string) => resolve({ address });
 });
 export const deleteContractError = createAction(FSActionTypes.DELETE_ERROR, (resolve) => {
   return (name: string) => resolve({ name });
