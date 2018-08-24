@@ -69,10 +69,11 @@ class ScillaEditor extends React.Component<Props, State> {
 
     return (
       <Wrapper>
-        <Controls handleSave={this.handleSave} />
+        <Controls contract={contract} handleSave={this.handleSave} />
         <AceEditor
           mode="ocaml"
           theme="ayu-light"
+          fontSize={16}
           onChange={this.onChange}
           name="scilla-editor"
           editorProps={{ $blockScrolling: true }}

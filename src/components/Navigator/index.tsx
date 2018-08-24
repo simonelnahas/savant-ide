@@ -3,12 +3,9 @@ import * as React from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import ArrowLeft from '@material-ui/icons/ArrowLeft';
 import Button from '@material-ui/core/Button';
-import FolderIcon from '@material-ui/icons/Folder';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import classNames from 'classnames';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
@@ -149,13 +146,7 @@ class Navigator extends React.Component<Props, State> {
             <AddIcon />
             New Contract
           </Button>
-          <List>
-            <ListItem>
-              <ListItemIcon>
-                <FolderIcon />
-              </ListItemIcon>
-              <ListItemText primary="Files" />
-            </ListItem>
+          <List dense subheader={<ListSubheader component="div">Files</ListSubheader>}>
             {isAdding ? (
               <File
                 key="pending"

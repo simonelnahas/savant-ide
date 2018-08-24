@@ -3,6 +3,8 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
+import styled from 'styled-components';
+
 import Menu from './Menu';
 
 interface Props {
@@ -18,6 +20,12 @@ interface State {
   isRenaming: boolean;
   isMenuOpen: boolean;
 }
+
+const WrappedListText = styled(ListItemText)`
+  & .file {
+    display: flex;
+  }
+`;
 
 export default class File extends React.Component<Props, State> {
   textNode = React.createRef<HTMLParagraphElement>();
@@ -116,8 +124,14 @@ export default class File extends React.Component<Props, State> {
     return (
       <React.Fragment>
         <ClickAwayListener onClickAway={this.handleBlur}>
-          <ListItem key="item" button onClick={this.handleClick} onContextMenu={this.handleClick}>
-            <ListItemText>
+          <ListItem
+            key="item"
+            divider
+            onClick={this.handleClick}
+            onContextMenu={this.handleClick}
+            style={{ cursor: 'pointer' }}
+          >
+            <WrappedListText classes={{ primary: 'file' }}>
               <p
                 tabIndex={this.state.isRenaming ? 0 : undefined}
                 ref={this.textNode}
@@ -127,7 +141,8 @@ export default class File extends React.Component<Props, State> {
               >
                 {this.state.name}
               </p>
-            </ListItemText>
+              <p>.scilla</p>
+            </WrappedListText>
           </ListItem>
         </ClickAwayListener>
         <Menu
