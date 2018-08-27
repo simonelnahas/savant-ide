@@ -60,6 +60,7 @@ jspm_packages/
 
 # dependencies
 /node_modules
+/scilla
 
 # testing
 /coverage
