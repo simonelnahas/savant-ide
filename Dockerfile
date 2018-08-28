@@ -1,5 +1,11 @@
 FROM ubuntu:16.04
 
+# Node server
+EXPOSE 8080
+# Frontend dev server
+# TODO: remove this for production load.
+EXPOSE 3000
+
 COPY . /scilla-ide
 
 WORKDIR /scilla-ide
@@ -13,11 +19,39 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pkg-config \
     zlib1g-dev \
     libgmp-dev \
+    libffi-dev \
+    libssl-dev \
+    libboost-system-dev \
     apt-transport-https \
     ca-certificates \
     curl\ 
     software-properties-common \
     && rm -rf /var/lib/apt/lists/*
+
+RUN cd scilla && \
+  opam init -y && \
+  opam switch -y 4.06.0 && \
+  opam install -y \
+  ocaml-migrate-parsetree \
+  core \
+  cryptokit \
+  ppx_sexp_conv \
+  yojson \
+  batteries \
+  angstrom \
+  hex \
+  ppx_deriving \
+  ppx_deriving_yojson \
+  menhir \
+  oUnit \
+  dune \
+  stdint \
+  fileutils \
+  ctypes \
+  ctypes-foreign && \
+  echo ". ~/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true " >> ~/.bashrc && \
+  eval `opam config env` && make
+
 # Install node.js v10.x
 RUN groupadd --gid 1000 node \
   && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
@@ -79,12 +113,3 @@ RUN set -ex \
   && ln -s /opt/yarn-v$YARN_VERSION/bin/yarnpkg /usr/local/bin/yarnpkg \
   && rm yarn-v$YARN_VERSION.tar.gz.asc yarn-v$YARN_VERSION.tar.gz
 
-# Node server
-EXPOSE 8080
-# Frontend dev server
-# TODO: remove this for production load.
-EXPOSE 3000
-
-RUN cd scilla && make opamdep && echo \
-    ". ~/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true " >> ~/.bashrc && \
-    eval `opam config env` && make
