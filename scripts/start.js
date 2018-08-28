@@ -27,6 +27,7 @@ const {
   prepareUrls,
 } = require('react-dev-utils/WebpackDevServerUtils');
 const openBrowser = require('react-dev-utils/openBrowser');
+
 const paths = require('../config/paths');
 const config = require('../config/webpack.config.dev');
 const createDevServerConfig = require('../config/webpackDevServer.config');
@@ -84,9 +85,6 @@ choosePort(HOST, DEFAULT_PORT)
     devServer.listen(port, HOST, err => {
       if (err) {
         return console.log(err);
-      }
-      if (isInteractive) {
-        clearConsole();
       }
       console.log(chalk.cyan('Starting the development server...\n'));
       openBrowser(urls.localUrlForBrowser);

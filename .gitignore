@@ -61,11 +61,13 @@ jspm_packages/
 # dependencies
 /node_modules
 /scilla
+/temp
 
 # testing
 /coverage
 
 # production
+/dist
 /build
 
 # misc

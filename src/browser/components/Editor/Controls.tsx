@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import IconButton from '@material-ui/core/IconButton';
 import SaveIcon from '@material-ui/icons/Save';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Typography from '@material-ui/core/Typography';
 
 import { ContractSrcFile } from '../../store/fs/types';
@@ -25,13 +26,18 @@ const ButtonWrapper = styled.span`
 
 interface Props {
   contract: ContractSrcFile;
+  handleCheck: () => void;
   handleSave: () => void;
 }
 
 export default class EditorControls extends React.Component<Props> {
-  handleClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+  handleSave: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     this.props.handleSave();
   };
+
+  handleCheck: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    this.props.handleCheck();
+  }
 
   render() {
     const { contract } = this.props;
@@ -40,11 +46,19 @@ export default class EditorControls extends React.Component<Props> {
       <Wrapper>
         <Typography classes={{ root: 'filename' }}>{`${contract.name}.scilla`}</Typography>
         <ButtonWrapper>
-          <IconButton aria-label="save" color="primary" onClick={this.handleClick}>
+          <IconButton aria-label="save" color="primary" onClick={this.handleSave}>
             <SaveIcon />
           </IconButton>
           <Typography align="center" color="primary">
             Save
+          </Typography>
+        </ButtonWrapper>
+        <ButtonWrapper>
+          <IconButton aria-label="save" color="primary" onClick={this.handleCheck}>
+            <CheckBoxIcon />
+          </IconButton>
+          <Typography align="center" color="primary">
+            Check
           </Typography>
         </ButtonWrapper>
       </Wrapper>

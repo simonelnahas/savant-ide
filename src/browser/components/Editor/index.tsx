@@ -9,10 +9,10 @@ import { Dispatch } from 'redux';
 import styled from 'styled-components';
 
 import Controls from './Controls';
-
 import { ApplicationState } from '../../store/index';
 import * as fsActions from '../../store/fs/actions';
 import { ContractSrcFile } from '../../store/fs/types';
+import { checkContract } from '../../util/api';
 
 interface OwnProps {}
 interface MappedProps {
@@ -54,6 +54,13 @@ class ScillaEditor extends React.Component<Props, State> {
     },
   };
 
+  handleCheck = () => {
+    const { contract } = this.state;
+    checkContract(contract.code).then((res) => {
+      res.json().then((data) => console.log(data));
+    });
+  };
+
   handleSave = () => {
     const { update } = this.props;
     const { contract } = this.state;
@@ -69,7 +76,7 @@ class ScillaEditor extends React.Component<Props, State> {
 
     return (
       <Wrapper>
-        <Controls contract={contract} handleSave={this.handleSave} />
+        <Controls contract={contract} handleCheck={this.handleCheck} handleSave={this.handleSave} />
         <AceEditor
           mode="ocaml"
           theme="ayu-light"
