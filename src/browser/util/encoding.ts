@@ -1,5 +1,5 @@
 import BN from 'bn.js';
-import { parse } from '../../lib/parser';
+import { parse } from '../../../lib/parser';
 
 import {
   ADTypeKind,
@@ -10,7 +10,7 @@ import {
   PairTypeNode,
   BoolTypeNode,
   NatTypeNode,
-} from '../../lib/types';
+} from '../../../lib/types';
 
 type PrimValue = string;
 
