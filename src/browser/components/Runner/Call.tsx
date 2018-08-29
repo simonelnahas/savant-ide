@@ -13,7 +13,7 @@ interface Props {
 }
 
 interface State {
-  parameters: { [key: string]: { value: any } };
+  transitionState: { [transition: string]: { [arg: string]: { value: any } } };
   selected: string; // index of currently selected transition
 }
 
@@ -27,8 +27,13 @@ const Wrapper = styled.div`
 
 export default class CallTab extends React.Component<Props> {
   state: State = {
-    parameters: {},
+    transitionState: {},
     selected: '',
+  };
+
+  onCallTransition = (transition: string, params: { [p: string]: any }) => {
+    console.log(`Calling transition ${transition}`);
+    console.log('Parameters: ', params);
   };
 
   onSelectTransition: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
@@ -38,7 +43,7 @@ export default class CallTab extends React.Component<Props> {
 
   onParameterChange = (transition: string, value: { [key: string]: { value: any } }) => {
     this.setState({
-      parameters: { ...this.state.parameters, [transition]: value },
+      parameters: { ...this.state.transitionState, [transition]: value },
     });
   };
 
@@ -62,6 +67,8 @@ export default class CallTab extends React.Component<Props> {
                   Parameters:
                 </Typography>
                 <TransitionForm
+                  key={selected}
+                  handleSubmit={this.onCallTransition}
                   handleChange={this.onParameterChange}
                   {...find((t) => t.name === selected, abi.transitions) as Transition}
                 />
