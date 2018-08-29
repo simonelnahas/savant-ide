@@ -10,9 +10,9 @@ import styled from 'styled-components';
 
 import Controls from './Controls';
 import { ApplicationState } from '../../store/index';
+import * as contractActions from '../../store/contract/actions';
 import * as fsActions from '../../store/fs/actions';
 import { ContractSrcFile } from '../../store/fs/types';
-import { checkContract } from '../../util/api';
 
 interface OwnProps {}
 interface MappedProps {
@@ -20,6 +20,7 @@ interface MappedProps {
 }
 
 interface DispatchProps {
+  check: typeof contractActions.check;
   update: typeof fsActions.update;
 }
 
@@ -55,10 +56,9 @@ class ScillaEditor extends React.Component<Props, State> {
   };
 
   handleCheck = () => {
+    const { check } = this.props;
     const { contract } = this.state;
-    checkContract(contract.code).then((res) => {
-      res.json().then((data) => console.log(data));
-    });
+    check(contract.code);
   };
 
   handleSave = () => {
@@ -95,6 +95,7 @@ class ScillaEditor extends React.Component<Props, State> {
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   update: (name: string, code: string, address: string) =>
     dispatch(fsActions.update(name, code, address)),
+  check: (code: string) => dispatch(contractActions.check(code)),
 });
 
 const mapStateToProps = (state: ApplicationState) => ({

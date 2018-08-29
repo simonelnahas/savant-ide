@@ -1,10 +1,32 @@
 import BN from 'bn.js';
 
+interface Param {
+  name: string;
+  type: string;
+}
+
+interface Transition {
+  name: string;
+  params: Param[];
+}
+
+export interface ABI {
+  fields: Param[];
+  transitions: Transition;
+}
+
 export interface Contract {
-  owner: string;
+  isChecking: boolean;
+  isExecuting: boolean;
   balance: BN;
   code: string;
-  fields: any;
-  transitions: any;
+  abi: ABI | null;
+  state: any;
+}
+
+export const enum ContractActionTypes {
+  CHECK = '@contract/CHECK',
+  CHECK_SUCCESS = '@contract/CHECK_SUCCESS',
+  CHECK_ERROR = '@contract/CHECK_ERROR',
 }
 
