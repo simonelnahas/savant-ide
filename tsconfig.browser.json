@@ -1,17 +1,8 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "baseUrl": "./", 
     "outDir": "dist/browser",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "allowJs": true,
-    "checkJs": false,
-    "declaration": false,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "forceConsistentCasingInFileNames": true,
-    "importHelpers": true,
-    "noEmitHelpers": true,
     "jsx": "react",
     "lib": [
       "dom",
@@ -19,18 +10,7 @@
       "es2017.object"
     ],
     "target": "es5",
-    "module": "es2015",
-    "moduleResolution": "node",
-    "noEmitOnError": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "strict": true,
-    "pretty": true,
-    "removeComments": true,
-    "sourceMap": true
+    "module": "es2015"
   },
   "include": [
     "src/browser/**/*",
