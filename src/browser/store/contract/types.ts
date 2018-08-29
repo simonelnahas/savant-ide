@@ -5,14 +5,14 @@ interface Param {
   type: string;
 }
 
-interface Transition {
+export interface Transition {
   name: string;
   params: Param[];
 }
 
 export interface ABI {
   fields: Param[];
-  transitions: Transition;
+  transitions: Transition[];
 }
 
 export interface Contract {

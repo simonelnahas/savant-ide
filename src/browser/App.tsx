@@ -8,6 +8,7 @@ import styled from 'styled-components';
 
 import Navigator from './components/Navigator';
 import ScillaEditor from './components/Editor';
+import Runner from './components/Runner';
 
 interface Props {
   store: Store<any>;
@@ -52,13 +53,14 @@ class App extends React.Component<Props> {
   render() {
     return (
       <Provider store={this.props.store}>
-        <Wrapper className="App">
+        <MuiThemeProvider theme={theme}>
           <CssBaseline />
-          <MuiThemeProvider theme={theme}>
+          <Wrapper className="App">
             <Navigator />
             <ScillaEditor />
-          </MuiThemeProvider>
-        </Wrapper>
+            <Runner />
+          </Wrapper>
+        </MuiThemeProvider>
       </Provider>
     );
   }
