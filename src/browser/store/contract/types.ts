@@ -11,6 +11,7 @@ export interface Transition {
 }
 
 export interface ABI {
+  name: string;
   fields: Param[];
   transitions: Transition[];
 }
