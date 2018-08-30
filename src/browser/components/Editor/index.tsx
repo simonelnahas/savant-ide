@@ -10,7 +10,6 @@ import styled from 'styled-components';
 
 import Controls from './Controls';
 import { ApplicationState } from '../../store/index';
-import * as contractActions from '../../store/contract/actions';
 import * as fsActions from '../../store/fs/actions';
 import { ContractSrcFile } from '../../store/fs/types';
 
@@ -20,7 +19,7 @@ interface MappedProps {
 }
 
 interface DispatchProps {
-  check: typeof contractActions.check;
+  check: typeof fsActions.check;
   update: typeof fsActions.update;
 }
 
@@ -95,7 +94,7 @@ class ScillaEditor extends React.Component<Props, State> {
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   update: (name: string, code: string, address: string) =>
     dispatch(fsActions.update(name, code, address)),
-  check: (code: string) => dispatch(contractActions.check(code)),
+  check: (code: string) => dispatch(fsActions.check(code)),
 });
 
 const mapStateToProps = (state: ApplicationState) => ({

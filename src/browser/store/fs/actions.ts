@@ -12,6 +12,9 @@ export const setSelectedContract = createAction(FSActionTypes.SET_SELECTED_CONTR
   return (address: string) => resolve({ address });
 });
 
+/**
+ * Creation actions. These add files to the FS store.
+ */
 export const add = createAction(FSActionTypes.ADD, (resolve) => {
   return (name: string, code: string) => resolve({ name, code });
 });
@@ -22,6 +25,20 @@ export const addError = createAction(FSActionTypes.ADD_ERROR, (resolve) => {
   return (name: string, err: string) => resolve({ name, error: err });
 });
 
+/**
+ * Code checking actions
+ */
+export const check = createAction(FSActionTypes.CHECK, (resolve) => {
+  return (code: string) => resolve({ code });
+});
+export const checkSuccess = createAction(FSActionTypes.CHECK_SUCCESS);
+export const checkError = createAction(FSActionTypes.CHECK_ERROR, (resolve) => {
+  return (error: string) => resolve({ error });
+});
+
+/**
+ * Update actions
+ */
 export const update = createAction(FSActionTypes.UPDATE, (resolve) => {
   return (name: string, code: string, address: string) =>
     resolve({
@@ -43,6 +60,9 @@ export const updateError = createAction(FSActionTypes.UPDATE_ERROR, (resolve) =>
     resolve({ error });
 });
 
+/**
+ * Delete actions
+ */
 export const deleteContract = createAction(FSActionTypes.DELETE, (resolve) => {
   return (address: string) => resolve({ address });
 });

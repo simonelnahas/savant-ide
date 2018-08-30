@@ -2,6 +2,7 @@ import { Zilliqa } from 'zilliqa-js';
 import { actionChannel, call, fork, put, take } from 'redux-saga/effects';
 import { ActionType } from 'typesafe-actions';
 
+import * as api from '../../util/api';
 import * as fsActions from '../../store/fs/actions';
 import { FSActionTypes } from '../../store/fs/types';
 import FSStore from '../../database/fs';
@@ -20,7 +21,13 @@ export function* initFs() {
   yield put(fsActions.initSuccess(contracts));
 
   // block on _all_ actions
-  const chan = yield actionChannel([FSActionTypes.ADD, FSActionTypes.DELETE, FSActionTypes.UPDATE]);
+  const chan = yield actionChannel([
+    FSActionTypes.ADD,
+    FSActionTypes.DELETE,
+    FSActionTypes.UPDATE,
+    FSActionTypes.CHECK,
+  ]);
+
   while (true) {
     const action: FsAction = yield take<FsAction>(chan);
     // call the appropriate actions, passing the instance of db along
@@ -33,6 +40,9 @@ export function* initFs() {
         break;
       case FSActionTypes.UPDATE:
         yield call(updateContract, action, db);
+        break;
+      case FSActionTypes.CHECK:
+        yield call(checkContract, action, db);
         break;
       default:
     }
@@ -70,6 +80,23 @@ function* deleteContract(action: ActionType<typeof fsActions.deleteContract>, db
   } catch (err) {
     console.log(err);
     yield put(fsActions.deleteContractError(err));
+  }
+}
+
+function* checkContract(action: ActionType<typeof fsActions.check>) {
+  try {
+    const { code } = action.payload;
+    const res = yield api.checkContract(code);
+    const { status, message } = res;
+    console.log(res);
+    if (status === 'error') {
+      yield put(fsActions.checkError(message));
+    } else {
+      yield put(fsActions.checkSuccess());
+    }
+  } catch (err) {
+    // something went wrong at the app level
+    yield put(fsActions.checkError(err));
   }
 }
 
