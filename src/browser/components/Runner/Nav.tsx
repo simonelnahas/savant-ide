@@ -4,19 +4,14 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import AssignmentIcon from '@material-ui/icons/Description';
 import PlayIcon from '@material-ui/icons/PlayCircleOutline';
+import SendIcon from '@material-ui/icons/Send';
 import styled from 'styled-components';
 
 import CallTab from './Call';
+import DeployTab from './Deploy';
 
+import { ContractSrcFile } from '../../store/fs/types';
 import { ABI } from '../../store/contract/types';
-
-interface Props {
-  abi: ABI;
-}
-
-interface State {
-  value: number;
-}
 
 const Wrapper = styled(Paper)`
   display: flex;
@@ -33,6 +28,15 @@ const Content = styled.div`
   align-items: center;
 `;
 
+interface Props {
+  files: { [name: string]: ContractSrcFile };
+  abi: ABI | null;
+}
+
+interface State {
+  value: number;
+}
+
 export default class RunnerNav extends React.Component<Props, State> {
   state: State = {
     value: 0,
@@ -40,6 +44,19 @@ export default class RunnerNav extends React.Component<Props, State> {
 
   handleChange = (_: React.ChangeEvent<any>, value: number) => {
     this.setState({ value });
+  };
+
+  renderContent = () => {
+    switch (this.state.value) {
+      case 0:
+        return <CallTab abi={this.props.abi} />;
+      case 1:
+        return null;
+      case 2:
+        return <DeployTab files={this.props.files} />;
+      default:
+        return null;
+    }
   };
 
   render() {
@@ -54,9 +71,10 @@ export default class RunnerNav extends React.Component<Props, State> {
         >
           <Tab icon={<PlayIcon />} label="Call" />
           <Tab icon={<AssignmentIcon />} label="State" />
+          <Tab icon={<SendIcon />} label="Deploy" />
         </Tabs>
         <Content>
-          <CallTab abi={this.props.abi} />
+          {this.renderContent()}
         </Content>
       </Wrapper>
     );

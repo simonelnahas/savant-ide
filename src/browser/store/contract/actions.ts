@@ -7,7 +7,7 @@ import { ContractActionTypes, Contract } from './types';
  * This boots up the main channel for communicatino with persistence layer
  */
 export const init = createAction(ContractActionTypes.INIT);
-export const initSuccess = createAction(ContractActionTypes.CHECK_SUCCESS, (resolve) => {
+export const initSuccess = createAction(ContractActionTypes.INIT_SUCCESS, (resolve) => {
   return (contracts: Contract[]) => resolve({ contracts });
 });
 export const initError = createAction(ContractActionTypes.CHECK_ERROR, (resolve) => {

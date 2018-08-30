@@ -2,19 +2,19 @@ import idb, { DB } from 'idb';
 import { KVStore } from './types';
 import { Contract } from '../store/contract/types';
 
-const CONTRACT_STORE_NAME = 'scilla-ide-contract';
+const CONTRACT_STORE_NAME = 'scilla-ide-contracts';
 
 export default class ContractStore implements KVStore<string, Contract> {
   name: string = CONTRACT_STORE_NAME;
   db: Promise<DB>;
   constructor() {
-    this.db = idb.open('scilla-ide', 1, (upgradeDB) => upgradeDB.createObjectStore(CONTRACT_STORE_NAME));
+    this.db = idb.open('scilla-ide');
   }
 
   async tx(mode: 'readonly' | 'readwrite' = 'readwrite') {
     const dbConn = await this.db;
-    const transaction = await dbConn.transaction(CONTRACT_STORE_NAME, mode);
-    const store = await transaction.objectStore<Contract, string>(CONTRACT_STORE_NAME);
+    const transaction = await dbConn.transaction(this.name, mode);
+    const store = await transaction.objectStore<Contract, string>(this.name);
 
     return Promise.all([transaction, store]);
   }
@@ -50,15 +50,7 @@ export default class ContractStore implements KVStore<string, Contract> {
 
   async keys() {
     const [, store] = await this.tx();
-    const keys: string[] = [];
-    const iterator = store.iterateCursor || store.iterateKeyCursor;
-    iterator((cursor) => {
-      if (!cursor) {
-        return;
-      }
-
-      keys.push(<string>cursor.key);
-    });
+    const keys = await store.getAllKeys();
 
     return keys;
   }

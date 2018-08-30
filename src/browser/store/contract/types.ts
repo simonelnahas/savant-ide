@@ -1,6 +1,6 @@
 import BN from 'bn.js';
 
-interface Param {
+export interface Param {
   name: string;
   type: string;
 }
@@ -13,6 +13,7 @@ export interface Transition {
 export interface ABI {
   name: string;
   fields: Param[];
+  params: Param[];
   transitions: Transition[];
 }
 

@@ -3,38 +3,39 @@ import * as React from 'react';
 import ArrowRight from '@material-ui/icons/ArrowRight';
 import Drawer from '@material-ui/core/Drawer';
 import classNames from 'classnames';
-/* import { Dispatch } from 'redux'; */
+import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import RunnerNav from './Nav';
 
+import * as bcActions from '../../store/blockchain/actions';
+import * as contractActions from '../../store/contract/actions';
 import { ApplicationState } from '../../store/index';
-import { ABI, Contract as ContractState } from '../../store/contract/types';
-
-interface OwnProps {}
-
-interface MappedProps extends ContractState {}
-
-interface DispatchProps {}
+import { Contract } from '../../store/contract/types';
+import { ContractSrcFile } from '../../store/fs/types';
 
 type Props = OwnProps & MappedProps & DispatchProps;
 
-interface State {
-  isOpen: boolean;
-}
-
 const ZDrawer = styled(Drawer)`
+  position: relative;
+  transition: width 50ms ease-in;
+
+  &.open {
+    max-width: 40%;
+    min-width: 40%;
+  }
+
+  &.closed {
+    width: 0;
+  }
+
   & .paper {
     position: relative;
     transition: width 50ms ease-in;
 
     &.open {
       width: 100%;
-    }
-
-    &.closed {
-      width: 0;
     }
   }
 
@@ -62,22 +63,40 @@ const Closer = styled.div`
   width: 20px;
 
   & .closer-icon {
+    width: 20px;
+    font-size: 20px;
     cursor: pointer;
   }
 `;
 
-class Runner extends React.Component<Props, State> {
-  state: State = {
-    isOpen: false,
-  };
+interface OwnProps {
+  isOpen: boolean;
+  toggle(): void;
+}
 
+interface MappedProps {
+  active: Contract | null;
+  files: { [name: string]: ContractSrcFile };
+}
+
+interface DispatchProps {
+  initContracts: typeof contractActions.init;
+  initBlockchain: typeof bcActions.init;
+}
+
+class Runner extends React.Component<Props> {
   toggle: React.MouseEventHandler<SVGSVGElement> = (e) => {
     e.preventDefault();
-    this.setState({ isOpen: !this.state.isOpen });
+    this.props.toggle();
   };
 
+  componentDidMount() {
+    this.props.initBlockchain();
+    this.props.initContracts();
+  }
+
   render() {
-    const { isOpen } = this.state;
+    const { isOpen, files } = this.props;
     return (
       <React.Fragment>
         <Closer>
@@ -89,29 +108,35 @@ class Runner extends React.Component<Props, State> {
         <ZDrawer
           anchor="right"
           variant="permanent"
-          classes={{ paper: classNames('paper', isOpen ? 'open' : 'closed') }}
+          classes={{
+            docked: classNames('root', isOpen ? 'open' : 'closed'),
+            paper: classNames('paper', isOpen ? 'open' : 'closed'),
+          }}
         >
-          <RunnerNav abi={this.props.abi as ABI} />
+          <RunnerNav abi={(this.props.active && this.props.active.abi) || null} files={files} />
         </ZDrawer>
       </React.Fragment>
     );
   }
 }
 
-/* const mapDispatchToProps = (dispatch: Dispatch) => ({ */
-/*   init: () => dispatch(fsActions.init()), */
-/*   addContract: (name: string, code: string) => dispatch(fsActions.add(name, code)), */
-/*   selectContract: (name: string) => dispatch(fsActions.setSelectedContract(name)), */
-/*   deleteContract: (address: string) => dispatch(fsActions.deleteContract(address)), */
-/* }); */
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  initBlockchain: () => dispatch(bcActions.init()),
+  initContracts: (name: string, code: string) => dispatch(contractActions.init()),
+});
 
 const mapStateToProps = (state: ApplicationState) => {
-  return {
-    ...state.contract,
-  };
+  const pointer = state.contract.active;
+  const files = state.fs.contracts;
+
+  if (pointer.address) {
+    return { active: state.contract.contracts[pointer.address], files };
+  }
+
+  return { active: null, files };
 };
 
 export default connect(
   mapStateToProps,
-  /* mapDispatchToProps, */
+  mapDispatchToProps,
 )(Runner);
