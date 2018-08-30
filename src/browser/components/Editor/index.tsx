@@ -39,7 +39,7 @@ const Wrapper = styled.div`
 class ScillaEditor extends React.Component<Props, State> {
   static getDerivedStateFromProps(props: Props, state: State) {
     // a new contract has been loaded
-    if (state && state.contract && state.contract.address !== props.contract.address) {
+    if (!state.contract || state.contract.name !== props.contract.name) {
       return { ...state, contract: props.contract };
     }
 
@@ -49,7 +49,6 @@ class ScillaEditor extends React.Component<Props, State> {
   state: State = {
     contract: {
       name: '',
-      address: '',
       code: '',
     },
   };
@@ -63,7 +62,7 @@ class ScillaEditor extends React.Component<Props, State> {
   handleSave = () => {
     const { update } = this.props;
     const { contract } = this.state;
-    update(contract.name, contract.code, contract.address);
+    update(contract.name, contract.code);
   };
 
   onChange = (value: string): void => {
@@ -85,6 +84,7 @@ class ScillaEditor extends React.Component<Props, State> {
           editorProps={{ $blockScrolling: true }}
           style={{ flexGrow: 1, width: '100%', height: '' }}
           value={contract.code}
+          readOnly={contract.name.length === 0}
         />
       </Wrapper>
     );
@@ -92,8 +92,7 @@ class ScillaEditor extends React.Component<Props, State> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  update: (name: string, code: string, address: string) =>
-    dispatch(fsActions.update(name, code, address)),
+  update: (name: string, code: string) => dispatch(fsActions.update(name, code)),
   check: (code: string) => dispatch(fsActions.check(code)),
 });
 
@@ -101,7 +100,7 @@ const mapStateToProps = (state: ApplicationState) => ({
   contract:
     state.fs.activeContract && state.fs.activeContract.length > 1
       ? state.fs.contracts[state.fs.activeContract]
-      : { name: '', address: '', code: '' },
+      : { name: '', code: '' },
 });
 
 export default connect(

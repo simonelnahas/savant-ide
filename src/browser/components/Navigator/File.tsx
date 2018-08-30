@@ -8,11 +8,10 @@ import styled from 'styled-components';
 import Menu from './Menu';
 
 interface Props {
-  address: string;
   name: string;
   handleSelect: (name: string) => void;
   handlePersist: (name: string) => void;
-  handleDelete: (address: string) => void;
+  handleDelete: (name: string) => void;
 }
 
 interface State {
@@ -65,15 +64,14 @@ export default class File extends React.Component<Props, State> {
   };
 
   handleDelete = () => {
-    this.props.handleDelete(this.props.address);
-    console.log('deleted file');
+    this.props.handleDelete(this.props.name);
   };
 
   handleClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     // left click
     if (e.button === 0) {
-      this.props.handleSelect(this.props.address);
+      this.props.handleSelect(this.props.name);
       return;
     }
 

@@ -82,6 +82,8 @@ const Closer = styled.div`
   width: 20px;
 
   & .closer-icon {
+    width: 20px;
+    font-size: 20px;
     cursor: pointer;
   }
 `;
@@ -138,8 +140,8 @@ class Navigator extends React.Component<Props, State> {
         >
           <Logo src={logo} />
           <Button
+            color="primary"
             classes={{ root: 'adder' }}
-            variant="extendedFab"
             aria-label="Add Contract"
             onClick={this.handleNew}
           >
@@ -150,7 +152,6 @@ class Navigator extends React.Component<Props, State> {
             {isAdding ? (
               <File
                 key="pending"
-                address=""
                 name=""
                 handlePersist={this.handlePersist}
                 handleSelect={this.handleSelect}
@@ -160,8 +161,7 @@ class Navigator extends React.Component<Props, State> {
             {this.props.contracts.map((file) => {
               return (
                 <File
-                  key={file.address}
-                  address={file.address}
+                  key={file.name}
                   name={file.name}
                   handlePersist={this.handlePersist}
                   handleSelect={this.handleSelect}

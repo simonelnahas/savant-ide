@@ -37,16 +37,26 @@ export default class EditorControls extends React.Component<Props> {
 
   handleCheck: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     this.props.handleCheck();
-  }
+  };
 
   render() {
     const { contract } = this.props;
+    const isContractSelected = !!contract.name.length;
 
     return (
       <Wrapper>
-        <Typography classes={{ root: 'filename' }}>{`${contract.name}.scilla`}</Typography>
+        <Typography classes={{ root: 'filename' }}>
+          {contract.name
+            ? `${contract.name || 'untitled'}.scilla`
+            : 'Create a new file, or select an existing one.'}
+        </Typography>
         <ButtonWrapper>
-          <IconButton aria-label="save" color="primary" onClick={this.handleSave}>
+          <IconButton
+            disabled={!isContractSelected}
+            aria-label="save"
+            color="primary"
+            onClick={this.handleSave}
+          >
             <SaveIcon />
           </IconButton>
           <Typography align="center" color="primary">
@@ -54,7 +64,12 @@ export default class EditorControls extends React.Component<Props> {
           </Typography>
         </ButtonWrapper>
         <ButtonWrapper>
-          <IconButton aria-label="save" color="primary" onClick={this.handleCheck}>
+          <IconButton
+            disabled={!isContractSelected}
+            aria-label="save"
+            color="primary"
+            onClick={this.handleCheck}
+          >
             <CheckBoxIcon />
           </IconButton>
           <Typography align="center" color="primary">
