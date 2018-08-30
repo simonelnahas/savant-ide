@@ -9,7 +9,7 @@ import TransitionForm from './TransitionForm';
 import Placeholder from '../Placeholder';
 
 interface Props {
-  abi: ABI;
+  abi: ABI | null;
 }
 
 interface State {
@@ -50,14 +50,20 @@ export default class CallTab extends React.Component<Props> {
   render() {
     const { abi } = this.props;
     const { selected } = this.state;
+    const options = abi
+      ? abi.transitions.map((t) => ({
+          key: t.name,
+          value: t.name,
+        }))
+      : [];
 
     return (
       <Wrapper>
         {abi ? (
           <React.Fragment>
             <Select
-              contractName={abi.name}
-              transitions={abi.transitions}
+              placeholder={abi.name}
+              items={options}
               value={selected}
               onChange={this.onSelectTransition}
             />
