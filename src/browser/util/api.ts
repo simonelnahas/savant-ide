@@ -1,3 +1,8 @@
+export const enum Status {
+  ERROR = 'error',
+  SUCCESS = 'success',
+}
+
 /**
  * Custom error class with response exposed.
  */
@@ -35,13 +40,14 @@ export const request = (url: string, options: RequestInit): Promise<Response> =>
   });
 };
 
-export const checkContract = (contract: string) => {
+export const checkContract = (contract: string, signal?: AbortSignal) => {
   const defaults = {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
     method: 'POST',
+    signal,
   };
 
   return request('http://localhost:8080/contract/check', {
