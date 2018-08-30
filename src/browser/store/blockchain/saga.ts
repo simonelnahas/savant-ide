@@ -7,6 +7,7 @@ import AccountStore from '../../database/accounts';
 import * as bcActions from './actions';
 import { Account, BlockchainActionTypes } from './types';
 
+const DEFAULT_ACCOUNT_FUNDS = new BN(88888888);
 const DEFAULT_NUM_ACCOUNTS = 20;
 const util = new Zilliqa({ nodeUrl: 'https://localhost:8888' }).util;
 
@@ -56,7 +57,7 @@ const generateAccounts = () => {
     const privateKey = util.generatePrivateKey();
     // @ts-ignore
     const address = util.getAddressFromPrivateKey(privateKey);
-    const account = { address, balance: new BN(0), nonce: 0 };
+    const account = { address, balance: DEFAULT_ACCOUNT_FUNDS, nonce: 0 };
     accounts[address] = account;
   }
 
