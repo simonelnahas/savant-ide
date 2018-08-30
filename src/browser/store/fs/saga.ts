@@ -1,4 +1,3 @@
-import { Zilliqa } from 'zilliqa-js';
 import { actionChannel, call, fork, put, take } from 'redux-saga/effects';
 import { ActionType } from 'typesafe-actions';
 
@@ -8,8 +7,6 @@ import { FSActionTypes } from '../../store/fs/types';
 import FSStore from '../../database/fs';
 
 type FsAction = ActionType<typeof fsActions>;
-
-const util = new Zilliqa({ nodeUrl: '' }).util;
 
 export function* initFs() {
   // instantiate a call to the virtual fs IDB store
@@ -42,7 +39,7 @@ export function* initFs() {
         yield call(updateContract, action, db);
         break;
       case FSActionTypes.CHECK:
-        yield call(checkContract, action, db);
+        yield call(checkContract, action);
         break;
       default:
     }
@@ -52,10 +49,8 @@ export function* initFs() {
 function* createContract(action: ActionType<typeof fsActions.add>, db: FSStore) {
   try {
     const { name, code } = action.payload;
-    // @ts-ignore
-    const address = util.getAddressFromPrivateKey(util.generatePrivateKey());
-    yield db.set(address, { ...action.payload, address });
-    yield put(fsActions.addSuccess(name, code, address));
+    yield db.set(name, action.payload);
+    yield put(fsActions.addSuccess(name, code));
   } catch (err) {
     console.log(err);
     yield put(fsActions.addError(action.payload.name, err));
@@ -65,8 +60,8 @@ function* createContract(action: ActionType<typeof fsActions.add>, db: FSStore) 
 function* updateContract(action: ActionType<typeof fsActions.update>, db: FSStore) {
   try {
     const data = action.payload;
-    yield db.set(data.address, data);
-    yield put(fsActions.updateSuccess(data.name, data.code, data.address));
+    yield db.set(data.name, data);
+    yield put(fsActions.updateSuccess(data.name, data.code));
   } catch (err) {
     console.log(err);
   }
@@ -74,11 +69,10 @@ function* updateContract(action: ActionType<typeof fsActions.update>, db: FSStor
 
 function* deleteContract(action: ActionType<typeof fsActions.deleteContract>, db: FSStore) {
   try {
-    const { address } = action.payload;
-    yield db.delete(address);
-    yield put(fsActions.deleteContractSuccess(address));
+    const { name } = action.payload;
+    yield db.delete(name);
+    yield put(fsActions.deleteContractSuccess(name));
   } catch (err) {
-    console.log(err);
     yield put(fsActions.deleteContractError(err));
   }
 }
@@ -88,8 +82,8 @@ function* checkContract(action: ActionType<typeof fsActions.check>) {
     const { code } = action.payload;
     const res = yield api.checkContract(code);
     const { status, message } = res;
-    console.log(res);
-    if (status === 'error') {
+
+    if (status === api.Status.ERROR) {
       yield put(fsActions.checkError(message));
     } else {
       yield put(fsActions.checkSuccess());

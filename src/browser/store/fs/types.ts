@@ -20,7 +20,6 @@ export const enum FSActionTypes {
 export interface ContractSrcFile {
   name: string;
   code: string;
-  address: string;
 }
 
 export interface FSState {

@@ -1,3 +1,4 @@
+import idb from 'idb';
 import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 // import { connectRouter, routerMiddleware } from 'connected-react-router';
@@ -5,7 +6,7 @@ import createSagaMiddleware from 'redux-saga';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { createRootReducer, rootSaga } from './store/index';
 
-export default function configureStore(initialState = {}) {
+export default async function configureStore(initialState = {}) {
   const sagaMiddleware = createSagaMiddleware();
   const rootReducer = createRootReducer();
   const composeEnhancers = composeWithDevTools({});
@@ -14,6 +15,12 @@ export default function configureStore(initialState = {}) {
     initialState,
     composeEnhancers(applyMiddleware(sagaMiddleware)),
   );
+
+  await idb.open('scilla-ide', 1, (upgradeDB) => {
+    upgradeDB.createObjectStore('scilla-ide-fs');
+    upgradeDB.createObjectStore('scilla-ide-blockchain');
+    upgradeDB.createObjectStore('scilla-ide-contracts');
+  });
 
   sagaMiddleware.run(rootSaga);
 

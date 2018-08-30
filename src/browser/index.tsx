@@ -24,7 +24,8 @@ injectGlobal`
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
-const store = createStore({});
+createStore({}).then((store) => {
+  ReactDOM.render(<App store={store} />, document.getElementById('root') as HTMLElement);
+});
 
-ReactDOM.render(<App store={store} />, document.getElementById('root') as HTMLElement);
 registerServiceWorker();

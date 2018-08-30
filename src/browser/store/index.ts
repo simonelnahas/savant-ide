@@ -9,18 +9,24 @@ import contractReducer from './contract/reducer';
 import contractSaga from './contract/saga';
 import { ContractState } from './contract/types';
 
+import blockchainReducer from './blockchain/reducer';
+import blockchainSaga from './blockchain/saga';
+import { BlockchainState } from './blockchain/types';
+
 export interface ApplicationState {
   fs: FSState;
   contract: ContractState;
+  blockchain: BlockchainState;
 }
 
 export const createRootReducer = () => {
   return combineReducers<ApplicationState>({
     fs: fsReducer,
     contract: contractReducer,
+    blockchain: blockchainReducer,
   });
 };
 
 export function* rootSaga() {
-  yield all([fork(fsSaga), fork(contractSaga)]);
+  yield all([fork(fsSaga), fork(contractSaga), fork(blockchainSaga)]);
 }

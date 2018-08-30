@@ -19,10 +19,10 @@ export const add = createAction(FSActionTypes.ADD, (resolve) => {
   return (name: string, code: string) => resolve({ name, code });
 });
 export const addSuccess = createAction(FSActionTypes.ADD_SUCCESS, (resolve) => {
-  return (name: string, code: string, address: string) => resolve({ name, code, address });
+  return (name: string, code: string) => resolve({ name, code });
 });
 export const addError = createAction(FSActionTypes.ADD_ERROR, (resolve) => {
-  return (name: string, err: string) => resolve({ name, error: err });
+  return (name: string, err: string) => resolve({ error: err });
 });
 
 /**
@@ -40,19 +40,17 @@ export const checkError = createAction(FSActionTypes.CHECK_ERROR, (resolve) => {
  * Update actions
  */
 export const update = createAction(FSActionTypes.UPDATE, (resolve) => {
-  return (name: string, code: string, address: string) =>
+  return (name: string, code: string) =>
     resolve({
       name,
       code,
-      address,
     });
 });
 export const updateSuccess = createAction(FSActionTypes.UPDATE_SUCCESS, (resolve) => {
-  return (name: string, code: string, address: string) =>
+  return (name: string, code: string) =>
     resolve({
       name,
       code,
-      address,
     });
 });
 export const updateError = createAction(FSActionTypes.UPDATE_ERROR, (resolve) => {
@@ -64,10 +62,10 @@ export const updateError = createAction(FSActionTypes.UPDATE_ERROR, (resolve) =>
  * Delete actions
  */
 export const deleteContract = createAction(FSActionTypes.DELETE, (resolve) => {
-  return (address: string) => resolve({ address });
+  return (name: string) => resolve({ name });
 });
 export const deleteContractSuccess = createAction(FSActionTypes.DELETE_SUCCESS, (resolve) => {
-  return (address: string) => resolve({ address });
+  return (name: string) => resolve({ name });
 });
 export const deleteContractError = createAction(FSActionTypes.DELETE_ERROR, (resolve) => {
   return (name: string) => resolve({ name });
