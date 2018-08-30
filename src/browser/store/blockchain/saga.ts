@@ -31,7 +31,10 @@ export function* initBlockchain() {
     yield Promise.all(pending);
   } else {
     // fetch all contracts on first load
-    accounts = yield db.getAll();
+    const accountsArr: Account[] = yield db.getAll();
+    accounts = accountsArr.reduce((acc, account) => ({ ...acc, [account.address]: account }), <
+      { [address: string]: Account }
+    >{});
   }
 
   yield put(bcActions.initSuccess(accounts));

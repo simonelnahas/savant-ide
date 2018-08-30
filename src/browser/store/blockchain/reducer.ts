@@ -10,6 +10,7 @@ const initialState: BlockchainState = {
   error: null,
   loading: false,
   blockNum: 0,
+  current: '',
   accounts: {},
 };
 
@@ -18,6 +19,10 @@ const reducer: Reducer<BlockchainState, BlockchainAction> = (
   action: BlockchainAction,
 ) => {
   switch (action.type) {
+    case getType(blockchainActions.initSuccess): {
+      const { accounts } = action.payload;
+      return { ...state, accounts };
+    }
     case getType(blockchainActions.updateAccountSuccess): {
       const { account } = action.payload;
       return {
@@ -26,6 +31,13 @@ const reducer: Reducer<BlockchainState, BlockchainAction> = (
           ...state.accounts,
           [account.address]: account,
         },
+      };
+    }
+    case getType(blockchainActions.setCurrentAccount): {
+      const { address } = action.payload;
+      return {
+        ...state,
+        current: address,
       };
     }
     default:

@@ -6,6 +6,9 @@ import BN from 'bn.js';
 import ContractStore from '../../database/contracts';
 import * as contractActions from './actions';
 import { ContractActionTypes } from './types';
+
+// import * as bcActions from '../blockchain/actions';
+
 import * as api from '../../util/api';
 
 type ContractAction = ActionType<typeof contractActions>;

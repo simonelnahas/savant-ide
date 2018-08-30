@@ -26,3 +26,10 @@ export const updateAccountError = createAction(
     return (err: any) => resolve({ error: err });
   },
 );
+
+export const setCurrentAccount = createAction(
+  BlockchainActionTypes.SET_CURRENT_ACCOUNT,
+  (resolve) => {
+    return (address: string) => resolve({ address });
+  },
+);
