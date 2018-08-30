@@ -62,8 +62,12 @@ export const checker = async (opts: BaseOpt) => {
   const cmd = `${Paths.CHECKER} ${opts.code} ${opts.stdlib}`;
 
   try {
-    const { stdout } = await execAsync(cmd);
+    const { stdout, stderr } = await execAsync(cmd);
     await cleanUp(opts);
+
+    if (stderr.length) {
+      throw new Error(stderr);
+    }
 
     return stdout;
   } catch (err) {
