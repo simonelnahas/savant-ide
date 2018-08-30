@@ -18,16 +18,13 @@ const reducer: Reducer<BlockchainState, BlockchainAction> = (
   action: BlockchainAction,
 ) => {
   switch (action.type) {
-    case getType(blockchainActions.adjustBalance): {
-      const { address, amount } = action.payload;
+    case getType(blockchainActions.updateAccountSuccess): {
+      const { account } = action.payload;
       return {
         ...state,
         accounts: {
           ...state.accounts,
-          [address]: {
-            ...state.accounts[address],
-            balance: amount,
-          },
+          [account.address]: account,
         },
       };
     }
@@ -36,4 +33,4 @@ const reducer: Reducer<BlockchainState, BlockchainAction> = (
   }
 };
 
-export { reducer as blockchainReducer };
+export default reducer;
