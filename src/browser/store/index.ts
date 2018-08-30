@@ -7,7 +7,7 @@ import { FSState } from './fs/types';
 
 import contractReducer from './contract/reducer';
 import contractSaga from './contract/saga';
-import { Contract as ContractState } from './contract/types';
+import { ContractState } from './contract/types';
 
 export interface ApplicationState {
   fs: FSState;
