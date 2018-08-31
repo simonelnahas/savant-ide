@@ -5,8 +5,6 @@ import FormControl from '@material-ui/core/FormControl';
 import MUISelect, { SelectProps } from '@material-ui/core/Select';
 import styled from 'styled-components';
 
-/* import { Transition } from '../../store/contract/types'; */
-
 export interface Option {
   value: string;
   key: string;
@@ -20,13 +18,14 @@ interface Props extends SelectProps {
 
 const Control = styled(FormControl)`
   && {
+    flex-grow: 1;
     margin-bottom: 2em;
   }
 `;
 
 const Select: React.SFC<Props> = ({ placeholder, items, ...rest }) => {
   return (
-    <Control>
+    <Control classes={{ root: 'root' }}>
       <InputLabel>{placeholder}</InputLabel>
       <MUISelect {...rest}>
         {items.map((opt) => {

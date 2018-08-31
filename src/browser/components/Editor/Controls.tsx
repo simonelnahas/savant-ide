@@ -5,7 +5,9 @@ import IconButton from '@material-ui/core/IconButton';
 import SaveIcon from '@material-ui/icons/Save';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Typography from '@material-ui/core/Typography';
+import Select from '../Form/Select';
 
+import { Account } from '../../store/blockchain/types';
 import { ContractSrcFile } from '../../store/fs/types';
 
 const Wrapper = styled.div`
@@ -24,10 +26,24 @@ const ButtonWrapper = styled.span`
   flex-direction: column;
 `;
 
+const SelectWrapper = styled.div`
+  flex-grow: 1;
+  max-width: 30%;
+  margin: 0 1em;
+
+  & > .root {
+    margin: 0;
+    width: 100%;
+  }
+`;
+
 interface Props {
-  contract: ContractSrcFile;
+  accounts: { [address: string]: Account };
+  activeAccount: Account | null;
+  activeFile: ContractSrcFile;
   handleCheck: () => void;
   handleSave: () => void;
+  handleSetCurrentAccount: React.ChangeEventHandler<HTMLSelectElement>;
 }
 
 export default class EditorControls extends React.Component<Props> {
@@ -39,17 +55,34 @@ export default class EditorControls extends React.Component<Props> {
     this.props.handleCheck();
   };
 
+  getAccountOptions = () => {
+    const { accounts } = this.props;
+
+    return Object.keys(accounts).map((address) => ({
+      key: `0x${address.toUpperCase()} (${accounts[address].balance.toString(10)}) ZIL`,
+      value: address,
+    }));
+  };
+
   render() {
-    const { contract } = this.props;
-    const isContractSelected = !!contract.name.length;
+    const { activeAccount, activeFile, handleSetCurrentAccount } = this.props;
+    const isContractSelected = !!activeFile.name.length;
 
     return (
       <Wrapper>
         <Typography classes={{ root: 'filename' }}>
-          {contract.name
-            ? `${contract.name || 'untitled'}.scilla`
+          {activeFile.name
+            ? `${activeFile.name || 'untitled'}.scilla`
             : 'Create a new file, or select an existing one.'}
         </Typography>
+        <SelectWrapper>
+          <Select
+            value={(activeAccount && activeAccount.address) || ''}
+            placeholder="Select Account"
+            onChange={handleSetCurrentAccount}
+            items={this.getAccountOptions()}
+          />
+        </SelectWrapper>
         <ButtonWrapper>
           <IconButton
             disabled={!isContractSelected}

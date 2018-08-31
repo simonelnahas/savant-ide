@@ -9,7 +9,6 @@ import { Dispatch } from 'redux';
 import styled from 'styled-components';
 
 import Controls from './Controls';
-import Select from '../Form/Select';
 import { ApplicationState } from '../../store/index';
 import * as bcActions from '../../store/blockchain/actions';
 import * as fsActions from '../../store/fs/actions';
@@ -18,7 +17,7 @@ import { Account } from '../../store/blockchain/types';
 
 interface OwnProps {}
 interface MappedProps {
-  current: Account | null;
+  activeAccount: Account | null;
   accounts: { [address: string]: Account };
   contract: ContractSrcFile;
 }
@@ -71,30 +70,27 @@ class ScillaEditor extends React.Component<Props, State> {
     update(contract.name, contract.code);
   };
 
-  onChange = (value: string): void => {
-    this.setState({ contract: { ...this.state.contract, code: value } });
-  };
-
-  onSelectAccount: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
+  handleSetCurrentAccount: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
     console.log(`Selected ${e.target.value}`);
     this.props.setCurrentAccount(e.target.value);
   };
 
+  onChange = (value: string): void => {
+    this.setState({ contract: { ...this.state.contract, code: value } });
+  };
+
   render() {
     const { contract } = this.state;
-    const options = Object.keys(this.props.accounts).map((address) => ({
-      key: `${address} (${this.props.accounts[address].balance.toString(10)}) ZIL`,
-      value: address,
-    }));
-
+    const { activeAccount, accounts } = this.props;
     return (
       <Wrapper>
-        <Controls contract={contract} handleCheck={this.handleCheck} handleSave={this.handleSave} />
-        <Select
-          value={this.props.current && this.props.current.address || ''}
-          placeholder="Select Account"
-          onChange={this.onSelectAccount}
-          items={options}
+        <Controls
+          activeAccount={activeAccount}
+          accounts={accounts}
+          activeFile={contract}
+          handleCheck={this.handleCheck}
+          handleSave={this.handleSave}
+          handleSetCurrentAccount={this.handleSetCurrentAccount}
         />
         <AceEditor
           mode="ocaml"
@@ -123,7 +119,7 @@ const mapStateToProps = (state: ApplicationState) => ({
     state.fs.activeContract && state.fs.activeContract.length > 1
       ? state.fs.contracts[state.fs.activeContract]
       : { name: '', code: '' },
-  current: state.blockchain.accounts[state.blockchain.current] || null,
+  activeAccount: state.blockchain.accounts[state.blockchain.current] || null,
   accounts: state.blockchain.accounts,
 });
 
