@@ -1,6 +1,6 @@
 import { createAction } from 'typesafe-actions';
 
-import { ContractActionTypes, Contract, DeploymentResult, TransitionParams } from './types';
+import { ContractActionTypes, Contract, DeploymentResult, TransitionParams, KVPair } from './types';
 import { Account } from '../blockchain/types';
 
 /**
@@ -21,7 +21,7 @@ export const initError = createAction(ContractActionTypes.CHECK_ERROR, (resolve)
 export const deploy = createAction(ContractActionTypes.DEPLOY, (resolve) => {
   return (
     code: string,
-    initParams: { [key: string]: any },
+    initParams: KVPair[],
     deployer: Account,
     statusCB: (result: DeploymentResult) => void,
   ) => resolve({ code, init: initParams, deployer, statusCB });

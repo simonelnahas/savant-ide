@@ -13,7 +13,7 @@ import * as bcActions from '../../store/blockchain/actions';
 import * as contractActions from '../../store/contract/actions';
 import { ApplicationState } from '../../store/index';
 import { Account } from '../../store/blockchain/types';
-import { Contract, DeploymentResult } from '../../store/contract/types';
+import { Contract, DeploymentResult, KVPair } from '../../store/contract/types';
 import { ContractSrcFile } from '../../store/fs/types';
 
 type Props = OwnProps & MappedProps & DispatchProps;
@@ -135,7 +135,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   initContracts: (name: string, code: string) => dispatch(contractActions.init()),
   deployContract: (
     code: string,
-    init: { [key: string]: any },
+    init: KVPair[],
     deployer: Account,
     successCb: (result: DeploymentResult) => void,
   ) => dispatch(contractActions.deploy(code, init, deployer, successCb)),

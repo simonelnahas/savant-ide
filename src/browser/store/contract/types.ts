@@ -51,7 +51,7 @@ export interface ContractState {
   };
 }
 
-interface KVPairs {
+export interface KVPair {
   vname: string;
   type: string;
   value: string;
@@ -59,9 +59,9 @@ interface KVPairs {
 
 export interface TransitionParams {
   name: string;
-  blockchain: KVPairs[];
-  state: KVPairs[];
-  tParams: KVPairs[];
+  blockchain: KVPair[];
+  state: KVPair[];
+  tParams: KVPair[];
 }
 
 export const enum ContractActionTypes {

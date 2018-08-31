@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import * as api from '../../util/api';
 import Select from '../Form/Select';
 import { Account } from '../../store/blockchain/types';
-import { ABI, DeploymentResult } from '../../store/contract/types';
+import { ABI, DeploymentResult, KVPair } from '../../store/contract/types';
 import { ContractSrcFile } from '../../store/fs/types';
 import InitForm, { Field } from './InitForm';
 
@@ -34,7 +34,7 @@ const StatusWrapper = styled.div`
 interface Props {
   deployContract: (
     code: string,
-    init: { [key: string]: any },
+    init: KVPair[],
     deployer: Account,
     successCb: (result: DeploymentResult) => void,
   ) => void;
@@ -50,6 +50,12 @@ interface State {
   params: { [key: string]: Field };
   result: DeploymentResult | null;
 }
+
+const toScillaParams = (fields: { [name: string]: Field }): KVPair[] => {
+  return Object.keys(fields).map((name) => {
+    return { vname: name, value: fields[name].value, type: fields[name].type };
+  });
+};
 
 export default class DeployTab extends React.Component<Props, State> {
   state: State = {
@@ -71,9 +77,10 @@ export default class DeployTab extends React.Component<Props, State> {
     // dispatch deploy contract action
     const { deployContract, files, activeAccount } = this.props;
     const sourceFile = files[this.state.selected];
+    const params =toScillaParams(initParams);
     console.log('deploying with params: \n');
     console.log(initParams);
-    deployContract(sourceFile.code, this.state.params, activeAccount, this.onDeployResult);
+    deployContract(sourceFile.code, params, activeAccount, this.onDeployResult);
   };
 
   onDeployResult = (result: DeploymentResult) => this.setState({ result });

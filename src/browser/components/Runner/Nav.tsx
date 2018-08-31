@@ -14,7 +14,7 @@ import DeployTab from './Deploy';
 
 import { ContractSrcFile } from '../../store/fs/types';
 import { Account } from '../../store/blockchain/types';
-import { ABI, Contract, DeploymentResult } from '../../store/contract/types';
+import { ABI, Contract, DeploymentResult, KVPair } from '../../store/contract/types';
 
 const Wrapper = styled(Paper)`
   display: flex;
@@ -34,7 +34,7 @@ const Content = styled.div`
 interface Props {
   deployContract: (
     code: string,
-    init: { [key: string]: any },
+    init: KVPair[],
     deployer: Account,
     successCb: (result: DeploymentResult) => void,
   ) => void;
