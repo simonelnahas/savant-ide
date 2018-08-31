@@ -48,7 +48,7 @@ export default class EditorControls extends React.Component<Props> {
     const { accounts } = this.props;
 
     return Object.keys(accounts).map((address) => ({
-      key: `0x${address.toUpperCase()} (${accounts[address].balance}) ZIL`,
+      key: `0x${address.toUpperCase()} (${accounts[address].balance}) ZIL Nonce: ${accounts[address].nonce}`,
       value: address,
     }));
   };
