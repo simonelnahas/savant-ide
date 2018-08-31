@@ -3,18 +3,22 @@ import Typography from '@material-ui/core/Typography';
 import { find } from 'ramda';
 import styled from 'styled-components';
 
-import { ABI, Transition } from '../../store/contract/types';
-import Select from '../Form/Select';
+import { Account } from '../../store/blockchain/types';
+import { Contract, Transition, TransitionParams } from '../../store/contract/types';
+import Select, { Option } from '../Form/Select';
 import TransitionForm from './TransitionForm';
-import Placeholder from '../Placeholder';
 
 interface Props {
-  abi: ABI | null;
+  // the address of a deployed contract
+  callTransition: (address: string, sender: Account, params: TransitionParams) => void;
+  activeAccount: Account | null;
+  deployedContracts: { [address: string]: Contract };
 }
 
 interface State {
   transitionState: { [transition: string]: { [arg: string]: { value: any } } };
-  selected: string; // index of currently selected transition
+  selectedContract: string; // address of currently selected transition
+  selectedTransition: string;
 }
 
 const Wrapper = styled.div`
@@ -28,17 +32,57 @@ const Wrapper = styled.div`
 export default class CallTab extends React.Component<Props> {
   state: State = {
     transitionState: {},
-    selected: '',
+    selectedContract: '',
+    selectedTransition: '',
+  };
+
+  getTransitionOptions = (): Option[] => {
+    const { deployedContracts } = this.props;
+    const { selectedContract } = this.state;
+
+    const abi = deployedContracts[selectedContract].abi;
+
+    if (abi && abi.transitions.length > 0) {
+      return abi.transitions.map((transition) => {
+        return { key: transition.name, value: transition.name };
+      });
+    }
+
+    return [];
+  };
+
+  getDeployedContractOptions = (): Option[] => {
+    const { deployedContracts } = this.props;
+    console.log(deployedContracts);
+
+    return Object.keys(deployedContracts).map((address) => {
+      const contract = deployedContracts[address];
+      const key = `${address} (${(contract.abi && contract.abi.name) || ''})`;
+      const value = address;
+      return { key, value };
+    });
   };
 
   onCallTransition = (transition: string, params: { [p: string]: any }) => {
     console.log(`Calling transition ${transition}`);
     console.log('Parameters: ', params);
+    const { activeAccount } = this.props;
+    const { selectedContract } = this.state;
+    this.props.callTransition(
+      selectedContract,
+      activeAccount as Account,
+      params as TransitionParams,
+    );
+  };
+
+  onSelectContract: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
+    e.preventDefault();
+    this.setState({ selectedContract: e.target.value });
   };
 
   onSelectTransition: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
     e.preventDefault();
-    this.setState({ selected: e.target.value });
+    this.setState({ selectedTransition: e.target.value });
   };
 
   onParameterChange = (transition: string, value: { [key: string]: { value: any } }) => {
@@ -48,45 +92,41 @@ export default class CallTab extends React.Component<Props> {
   };
 
   render() {
-    const { abi } = this.props;
-    const { selected } = this.state;
-    const options = abi
-      ? abi.transitions.map((t) => ({
-          key: t.name,
-          value: t.name,
-        }))
-      : [];
+    const { deployedContracts } = this.props;
+    const { selectedContract, selectedTransition } = this.state;
+    const toCall = deployedContracts[selectedContract] || null;
+    const abi = toCall && toCall.abi;
 
     return (
       <Wrapper>
-        {abi ? (
+        <Select
+          placeholder="Select a contract"
+          items={this.getDeployedContractOptions()}
+          value={selectedContract}
+          onChange={this.onSelectContract}
+        />
+        {abi && (
           <React.Fragment>
             <Select
               placeholder={abi.name}
-              items={options}
-              value={selected}
+              items={this.getTransitionOptions()}
+              value={selectedTransition}
               onChange={this.onSelectTransition}
             />
-            {!!selected.length && (
+            {!!selectedTransition.length && (
               <React.Fragment>
                 <Typography align="left" variant="subheading">
                   Parameters:
                 </Typography>
                 <TransitionForm
-                  key={selected}
+                  key={selectedTransition}
                   handleSubmit={this.onCallTransition}
                   handleChange={this.onParameterChange}
-                  {...find((t) => t.name === selected, abi.transitions) as Transition}
+                  {...find((t) => t.name === selectedTransition, abi.transitions) as Transition}
                 />
               </React.Fragment>
             )}
           </React.Fragment>
-        ) : (
-          <Placeholder>
-            <Typography align="center" variant="headline">
-              Please select a contract.
-            </Typography>
-          </Placeholder>
         )}
       </Wrapper>
     );

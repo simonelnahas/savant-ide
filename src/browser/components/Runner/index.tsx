@@ -13,7 +13,7 @@ import * as bcActions from '../../store/blockchain/actions';
 import * as contractActions from '../../store/contract/actions';
 import { ApplicationState } from '../../store/index';
 import { Account } from '../../store/blockchain/types';
-import { Contract } from '../../store/contract/types';
+import { Contract, DeploymentResult } from '../../store/contract/types';
 import { ContractSrcFile } from '../../store/fs/types';
 
 type Props = OwnProps & MappedProps & DispatchProps;
@@ -76,12 +76,14 @@ interface MappedProps {
   active: Contract | null;
   files: { [name: string]: ContractSrcFile };
   activeAccount: Account | null;
+  deployedContracts: { [address: string]: Contract };
 }
 
 interface DispatchProps {
   initContracts: typeof contractActions.init;
   initBlockchain: typeof bcActions.init;
   deployContract: typeof contractActions.deploy;
+  callTransition: typeof contractActions.call;
 }
 
 class Runner extends React.Component<Props> {
@@ -115,9 +117,11 @@ class Runner extends React.Component<Props> {
           }}
         >
           <RunnerNav
+            callTransition={this.props.callTransition}
             activeAccount={activeAccount}
             abi={(this.props.active && this.props.active.abi) || null}
             deployContract={this.props.deployContract}
+            deployedContracts={this.props.deployedContracts}
             files={files}
           />
         </ZDrawer>
@@ -129,20 +133,32 @@ class Runner extends React.Component<Props> {
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   initBlockchain: () => dispatch(bcActions.init()),
   initContracts: (name: string, code: string) => dispatch(contractActions.init()),
-  deployContract: (code: string, init: { [key: string]: any }, deployer: Account) =>
-    dispatch(contractActions.deploy(code, init, deployer)),
+  deployContract: (
+    code: string,
+    init: { [key: string]: any },
+    deployer: Account,
+    successCb: (result: DeploymentResult) => void,
+  ) => dispatch(contractActions.deploy(code, init, deployer, successCb)),
+  callTransition: (address: string, caller: Account, params: any) =>
+    dispatch(contractActions.call(address, caller, params)),
 });
 
 const mapStateToProps = (state: ApplicationState) => {
   const pointer = state.contract.active;
   const files = state.fs.contracts;
   const activeAccount = state.blockchain.accounts[state.blockchain.current] || null;
+  const deployedContracts = state.contract.contracts;
+  const baseMappedProps = {
+    activeAccount,
+    files,
+    deployedContracts,
+  };
 
   if (pointer.address) {
-    return { active: state.contract.contracts[pointer.address], activeAccount, files };
+    return { ...baseMappedProps, active: state.contract.contracts[pointer.address] };
   }
 
-  return { active: null, activeAccount, files };
+  return { ...baseMappedProps, active: null };
 };
 
 export default connect(

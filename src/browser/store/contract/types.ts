@@ -1,5 +1,15 @@
 import BN from 'bn.js';
 
+export const enum DeploymentStatus {
+  SUCCESS,
+  FAILURE,
+}
+
+export interface DeploymentResult {
+  status: DeploymentStatus;
+  address: string;
+}
+
 export interface Param {
   name: string;
   type: string;
@@ -41,6 +51,19 @@ export interface ContractState {
   };
 }
 
+interface KVPairs {
+  vname: string;
+  type: string;
+  value: string;
+}
+
+export interface TransitionParams {
+  name: string;
+  blockchain: KVPairs[];
+  state: KVPairs[];
+  tParams: KVPairs[];
+}
+
 export const enum ContractActionTypes {
   INIT = '@contract/INIT',
   INIT_SUCCESS = '@contract/INIT_SUCCESS',
@@ -51,4 +74,7 @@ export const enum ContractActionTypes {
   DEPLOY = '@contract/DEPLOY',
   DEPLOY_SUCCESS = '@contract/DEPLOY_SUCCESS',
   DEPLOY_ERROR = '@contract/DEPLOY_ERROR',
+  CALL = '@contract/CALL',
+  CALL_SUCCESS = '@contract/CALL_SUCCESS',
+  CALL_ERROR = '@contract/CALL_ERROR',
 }

@@ -61,3 +61,25 @@ export const checkContract = (contract: string, signal?: AbortSignal) => {
     }
   });
 };
+
+export const callContract = (payload: any, signal?: AbortSignal) => {
+  const defaults = {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    signal,
+  };
+
+  return request('http://localhost:8080/contract/call', {
+    ...defaults,
+    body: JSON.stringify(payload),
+  }).then((res) => {
+    if (isJSON(res)) {
+      return res.json();
+    } else {
+      return res;
+    }
+  });
+};

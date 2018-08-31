@@ -1,11 +1,12 @@
-import { all, actionChannel, call, fork, put, take } from 'redux-saga/effects';
+import { all, actionChannel, select, call, fork, put, take } from 'redux-saga/effects';
 import { ActionType } from 'typesafe-actions';
 import hash from 'hash.js';
 import BN from 'bn.js';
 
+import { ApplicationState } from '../index';
 import ContractStore from '../../database/contracts';
 import * as contractActions from './actions';
-import { ContractActionTypes } from './types';
+import { ContractActionTypes, DeploymentStatus } from './types';
 
 import * as bcActions from '../blockchain/actions';
 import * as api from '../../util/api';
@@ -24,13 +25,16 @@ export function* initContract() {
   yield put(contractActions.initSuccess(contracts));
 
   // block on _all_ actions
-  const chan = yield actionChannel([ContractActionTypes.DEPLOY]);
+  const chan = yield actionChannel([ContractActionTypes.DEPLOY, ContractActionTypes.CALL]);
   while (true) {
     const action: ContractAction = yield take<ContractAction>(chan);
     // call the appropriate actions, passing the instance of db along
     switch (action.type) {
       case ContractActionTypes.DEPLOY:
         yield call(deployContract, action, db);
+        break;
+      case ContractActionTypes.CALL:
+        yield call(callTransition, action, db);
         break;
       default:
     }
@@ -39,7 +43,7 @@ export function* initContract() {
 
 function* deployContract(action: ActionType<typeof contractActions.deploy>, db: ContractStore) {
   try {
-    const { code, deployer, init } = action.payload;
+    const { code, deployer, init, statusCB } = action.payload;
     const { message: abi } = yield api.checkContract(code);
 
     const updatedAccount = {
@@ -55,7 +59,7 @@ function* deployContract(action: ActionType<typeof contractActions.deploy>, db: 
       .slice(-40);
 
     const contract = {
-      abi,
+      abi: JSON.parse(abi),
       balance: new BN(0),
       code,
       init,
@@ -68,8 +72,44 @@ function* deployContract(action: ActionType<typeof contractActions.deploy>, db: 
       put(bcActions.updateAccount(updatedAccount)),
       yield put(contractActions.deploySuccess(contract)),
     ]);
+
+    statusCB({ status: DeploymentStatus.SUCCESS, address });
   } catch (err) {
     yield put(contractActions.deployError(err));
+    action.payload.statusCB({ status: DeploymentStatus.FAILURE, address: '' });
+  }
+}
+
+function* callTransition(action: ActionType<typeof contractActions.call>, db: ContractStore) {
+  const { address, caller, params } = action.payload;
+  try {
+    const appState: ApplicationState = yield select();
+    const contractStorage = appState.contract.contracts[address];
+    // get init params
+    const init = contractStorage.init;
+    // get previous state if any
+    const state = contractStorage.state;
+    // get message
+    const message = JSON.stringify({
+      _tag: params.name,
+      _amount: '0',
+      _sender: caller.address,
+      params: params.tParams,
+    });
+
+    const res = yield api.callContract({
+      code: contractStorage.code,
+      init,
+      blockchain: [{ vname: 'BLOCKNUMBER', type: 'BNum', value: '100' }],
+      state,
+      message,
+    });
+
+    const { message: msg, states: newState } = res;
+    console.log(msg);
+    console.log(newState);
+  } catch (err) {
+    console.log(err);
   }
 }
 

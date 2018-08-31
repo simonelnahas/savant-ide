@@ -14,7 +14,7 @@ import DeployTab from './Deploy';
 
 import { ContractSrcFile } from '../../store/fs/types';
 import { Account } from '../../store/blockchain/types';
-import { ABI } from '../../store/contract/types';
+import { ABI, Contract, DeploymentResult } from '../../store/contract/types';
 
 const Wrapper = styled(Paper)`
   display: flex;
@@ -32,8 +32,15 @@ const Content = styled.div`
 `;
 
 interface Props {
-  deployContract: (code: string, init: { [key: string]: any }, deployer: Account) => void;
+  deployContract: (
+    code: string,
+    init: { [key: string]: any },
+    deployer: Account,
+    successCb: (result: DeploymentResult) => void,
+  ) => void;
+  callTransition: (address: string, sender: Account, params: any) => void;
   activeAccount: Account | null;
+  deployedContracts: { [address: string]: Contract };
   files: { [name: string]: ContractSrcFile };
   abi: ABI | null;
 }
@@ -58,7 +65,13 @@ export default class RunnerNav extends React.Component<Props, State> {
 
     switch (this.state.value) {
       case 0:
-        return <CallTab abi={this.props.abi} />;
+        return (
+          <CallTab
+            activeAccount={this.props.activeAccount}
+            callTransition={this.props.callTransition}
+            deployedContracts={this.props.deployedContracts}
+          />
+        );
       case 1:
         return null;
       case 2:

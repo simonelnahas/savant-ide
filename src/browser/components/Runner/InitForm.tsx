@@ -7,6 +7,8 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Typography from '@material-ui/core/Typography';
 
+import { find } from 'ramda';
+
 import { Param } from '../../store/contract/types';
 
 interface Props {
@@ -21,6 +23,7 @@ interface State {
 
 export interface Field {
   value: any;
+  type: string;
   touched: boolean;
   error: boolean;
 }
@@ -62,7 +65,8 @@ export default class InitForm extends React.Component<Props, State> {
   handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     e.persist();
     const { name, value } = e.target;
-    const field = { ...this.state[name], value, touched: true };
+    const param = find((p) => p.name === name, this.props.params) as Param;
+    const field = { ...this.state[name], value, touched: true, type: param.type };
     const isValid = this.validate(field);
 
     this.setState({ [name]: { ...field, error: !isValid } }, () => {

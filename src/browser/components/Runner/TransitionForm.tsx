@@ -5,8 +5,9 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
+import { find } from 'ramda';
 
-import { Transition } from '../../store/contract/types';
+import { Param, Transition } from '../../store/contract/types';
 
 interface Props extends Transition {
   handleSubmit(transition: string, args: { [param: string]: Field }): void;
@@ -19,6 +20,7 @@ interface State {
 
 interface Field {
   value: any;
+  type: string;
   touched: boolean;
   error: boolean;
 }
@@ -60,7 +62,8 @@ export default class TransitionForm extends React.Component<Props, State> {
   handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     e.persist();
     const { name, value } = e.target;
-    const field = { ...this.state[name], value };
+    const param = find((p) => p.name === name, this.props.params) as Param;
+    const field = { ...this.state[name], value, touched: true, type: param.type };
     const isValid = this.validate(field);
 
     this.setState({ [name]: { ...field, error: !isValid } }, () => {

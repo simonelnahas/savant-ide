@@ -1,6 +1,6 @@
 import { createAction } from 'typesafe-actions';
 
-import { ContractActionTypes, Contract } from './types';
+import { ContractActionTypes, Contract, DeploymentResult, TransitionParams } from './types';
 import { Account } from '../blockchain/types';
 
 /**
@@ -19,12 +19,27 @@ export const initError = createAction(ContractActionTypes.CHECK_ERROR, (resolve)
  * Deployment actions
  */
 export const deploy = createAction(ContractActionTypes.DEPLOY, (resolve) => {
-  return (code: string, initParams: { [key: string]: any }, deployer: Account) =>
-    resolve({ code, init: initParams, deployer });
+  return (
+    code: string,
+    initParams: { [key: string]: any },
+    deployer: Account,
+    statusCB: (result: DeploymentResult) => void,
+  ) => resolve({ code, init: initParams, deployer, statusCB });
 });
 export const deploySuccess = createAction(ContractActionTypes.DEPLOY_SUCCESS, (resolve) => {
   return (contract: Contract) => resolve({ contract });
 });
 export const deployError = createAction(ContractActionTypes.DEPLOY_ERROR, (resolve) => {
   return (error: string) => resolve({ error });
+});
+
+export const call = createAction(ContractActionTypes.CALL, (resolve) => {
+  return (address: string, caller: Account, params: TransitionParams) =>
+    resolve({ address, caller, params });
+});
+export const callSuccess = createAction(ContractActionTypes.CALL_SUCCESS, (resolve) => {
+  return (address: string, state: any) => resolve({ address, state });
+});
+export const callError = createAction(ContractActionTypes.CALL_ERROR, (resolve) => {
+  return (address: string, error: any) => resolve({ address, error });
 });
