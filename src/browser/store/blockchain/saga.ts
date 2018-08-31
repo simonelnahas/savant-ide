@@ -35,6 +35,8 @@ export function* initBlockchain() {
       { [address: string]: Account }
     >{});
   }
+  console.log('Accounts: \n');
+  console.log(accounts);
 
   yield put(bcActions.initSuccess(accounts));
 
