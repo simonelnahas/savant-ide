@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import IconButton from '@material-ui/core/IconButton';
 import SaveIcon from '@material-ui/icons/Save';
+import Toolbar from '@material-ui/core/Toolbar';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Typography from '@material-ui/core/Typography';
 import Select from '../Form/Select';
@@ -10,24 +11,13 @@ import Select from '../Form/Select';
 import { Account } from '../../store/blockchain/types';
 import { ContractSrcFile } from '../../store/fs/types';
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 8px 18px;
-
-  & .filename {
-    flex-grow: 1;
-  }
-`;
-
 const ButtonWrapper = styled.span`
   display: flex;
   flex-direction: column;
 `;
 
 const SelectWrapper = styled.div`
-  flex-grow: 1;
+  min-width: 30%;
   max-width: 30%;
   margin: 0 1em;
 
@@ -69,7 +59,7 @@ export default class EditorControls extends React.Component<Props> {
     const isContractSelected = !!activeFile.name.length;
 
     return (
-      <Wrapper>
+      <Toolbar variant="dense">
         <Typography classes={{ root: 'filename' }}>
           {activeFile.name
             ? `${activeFile.name || 'untitled'}.scilla`
@@ -109,7 +99,7 @@ export default class EditorControls extends React.Component<Props> {
             Check
           </Typography>
         </ButtonWrapper>
-      </Wrapper>
+      </Toolbar>
     );
   }
 }

@@ -10,10 +10,6 @@ import Navigator from './components/Navigator';
 import ScillaEditor from './components/Editor';
 import Runner from './components/Runner';
 
-interface Props {
-  store: Store<any>;
-}
-
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -32,7 +28,7 @@ const theme = createMuiTheme({
   overrides: {
     MuiButton: {
       root: {
-        background: 'linear-gradient(45deg, #42c1c0 30%, #6977e7 90%)',
+        /* background: 'linear-gradient(45deg, #42c1c0 30%, #6977e7 90%)', */
       },
     },
   },
@@ -43,13 +39,30 @@ const Wrapper = styled.div`
   z-index: 1;
   position: relative;
   display: flex;
-  min-height: 100%;
-  max-height: 100%;
   height: 100%;
   width: 100%;
+  overflow: hidden;
 `;
 
-class App extends React.Component<Props> {
+interface Props {
+  store: Store<any>;
+}
+
+interface State {
+  isRunnerOpen: boolean;
+  isNavigatorOpen: boolean;
+}
+
+class App extends React.Component<Props, State> {
+  state: State = {
+    isRunnerOpen: false,
+    isNavigatorOpen: true,
+  };
+
+  toggleRunner = () => {
+    this.setState({ isRunnerOpen: !this.state.isRunnerOpen });
+  };
+
   render() {
     return (
       <Provider store={this.props.store}>
@@ -58,7 +71,7 @@ class App extends React.Component<Props> {
           <Wrapper className="App">
             <Navigator />
             <ScillaEditor />
-            <Runner />
+            <Runner toggle={this.toggleRunner} isOpen={this.state.isRunnerOpen} />
           </Wrapper>
         </MuiThemeProvider>
       </Provider>

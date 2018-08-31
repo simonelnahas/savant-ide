@@ -35,6 +35,8 @@ interface State {
 }
 
 const Wrapper = styled.div`
+  flex: 1;
+  min-width: 0;
   height: 100%;
   width: 100%;
   display: flex;

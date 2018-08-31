@@ -43,15 +43,11 @@ interface State {
 const ZDrawer = styled(Drawer)`
   & .paper {
     position: relative;
-    transition: width 50ms ease-in;
+    width: 250px;
+  }
 
-    &.open {
-      width: 250px;
-    }
-
-    &.closed {
-      width: 0;
-    }
+  & .closed {
+    margin-right: -250px;
   }
 
   & .adder {
@@ -135,7 +131,9 @@ class Navigator extends React.Component<Props, State> {
     return (
       <React.Fragment>
         <ZDrawer
-          variant="permanent"
+          open={isOpen}
+          anchor="left"
+          variant="persistent"
           classes={{ paper: classNames('paper', isOpen ? 'open' : 'closed') }}
         >
           <Logo src={logo} />

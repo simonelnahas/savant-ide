@@ -12,17 +12,15 @@ import RunnerNav from './Nav';
 import * as bcActions from '../../store/blockchain/actions';
 import * as contractActions from '../../store/contract/actions';
 import { ApplicationState } from '../../store/index';
+import { Account } from '../../store/blockchain/types';
 import { Contract } from '../../store/contract/types';
 import { ContractSrcFile } from '../../store/fs/types';
 
 type Props = OwnProps & MappedProps & DispatchProps;
 
 const ZDrawer = styled(Drawer)`
-  position: relative;
-  transition: width 50ms ease-in;
-
   &.open {
-    max-width: 40%;
+    width: 40%;
     min-width: 40%;
   }
 
@@ -77,6 +75,7 @@ interface OwnProps {
 interface MappedProps {
   active: Contract | null;
   files: { [name: string]: ContractSrcFile };
+  activeAccount: Account | null;
 }
 
 interface DispatchProps {
@@ -96,7 +95,7 @@ class Runner extends React.Component<Props> {
   }
 
   render() {
-    const { isOpen, files } = this.props;
+    const { activeAccount, isOpen, files } = this.props;
     return (
       <React.Fragment>
         <Closer>
@@ -106,14 +105,19 @@ class Runner extends React.Component<Props> {
           />
         </Closer>
         <ZDrawer
+          open={isOpen}
+          variant="persistent"
           anchor="right"
-          variant="permanent"
           classes={{
             docked: classNames('root', isOpen ? 'open' : 'closed'),
             paper: classNames('paper', isOpen ? 'open' : 'closed'),
           }}
         >
-          <RunnerNav abi={(this.props.active && this.props.active.abi) || null} files={files} />
+          <RunnerNav
+            activeAccount={activeAccount}
+            abi={(this.props.active && this.props.active.abi) || null}
+            files={files}
+          />
         </ZDrawer>
       </React.Fragment>
     );
@@ -128,12 +132,13 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 const mapStateToProps = (state: ApplicationState) => {
   const pointer = state.contract.active;
   const files = state.fs.contracts;
+  const activeAccount = state.blockchain.accounts[state.blockchain.current] || null;
 
   if (pointer.address) {
-    return { active: state.contract.contracts[pointer.address], files };
+    return { active: state.contract.contracts[pointer.address], activeAccount, files };
   }
 
-  return { active: null, files };
+  return { active: null, activeAccount, files };
 };
 
 export default connect(

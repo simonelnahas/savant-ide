@@ -2,6 +2,8 @@ import * as React from 'react';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+
 import AssignmentIcon from '@material-ui/icons/Description';
 import PlayIcon from '@material-ui/icons/PlayCircleOutline';
 import SendIcon from '@material-ui/icons/Send';
@@ -11,6 +13,7 @@ import CallTab from './Call';
 import DeployTab from './Deploy';
 
 import { ContractSrcFile } from '../../store/fs/types';
+import { Account } from '../../store/blockchain/types';
 import { ABI } from '../../store/contract/types';
 
 const Wrapper = styled(Paper)`
@@ -29,6 +32,7 @@ const Content = styled.div`
 `;
 
 interface Props {
+  activeAccount: Account | null;
   files: { [name: string]: ContractSrcFile };
   abi: ABI | null;
 }
@@ -47,6 +51,10 @@ export default class RunnerNav extends React.Component<Props, State> {
   };
 
   renderContent = () => {
+    if (!this.props.activeAccount) {
+      return <Typography variant="headline">Please select an account.</Typography>;
+    }
+
     switch (this.state.value) {
       case 0:
         return <CallTab abi={this.props.abi} />;
@@ -73,9 +81,7 @@ export default class RunnerNav extends React.Component<Props, State> {
           <Tab icon={<AssignmentIcon />} label="State" />
           <Tab icon={<SendIcon />} label="Deploy" />
         </Tabs>
-        <Content>
-          {this.renderContent()}
-        </Content>
+        <Content>{this.renderContent()}</Content>
       </Wrapper>
     );
   }
