@@ -38,7 +38,7 @@ interface Props {
     deployer: Account,
     successCb: (result: DeploymentResult) => void,
   ) => void;
-  callTransition: (address: string, sender: Account, params: any) => void;
+  callTransition: (address: string, transition: string, sender: Account, params: any) => void;
   activeAccount: Account | null;
   deployedContracts: { [address: string]: Contract };
   files: { [name: string]: ContractSrcFile };

@@ -63,7 +63,7 @@ function* deployContract(action: ActionType<typeof contractActions.deploy>, db: 
       balance: new BN(0),
       code,
       init,
-      state: {},
+      state: '[]',
       address,
     };
 
@@ -81,7 +81,7 @@ function* deployContract(action: ActionType<typeof contractActions.deploy>, db: 
 }
 
 function* callTransition(action: ActionType<typeof contractActions.call>, db: ContractStore) {
-  const { address, caller, params } = action.payload;
+  const { address, transition, caller, params } = action.payload;
   try {
     const appState: ApplicationState = yield select();
     const contractStorage = appState.contract.contracts[address];
@@ -89,21 +89,34 @@ function* callTransition(action: ActionType<typeof contractActions.call>, db: Co
     const init = contractStorage.init;
     // get previous state if any
     const state = contractStorage.state;
+    // TODO: real blockchain state. mock for demo.
+    // get blockchain state
+    const blockchain = [{ vname: 'BLOCKNUMBER', type: 'BNum', value: '100' }];
     // get message
-    const message = JSON.stringify({
-      _tag: params.name,
+    const message = {
+      _tag: transition,
       _amount: '0',
       _sender: caller.address,
-      params: params.tParams,
-    });
+      params,
+    };
 
-    const res = yield api.callContract({
+    const payload = {
       code: contractStorage.code,
-      init,
-      blockchain: [{ vname: 'BLOCKNUMBER', type: 'BNum', value: '100' }],
-      state,
-      message,
-    });
+      init: JSON.stringify(init),
+      blockchain: JSON.stringify(blockchain),
+      state: JSON.stringify(state),
+      message: JSON.stringify(message),
+    };
+
+    console.log(payload);
+    // const res = yield api.callContract({
+    //   code: contractStorage.code,
+    //   init,
+    //   blockchain: [{ vname: 'BLOCKNUMBER', type: 'BNum', value: '100' }],
+    //   state,
+    //   message,
+    // });
+    const res = yield api.callContract(payload);
 
     const { message: msg, states: newState } = res;
     console.log(msg);

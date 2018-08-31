@@ -4,13 +4,13 @@ import { find } from 'ramda';
 import styled from 'styled-components';
 
 import { Account } from '../../store/blockchain/types';
-import { Contract, Transition, TransitionParams } from '../../store/contract/types';
+import { Contract, Transition, KVPair } from '../../store/contract/types';
 import Select, { Option } from '../Form/Select';
 import TransitionForm from './TransitionForm';
 
 interface Props {
   // the address of a deployed contract
-  callTransition: (address: string, sender: Account, params: TransitionParams) => void;
+  callTransition: (address: string, transition: string, sender: Account, params: KVPair[]) => void;
   activeAccount: Account | null;
   deployedContracts: { [address: string]: Contract };
 }
@@ -28,6 +28,12 @@ const Wrapper = styled.div`
     width: 100%;
   }
 `;
+
+const toScillaParams = (fields: { [name: string]: { [key: string]: any } }): KVPair[] => {
+  return Object.keys(fields).map((name) => {
+    return { vname: name, value: fields[name].value, type: fields[name].type };
+  });
+};
 
 export default class CallTab extends React.Component<Props> {
   state: State = {
@@ -68,11 +74,9 @@ export default class CallTab extends React.Component<Props> {
     console.log('Parameters: ', params);
     const { activeAccount } = this.props;
     const { selectedContract } = this.state;
-    this.props.callTransition(
-      selectedContract,
-      activeAccount as Account,
-      params as TransitionParams,
-    );
+    const tParams = toScillaParams(params);
+
+    this.props.callTransition(selectedContract, transition, activeAccount as Account, tParams);
   };
 
   onSelectContract: React.ChangeEventHandler<HTMLSelectElement> = (e) => {

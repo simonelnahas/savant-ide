@@ -139,8 +139,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     deployer: Account,
     successCb: (result: DeploymentResult) => void,
   ) => dispatch(contractActions.deploy(code, init, deployer, successCb)),
-  callTransition: (address: string, caller: Account, params: any) =>
-    dispatch(contractActions.call(address, caller, params)),
+  callTransition: (address: string, transition: string, caller: Account, params: any) =>
+    dispatch(contractActions.call(address, transition, caller, params)),
 });
 
 const mapStateToProps = (state: ApplicationState) => {
