@@ -5,6 +5,7 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
+import Typography from '@material-ui/core/Typography';
 
 import { Param } from '../../store/contract/types';
 
@@ -86,6 +87,9 @@ export default class InitForm extends React.Component<Props, State> {
 
     return (
       <React.Fragment>
+        <Typography align="left" variant="headline">
+          Initialisation Parameters:
+        </Typography>
         {params.map(({ name, type }) => {
           const field = this.state[name];
 
