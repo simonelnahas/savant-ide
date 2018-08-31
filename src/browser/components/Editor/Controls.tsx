@@ -17,8 +17,7 @@ const ButtonWrapper = styled.span`
 `;
 
 const SelectWrapper = styled.div`
-  min-width: 30%;
-  max-width: 30%;
+  width: 30%;
   margin: 0 1em;
 
   & > .root {
@@ -60,7 +59,7 @@ export default class EditorControls extends React.Component<Props> {
 
     return (
       <Toolbar variant="dense">
-        <Typography classes={{ root: 'filename' }}>
+        <Typography style={{ flex: 1 }}>
           {activeFile.name
             ? `${activeFile.name || 'untitled'}.scilla`
             : 'Create a new file, or select an existing one.'}
