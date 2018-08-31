@@ -109,13 +109,6 @@ function* callTransition(action: ActionType<typeof contractActions.call>, db: Co
     };
 
     console.log(payload);
-    // const res = yield api.callContract({
-    //   code: contractStorage.code,
-    //   init,
-    //   blockchain: [{ vname: 'BLOCKNUMBER', type: 'BNum', value: '100' }],
-    //   state,
-    //   message,
-    // });
     const res = yield api.callContract(payload);
 
     const { message: msg, states: newState } = res;

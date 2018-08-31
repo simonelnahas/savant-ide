@@ -39,17 +39,20 @@ export const runner = async (opts: RunOpt) => {
       -libdir=${opts.stdlib}
   `;
 
-  const { stdout, stderr } = await execAsync(cmd);
-  console.log('stdout:\n', stdout, 'stderr:\n', stderr);
+  try {
+    const { stdout, stderr } = await execAsync(cmd);
+    console.log('stdout:\n', stdout, 'stderr:\n', stderr);
+    if (stderr) {
+      throw new Error(stderr);
+    }
 
-  if (stderr) {
-    throw new Error(stderr);
+    const result = await getOutput(opts.output);
+    return result;
+  } catch (err) {
+    throw new Error(err);
+  } finally {
+    await cleanUp(opts);
   }
-
-  const result = await getOutput(opts.output);
-  await cleanUp(opts);
-
-  return result;
 };
 
 /**
@@ -63,7 +66,6 @@ export const checker = async (opts: BaseOpt) => {
 
   try {
     const { stdout, stderr } = await execAsync(cmd);
-    await cleanUp(opts);
 
     if (stderr.length) {
       throw new Error(stderr);
@@ -72,6 +74,8 @@ export const checker = async (opts: BaseOpt) => {
     return stdout;
   } catch (err) {
     throw new Error(err);
+  } finally {
+    await cleanUp(opts);
   }
 };
 
