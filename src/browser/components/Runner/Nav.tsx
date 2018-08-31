@@ -32,6 +32,7 @@ const Content = styled.div`
 `;
 
 interface Props {
+  deployContract: (code: string, init: { [key: string]: any }, deployer: Account) => void;
   activeAccount: Account | null;
   files: { [name: string]: ContractSrcFile };
   abi: ABI | null;
@@ -61,7 +62,13 @@ export default class RunnerNav extends React.Component<Props, State> {
       case 1:
         return null;
       case 2:
-        return <DeployTab files={this.props.files} />;
+        return (
+          <DeployTab
+            activeAccount={this.props.activeAccount}
+            deployContract={this.props.deployContract}
+            files={this.props.files}
+          />
+        );
       default:
         return null;
     }

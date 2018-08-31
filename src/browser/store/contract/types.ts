@@ -22,6 +22,7 @@ export interface Contract {
   balance: BN;
   code: string;
   abi: ABI | null;
+  init: { [key: string]: any };
   state: any;
 }
 

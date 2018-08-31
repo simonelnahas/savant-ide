@@ -81,6 +81,7 @@ interface MappedProps {
 interface DispatchProps {
   initContracts: typeof contractActions.init;
   initBlockchain: typeof bcActions.init;
+  deployContract: typeof contractActions.deploy;
 }
 
 class Runner extends React.Component<Props> {
@@ -116,6 +117,7 @@ class Runner extends React.Component<Props> {
           <RunnerNav
             activeAccount={activeAccount}
             abi={(this.props.active && this.props.active.abi) || null}
+            deployContract={this.props.deployContract}
             files={files}
           />
         </ZDrawer>
@@ -127,6 +129,8 @@ class Runner extends React.Component<Props> {
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   initBlockchain: () => dispatch(bcActions.init()),
   initContracts: (name: string, code: string) => dispatch(contractActions.init()),
+  deployContract: (code: string, init: { [key: string]: any }, deployer: Account) =>
+    dispatch(contractActions.deploy(code, init, deployer)),
 });
 
 const mapStateToProps = (state: ApplicationState) => {

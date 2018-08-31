@@ -1,8 +1,6 @@
-import BN from 'bn.js';
-
 export interface Account {
   address: string;
-  balance: BN;
+  balance: string;
   nonce: number;
 }
 

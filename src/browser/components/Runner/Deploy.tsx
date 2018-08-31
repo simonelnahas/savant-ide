@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import * as api from '../../util/api';
 import Select from '../Form/Select';
+import { Account } from '../../store/blockchain/types';
 import { ABI } from '../../store/contract/types';
 import { ContractSrcFile } from '../../store/fs/types';
 import InitForm, { Field } from './InitForm';
@@ -17,6 +18,8 @@ const Wrapper = styled.div`
 `;
 
 interface Props {
+  deployContract: (code: string, init: { [key: string]: any }, deployer: Account) => void;
+  activeAccount: Account;
   files: { [name: string]: ContractSrcFile };
 }
 
@@ -43,13 +46,18 @@ export default class DeployTab extends React.Component<Props, State> {
   };
 
   onDeploy = (initParams: { [key: string]: Field }) => {
+    // dispatch deploy contract action
+    const { deployContract, files, activeAccount } = this.props;
+    const sourceFile = files[this.state.selected];
     console.log('deploying with params: \n');
     console.log(initParams);
+    deployContract(sourceFile.code, this.state.params, activeAccount);
   };
 
   onChange = (initParams: { [key: string]: Field }) => {
     console.log('changed params: \n');
     console.log(initParams);
+    this.setState({ params: initParams });
   };
 
   componentDidUpdate(_: Props, prevState: State) {

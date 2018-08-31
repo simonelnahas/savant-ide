@@ -1,4 +1,4 @@
-import { actionChannel, call, fork, put, take } from 'redux-saga/effects';
+import { all, actionChannel, call, fork, put, take } from 'redux-saga/effects';
 import { ActionType } from 'typesafe-actions';
 import hash from 'hash.js';
 import BN from 'bn.js';
@@ -7,9 +7,10 @@ import ContractStore from '../../database/contracts';
 import * as contractActions from './actions';
 import { ContractActionTypes } from './types';
 
-// import * as bcActions from '../blockchain/actions';
-
+import * as bcActions from '../blockchain/actions';
 import * as api from '../../util/api';
+
+const DEFAULT_DEPLOY_GAS = new BN(50);
 
 type ContractAction = ActionType<typeof contractActions>;
 
@@ -38,12 +39,18 @@ export function* initContract() {
 
 function* deployContract(action: ActionType<typeof contractActions.deploy>, db: ContractStore) {
   try {
-    const { code, deployer, nonce } = action.payload;
+    const { code, deployer, init } = action.payload;
     const { message: abi } = yield api.checkContract(code);
+
+    const updatedAccount = {
+      ...deployer,
+      nonce: deployer.nonce + 1,
+      balance: new BN(deployer.balance).sub(DEFAULT_DEPLOY_GAS).toString(10),
+    };
 
     const address = hash
       .sha256()
-      .update(deployer + nonce.toString())
+      .update(updatedAccount.address + updatedAccount.nonce.toString())
       .digest('hex')
       .slice(-40);
 
@@ -51,12 +58,16 @@ function* deployContract(action: ActionType<typeof contractActions.deploy>, db: 
       abi,
       balance: new BN(0),
       code,
+      init,
       state: {},
       address,
     };
 
     yield db.set(address, contract);
-    yield put(contractActions.deploySuccess(contract));
+    yield all([
+      put(bcActions.updateAccount(updatedAccount)),
+      yield put(contractActions.deploySuccess(contract)),
+    ]);
   } catch (err) {
     yield put(contractActions.deployError(err));
   }

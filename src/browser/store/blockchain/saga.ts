@@ -1,13 +1,12 @@
 import { actionChannel, call, fork, put, take } from 'redux-saga/effects';
 import { ActionType } from 'typesafe-actions';
-import BN from 'bn.js';
 import { Zilliqa } from 'zilliqa-js';
 
 import AccountStore from '../../database/accounts';
 import * as bcActions from './actions';
 import { Account, BlockchainActionTypes } from './types';
 
-const DEFAULT_ACCOUNT_FUNDS = new BN(88888888);
+const DEFAULT_ACCOUNT_FUNDS = '88888888';
 const DEFAULT_NUM_ACCOUNTS = 20;
 const util = new Zilliqa({ nodeUrl: 'https://localhost:8888' }).util;
 

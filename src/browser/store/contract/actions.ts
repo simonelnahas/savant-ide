@@ -1,6 +1,7 @@
 import { createAction } from 'typesafe-actions';
 
 import { ContractActionTypes, Contract } from './types';
+import { Account } from '../blockchain/types';
 
 /**
  * Initialisation
@@ -18,7 +19,8 @@ export const initError = createAction(ContractActionTypes.CHECK_ERROR, (resolve)
  * Deployment actions
  */
 export const deploy = createAction(ContractActionTypes.DEPLOY, (resolve) => {
-  return (code: string, deployer: string, nonce: number) => resolve({ code, deployer, nonce });
+  return (code: string, initParams: { [key: string]: any }, deployer: Account) =>
+    resolve({ code, init: initParams, deployer });
 });
 export const deploySuccess = createAction(ContractActionTypes.DEPLOY_SUCCESS, (resolve) => {
   return (contract: Contract) => resolve({ contract });
