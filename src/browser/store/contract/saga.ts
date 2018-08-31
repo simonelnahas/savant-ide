@@ -62,7 +62,8 @@ function* deployContract(action: ActionType<typeof contractActions.deploy>, db: 
       abi: JSON.parse(abi),
       balance: new BN(0),
       code,
-      init,
+      // TODO: use a timer for this.
+      init: [...init, { vname: '_creation_block', type: 'BNum', value: '88' }],
       state: '[]',
       address,
     };
