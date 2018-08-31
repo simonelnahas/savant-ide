@@ -56,7 +56,8 @@ const ZDrawer = styled(Drawer)`
 `;
 
 const Logo = styled.img`
-  max-width: 100%;
+  max-width: 75%;
+  margin: 0 auto;
 `;
 
 const Arrow = styled(ArrowLeft)`
