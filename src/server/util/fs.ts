@@ -21,6 +21,7 @@ export const makeTempFileName = (id: string, extension: string, suffix?: string)
  * @returns {Promise<any>}
  */
 export const writeFiles = (files: File[]): Promise<any> => {
+  console.warn('FILES', files);
   return Promise.all(
     files.map((file) => {
       return writeFile(file.path, file.data);

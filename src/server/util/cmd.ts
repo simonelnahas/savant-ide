@@ -29,18 +29,18 @@ interface RunOpt extends BaseOpt {
  * @returns {Promise<{ stdout: string, stderr: string }>}
  */
 export const runner = async (opts: RunOpt) => {
-  const cmd = `
-    ${Paths.RUNNER} \
+  const cmd = `${Paths.RUNNER} \
       -init ${opts.init} \
       -iblockchain ${opts.blockchain} \
       -istate ${opts.state} \
       -imessage ${opts.message} \
       -o ${opts.output} \
       -i ${opts.code} \
-      -libdir ${opts.stdlib}
+      -libdir=${opts.stdlib}
   `;
 
-  const { stderr } = await execAsync(cmd);
+  const { stdout, stderr } = await execAsync(cmd);
+  console.log('stdout:\n', stdout, 'stderr:\n', stderr);
 
   if (stderr) {
     throw new Error(stderr);
@@ -101,7 +101,6 @@ const cleanUp = async (files: Partial<RunOpt>) => {
  */
 const getOutput = async (path: string) => {
   const buf = await readAsync(path);
-  console.log(buf.toString());
 
   return JSON.parse(buf.toString());
 };

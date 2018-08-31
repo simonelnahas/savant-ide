@@ -2,7 +2,7 @@ import express, { Handler, Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import lusca from 'lusca';
-import { check } from './handlers';
+import { check, run } from './handlers';
 
 const app = express();
 const wrapAsync = (fn: Handler) => (req: Request, res: Response, next: NextFunction) => {
@@ -18,5 +18,6 @@ app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
 
 app.post('/contract/check', wrapAsync(check));
+app.post('/contract/call', wrapAsync(run));
 
 export default app;

@@ -17,7 +17,7 @@ export const run = async (req: Request, res: Response, next: NextFunction) => {
   };
 
   const toWrite = Object.keys(checkOpt)
-    .filter((k) => k === 'output' || k === 'stdlib')
+    .filter((k) => k !== 'stdlib')
     .map<{ path: string; data: string }>((k: string) => ({
       path: checkOpt[<keyof typeof checkOpt>k],
       data: req.body[k] || '',
@@ -32,6 +32,9 @@ export const run = async (req: Request, res: Response, next: NextFunction) => {
       message: result,
     });
   } catch (err) {
-    next(err);
+    res.status(400).json({
+      result: 'error',
+      message: err.message,
+    });
   }
 };

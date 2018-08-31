@@ -27,7 +27,6 @@ export const check = async (req: Request, res: Response, next: NextFunction) => 
       message: result,
     });
   } catch (err) {
-    console.log(err);
     res.status(400).json({
       result: 'error',
       message: err.message,
