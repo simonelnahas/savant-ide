@@ -64,7 +64,7 @@ function* deployContract(action: ActionType<typeof contractActions.deploy>, db: 
       code,
       // TODO: use a timer for this.
       init: [...init, { vname: '_creation_block', type: 'BNum', value: '88' }],
-      state: '[]',
+      state: [{ vname: '_balance', type: 'Uint128', value: '0' }],
       address,
     };
 
@@ -97,7 +97,7 @@ function* callTransition(action: ActionType<typeof contractActions.call>, db: Co
     const message = {
       _tag: transition,
       _amount: '0',
-      _sender: caller.address,
+      _sender: `0x${caller.address.toUpperCase()}`,
       params,
     };
 
