@@ -9,10 +9,12 @@ all: clean bootstrap scilla-bin
 
 bootstrap:
 	mkdir temp
+	yarn install
 
 clean:
 	rm -rf temp
 	rm -rf scilla
+	rm -rf node_modules
 
 scilla-bin:
 	git clone git@github.com:Zilliqa/scilla
