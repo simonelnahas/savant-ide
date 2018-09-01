@@ -25,7 +25,7 @@ yarn run start
 - ~Rename not updating database.~
 - Display blocknumber in UI.
 - Move `Select Account` to the right-hand panel.
-- File name length checks.
+- ~File name length checks.~
 - Validate inputs for deployment
 - Hook up `/contract/run` response to UI
 - Add `/contract/check` errors to the editor UI as markers
