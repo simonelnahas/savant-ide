@@ -45,7 +45,7 @@ export default class InitForm extends React.Component<Props, State> {
       {},
     ),
     msg: {
-      _amount: { value: '', touched: false, error: false },
+      _amount: { value: '0', touched: false, error: false },
     },
   };
 
