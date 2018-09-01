@@ -22,7 +22,7 @@ yarn run start
 - Add social links as a Footer component.
 - Catch errors thrown by malformed syntax/types.
 - Add link to scilla docs.
-- Rename not updating database.
+- ~Rename not updating database.~
 - Display blocknumber in UI.
 - Move `Select Account` to the right-hand panel.
 - File name length checks.

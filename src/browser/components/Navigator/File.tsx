@@ -87,9 +87,12 @@ export default class File extends React.Component<Props, State> {
 
   handleKeyDown: React.KeyboardEventHandler<HTMLParagraphElement> = (e) => {
     // intercept all 'enter' || 'escape' events
-    if (e.keyCode === 13 || e.keyCode === 27) {
+    if ((e.keyCode === 13 || e.keyCode === 27) && this.textNode.current) {
       e.preventDefault();
-      e.currentTarget.blur();
+      this.textNode.current.blur();
+      this.textNode.current.contentEditable = 'false';
+      this.props.handlePersist(this.state.name);
+      this.setState({ isRenaming: false });
       return;
     }
   };
@@ -109,11 +112,9 @@ export default class File extends React.Component<Props, State> {
   };
 
   handleBlur = () => {
-    /* e.preventDefault(); */
     if (this.state.isRenaming && this.textNode.current) {
       this.textNode.current.contentEditable = 'false';
       this.props.handlePersist(this.state.name);
-      console.log(this.state.name);
       this.setState({ isRenaming: false });
     }
   };
