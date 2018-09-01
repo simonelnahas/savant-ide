@@ -69,7 +69,7 @@ export default class File extends React.Component<Props, State> {
 
   handleChange = (e: React.SyntheticEvent<HTMLParagraphElement>, text: string) => {
     if (text.length <= MAX_FILENAME_LENGTH) {
-      this.setState({ name: text });
+      this.setState({ name: this.sanitizer.sanitize(text) });
       return;
     } else {
       e.preventDefault();
