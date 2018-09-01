@@ -3,6 +3,7 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
+import sanitizer from 'dompurify';
 import styled from 'styled-components';
 
 import Menu from './Menu';
@@ -26,9 +27,12 @@ const WrappedListText = styled(ListItemText)`
   }
 `;
 
+const MAX_FILENAME_LENGTH = 20;
+
 export default class File extends React.Component<Props, State> {
   textNode = React.createRef<HTMLParagraphElement>();
   state: State = { isRenaming: false, isMenuOpen: false, name: '' };
+  sanitizer = sanitizer;
 
   componentDidMount() {
     const { name } = this.props;
@@ -41,8 +45,12 @@ export default class File extends React.Component<Props, State> {
   }
 
   shouldComponentUpdate(_: Props, nextState: State) {
+    if (!this.textNode.current) {
+      return false;
+    }
+
     return (
-      nextState.name !== (this.textNode.current && this.textNode.current.innerText) ||
+      nextState.name !== this.textNode.current.innerText ||
       this.state.isRenaming !== nextState.isRenaming ||
       this.state.isMenuOpen !== nextState.isMenuOpen
     );
@@ -59,8 +67,13 @@ export default class File extends React.Component<Props, State> {
     });
   };
 
-  handleChange: React.ChangeEventHandler<HTMLParagraphElement> = (e) => {
-    this.setState({ name: e.currentTarget.innerText });
+  handleChange = (e: React.SyntheticEvent<HTMLParagraphElement>, text: string) => {
+    if (text.length <= MAX_FILENAME_LENGTH) {
+      this.setState({ name: text });
+      return;
+    } else {
+      e.preventDefault();
+    }
   };
 
   handleDelete = () => {
@@ -85,7 +98,20 @@ export default class File extends React.Component<Props, State> {
     this.setState({ isMenuOpen: false });
   };
 
+  handleInput: React.ChangeEventHandler<HTMLParagraphElement> = (e) => {
+    if (!this.textNode.current) {
+      return;
+    }
+
+    const text = this.textNode.current.innerText;
+    this.handleChange(e, text);
+  };
+
   handleKeyDown: React.KeyboardEventHandler<HTMLParagraphElement> = (e) => {
+    if (!this.textNode.current) {
+      return;
+    }
+
     // intercept all 'enter' || 'escape' events
     if ((e.keyCode === 13 || e.keyCode === 27) && this.textNode.current) {
       e.preventDefault();
@@ -95,6 +121,8 @@ export default class File extends React.Component<Props, State> {
       this.setState({ isRenaming: false });
       return;
     }
+
+    this.handleChange(e, this.textNode.current.innerText);
   };
 
   handleFocus = () => {
@@ -134,12 +162,11 @@ export default class File extends React.Component<Props, State> {
               <p
                 tabIndex={this.state.isRenaming ? 0 : undefined}
                 ref={this.textNode}
-                onInput={this.handleChange}
                 onFocus={this.handleFocus}
+                onInput={this.handleInput}
                 onKeyDown={this.handleKeyDown}
-              >
-                {this.state.name}
-              </p>
+                dangerouslySetInnerHTML={{ __html: this.state.name }}
+              />
               <p>.scilla</p>
             </WrappedListText>
           </ListItem>
