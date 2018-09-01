@@ -45,16 +45,15 @@ export default class DeployTab extends React.Component<Props, State> {
 
   onSelectContract: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
     this.setState({ selected: e.target.value });
   };
 
   onDeploy = (init: FieldDict, msg: MsgFieldDict) => {
-    // dispatch deploy contract action
     const { deployContract, files, activeAccount } = this.props;
     const sourceFile = files[this.state.selected];
     const initParams = toScillaParams(init);
     const msgParams = toMsgFields(msg);
+
     console.log('deploying with params: \n');
     console.log(initParams, msgParams);
     deployContract(sourceFile.code, initParams, msgParams, activeAccount, this.onDeployResult);
