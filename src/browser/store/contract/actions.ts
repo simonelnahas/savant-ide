@@ -22,9 +22,10 @@ export const deploy = createAction(ContractActionTypes.DEPLOY, (resolve) => {
   return (
     code: string,
     initParams: KVPair[],
+    msgParams: { [key: string]: string },
     deployer: Account,
     statusCB: (result: DeploymentResult) => void,
-  ) => resolve({ code, init: initParams, deployer, statusCB });
+  ) => resolve({ code, init: initParams, msg: msgParams, deployer, statusCB });
 });
 export const deploySuccess = createAction(ContractActionTypes.DEPLOY_SUCCESS, (resolve) => {
   return (contract: Contract) => resolve({ contract });

@@ -30,4 +30,4 @@ yarn run start
 - Hook up `/contract/run` response to UI
 - Add `/contract/check` errors to the editor UI as markers
 - Add snackbar component to notify user that contract is checked
-~- Add makefile~
+- ~Add makefile~

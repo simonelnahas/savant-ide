@@ -136,9 +136,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   deployContract: (
     code: string,
     init: KVPair[],
+    msg: { [key: string]: string },
     deployer: Account,
-    successCb: (result: DeploymentResult) => void,
-  ) => dispatch(contractActions.deploy(code, init, deployer, successCb)),
+    resultCb: (result: DeploymentResult) => void,
+  ) => dispatch(contractActions.deploy(code, init, msg, deployer, resultCb)),
   callTransition: (address: string, transition: string, caller: Account, params: any) =>
     dispatch(contractActions.call(address, transition, caller, params)),
 });

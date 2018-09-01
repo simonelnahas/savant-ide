@@ -1,14 +1,16 @@
 import * as React from 'react';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 
-import * as api from '../../util/api';
-import Select from '../Form/Select';
 import { Account } from '../../store/blockchain/types';
-import { ABI, DeploymentResult, KVPair } from '../../store/contract/types';
+import { ABI, DeploymentResult } from '../../store/contract/types';
 import { ContractSrcFile } from '../../store/fs/types';
-import InitForm, { Field } from './InitForm';
+import { Deployer } from '../types';
+
+import * as api from '../../util/api';
+import { toMsgFields, toScillaParams, FieldDict, MsgFieldDict } from '../../util/form';
+import Select from '../Form/Select';
+import InitForm from './InitForm';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -18,26 +20,8 @@ const Wrapper = styled.div`
   }
 `;
 
-const StatusWrapper = styled.div`
-  width: 100%;
-  flex-direction: column;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  > * {
-    width: 100%;
-    text-align: center;
-  }
-`;
-
 interface Props {
-  deployContract: (
-    code: string,
-    init: KVPair[],
-    deployer: Account,
-    successCb: (result: DeploymentResult) => void,
-  ) => void;
+  deployContract: Deployer;
   activeAccount: Account;
   files: { [name: string]: ContractSrcFile };
 }
@@ -47,15 +31,8 @@ interface State {
   isChecking: boolean;
   selected: string;
   abi: ABI | null;
-  params: { [key: string]: Field };
   result: DeploymentResult | null;
 }
-
-const toScillaParams = (fields: { [name: string]: Field }): KVPair[] => {
-  return Object.keys(fields).map((name) => {
-    return { vname: name, value: fields[name].value, type: fields[name].type };
-  });
-};
 
 export default class DeployTab extends React.Component<Props, State> {
   state: State = {
@@ -63,7 +40,6 @@ export default class DeployTab extends React.Component<Props, State> {
     error: '',
     isChecking: false,
     abi: null,
-    params: {},
     result: null,
   };
 
@@ -73,34 +49,18 @@ export default class DeployTab extends React.Component<Props, State> {
     this.setState({ selected: e.target.value });
   };
 
-  onDeploy = (initParams: { [key: string]: Field }) => {
+  onDeploy = (init: FieldDict, msg: MsgFieldDict) => {
     // dispatch deploy contract action
     const { deployContract, files, activeAccount } = this.props;
     const sourceFile = files[this.state.selected];
-    const params =toScillaParams(initParams);
+    const initParams = toScillaParams(init);
+    const msgParams = toMsgFields(msg);
     console.log('deploying with params: \n');
-    console.log(initParams);
-    deployContract(sourceFile.code, params, activeAccount, this.onDeployResult);
+    console.log(initParams, msgParams);
+    deployContract(sourceFile.code, initParams, msgParams, activeAccount, this.onDeployResult);
   };
 
   onDeployResult = (result: DeploymentResult) => this.setState({ result });
-
-  onChange = (initParams: { [key: string]: Field }) => {
-    console.log('changed params: \n');
-    console.log(initParams);
-    this.setState({ params: initParams });
-  };
-
-  reset = () => {
-    this.setState({
-      selected: '',
-      error: '',
-      isChecking: false,
-      abi: null,
-      params: {},
-      result: null,
-    });
-  };
 
   componentDidUpdate(_: Props, prevState: State) {
     if (prevState.selected !== this.state.selected && this.state.selected.length) {
@@ -126,42 +86,6 @@ export default class DeployTab extends React.Component<Props, State> {
       value: name,
     }));
 
-    if (result && result.status === 0) {
-      return (
-        <StatusWrapper>
-          <Typography variant="body2">
-            {`Your contract was successfully deployed to ${result.address}`}
-          </Typography>
-          <Button
-            variant="extendedFab"
-            aria-label="reset"
-            onClick={this.reset}
-            style={{ margin: '3.5em 0' }}
-          >
-            Reset
-          </Button>
-        </StatusWrapper>
-      );
-    }
-
-    if (result && result.status === 1) {
-      return (
-        <StatusWrapper>
-          <Typography color="error" variant="body2">
-            Your contract could not be deployed.
-          </Typography>
-          <Button
-            variant="extendedFab"
-            aria-label="reset"
-            onClick={this.reset}
-            style={{ margin: '3.5em 0' }}
-          >
-            Try Again
-          </Button>
-        </StatusWrapper>
-      );
-    }
-
     return (
       <Wrapper>
         <Select
@@ -179,8 +103,8 @@ export default class DeployTab extends React.Component<Props, State> {
             <InitForm
               key={abi.name}
               handleSubmit={this.onDeploy}
-              handleChange={this.onChange}
-              params={abi.params}
+              abiParams={abi.params}
+              result={result}
             />
           )
         )}
