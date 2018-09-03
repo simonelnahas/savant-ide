@@ -2,6 +2,7 @@ import { exec } from 'child_process';
 import fs from 'fs';
 import { promisify } from 'util';
 import { Paths } from '../constants';
+import { parseSyntaxError, parseTypeError, ScillaCheckerError } from '../util/error';
 
 const execAsync = promisify(exec);
 const readAsync = promisify(fs.readFile);
@@ -68,12 +69,28 @@ export const checker = async (opts: BaseOpt) => {
     const { stdout, stderr } = await execAsync(cmd);
 
     if (stderr.length) {
+      const syntaxError = parseSyntaxError(stderr);
+
+      if (syntaxError) {
+        throw syntaxError;
+      }
+
       throw new Error(stderr);
+    }
+
+    const typeError = parseTypeError(stdout);
+
+    if (typeError) {
+      throw typeError;
     }
 
     return stdout;
   } catch (err) {
-    throw new Error(err);
+    if (ScillaCheckerError.isScillaError(err)) {
+      throw err;
+    } else {
+      throw new Error(err);
+    }
   } finally {
     await cleanUp(opts);
   }

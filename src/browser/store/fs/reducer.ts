@@ -47,6 +47,29 @@ const fsReducer: Reducer<FSState, FsAction> = (state = initialState, action) => 
       };
     }
 
+    case getType(fsActions.checkError): {
+      const { error } = action.payload;
+      const active = state.contracts[state.activeContract];
+
+      if (error.response) {
+        return {
+          ...state,
+          contracts: {
+            ...state.contracts,
+            [state.activeContract]: { ...active, error: error.response },
+          },
+        };
+      }
+
+      return {
+        ...state,
+        contracts: {
+          ...state.contracts,
+          [state.activeContract]: { ...active, error },
+        },
+      };
+    }
+
     case getType(fsActions.deleteContractSuccess): {
       return {
         ...state,

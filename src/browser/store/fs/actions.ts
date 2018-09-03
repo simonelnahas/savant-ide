@@ -33,7 +33,7 @@ export const check = createAction(FSActionTypes.CHECK, (resolve) => {
 });
 export const checkSuccess = createAction(FSActionTypes.CHECK_SUCCESS);
 export const checkError = createAction(FSActionTypes.CHECK_ERROR, (resolve) => {
-  return (error: string) => resolve({ error });
+  return (error: any) => resolve({ error });
 });
 
 /**

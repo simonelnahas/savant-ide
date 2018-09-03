@@ -15,6 +15,30 @@ import * as fsActions from '../../store/fs/actions';
 import { ContractSrcFile } from '../../store/fs/types';
 import { Account } from '../../store/blockchain/types';
 
+const Editor = styled(AceEditor)`
+  .error-marker {
+    position: absolute;
+  }
+
+  .error-marker:after {
+    position: relative;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    background: linear-gradient(45deg, transparent, transparent 49%, red 49%, transparent 51%);
+  }
+`;
+
+const Wrapper = styled.div`
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
 interface OwnProps {}
 interface MappedProps {
   activeAccount: Account | null;
@@ -33,15 +57,6 @@ type Props = OwnProps & MappedProps & DispatchProps;
 interface State {
   contract: ContractSrcFile;
 }
-
-const Wrapper = styled.div`
-  flex: 1;
-  min-width: 0;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-`;
 
 class ScillaEditor extends React.Component<Props, State> {
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -81,9 +96,27 @@ class ScillaEditor extends React.Component<Props, State> {
     this.setState({ contract: { ...this.state.contract, code: value } });
   };
 
+  getAnnotations = (): any => {
+    const { contract } = this.props;
+
+    if (contract.error) {
+      return [
+        {
+          row: parseInt(contract.error.line, 10) - 1,
+          col: parseInt(contract.error.column, 10),
+          type: 'error',
+          text: contract.error.message,
+        },
+      ];
+    }
+
+    return [];
+  };
+
   render() {
     const { contract } = this.state;
     const { activeAccount, accounts } = this.props;
+
     return (
       <Wrapper>
         <Controls
@@ -94,12 +127,13 @@ class ScillaEditor extends React.Component<Props, State> {
           handleSave={this.handleSave}
           handleSetCurrentAccount={this.handleSetCurrentAccount}
         />
-        <AceEditor
+        <Editor
           mode="ocaml"
           theme="ayu-light"
           fontSize={16}
           onChange={this.onChange}
           name="scilla-editor"
+          annotations={this.getAnnotations()}
           editorProps={{ $blockScrolling: true }}
           style={{ flexGrow: 1, width: '100%', height: '' }}
           value={contract.code}
