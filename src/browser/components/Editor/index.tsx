@@ -2,7 +2,7 @@ import * as React from 'react';
 // @ts-ignore
 import * as brace from 'brace';
 import AceEditor from 'react-ace';
-import 'ayu-ace/light';
+import 'brace/theme/tomorrow';
 import 'brace/mode/ocaml';
 import 'brace/ext/searchbox';
 import { connect } from 'react-redux';
@@ -73,6 +73,7 @@ class ScillaEditor extends React.Component<Props, State> {
     contract: {
       name: '',
       code: '',
+      error: null,
     },
   };
 
@@ -130,7 +131,7 @@ class ScillaEditor extends React.Component<Props, State> {
         />
         <Editor
           mode="ocaml"
-          theme="ayu-light"
+          theme="tomorrow"
           fontSize={16}
           onChange={this.onChange}
           name="scilla-editor"
