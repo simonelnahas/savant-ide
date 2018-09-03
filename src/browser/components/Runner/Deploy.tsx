@@ -72,7 +72,7 @@ export default class DeployTab extends React.Component<Props, State> {
           this.setState({ isChecking: false, abi: JSON.parse(res.message) });
         })
         .catch((err) => {
-          this.setState({ error: err.response.message });
+          this.setState({ error: err.response ? err.response.message : err });
         });
     }
   }
