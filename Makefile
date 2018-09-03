@@ -3,6 +3,8 @@
 # building the Scilla binaries by hand.
 .PHONY: default all clean bootstrap scilla-bin docker
 
+SCILLA_BRANCH ?= master
+
 default: all
 
 all: clean bootstrap scilla-bin
@@ -18,5 +20,8 @@ clean:
 
 scilla-bin:
 	git clone git@github.com:Zilliqa/scilla
+	git -C scilla fetch --all
+	git -C scilla checkout $(SCILLA_BRANCH)
+	git -C scilla pull
 	$(MAKE) -C scilla opamdep
 	$(MAKE) -C scilla all
