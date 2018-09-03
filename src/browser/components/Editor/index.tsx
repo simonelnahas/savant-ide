@@ -4,6 +4,7 @@ import * as brace from 'brace';
 import AceEditor from 'react-ace';
 import 'ayu-ace/light';
 import 'brace/mode/ocaml';
+import 'brace/ext/searchbox';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import styled from 'styled-components';
