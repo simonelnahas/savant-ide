@@ -46,7 +46,7 @@ const Wrapper = styled.div`
 class ScillaEditor extends React.Component<Props, State> {
   static getDerivedStateFromProps(props: Props, state: State) {
     // a new contract has been loaded
-    if (!state.contract || state.contract.name !== props.contract.name) {
+    if (state.contract && state.contract.name !== props.contract.name) {
       return { ...state, contract: props.contract };
     }
 
