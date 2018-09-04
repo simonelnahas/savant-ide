@@ -11,6 +11,14 @@ export const initError = createAction(BlockchainActionTypes.INIT_ERROR, (resolve
   resolve({ error: err }),
 );
 
+export const updateBnum = createAction(
+  BlockchainActionTypes.UPDATE_BNUM,
+  (resolve) => (bnum: number) =>
+    resolve({
+      bnum,
+    }),
+);
+
 export const updateAccount = createAction(BlockchainActionTypes.UPDATE_ACCOUNT, (resolve) => {
   return (account: Account) => resolve({ account });
 });
@@ -26,4 +34,3 @@ export const updateAccountError = createAction(
     return (err: any) => resolve({ error: err });
   },
 );
-

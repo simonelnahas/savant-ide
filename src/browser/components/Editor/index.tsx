@@ -40,6 +40,7 @@ const Wrapper = styled.div`
 
 interface OwnProps {}
 interface MappedProps {
+  blocknum: number;
   contract: ContractSrcFile;
 }
 
@@ -112,6 +113,7 @@ class ScillaEditor extends React.Component<Props, State> {
       <Wrapper>
         <Controls
           activeFile={contract}
+          blockNum={this.props.blocknum}
           handleCheck={this.handleCheck}
           handleSave={this.handleSave}
         />
@@ -138,6 +140,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 });
 
 const mapStateToProps = (state: ApplicationState) => ({
+  blocknum: state.blockchain.blockNum,
   contract:
     state.fs.activeContract && state.fs.activeContract.length > 1
       ? state.fs.contracts[state.fs.activeContract]

@@ -9,7 +9,7 @@ type BlockchainAction = ActionType<typeof blockchainActions>;
 const initialState: BlockchainState = {
   error: null,
   loading: false,
-  blockNum: 0,
+  blockNum: 1,
   accounts: {},
 };
 
@@ -21,6 +21,10 @@ const reducer: Reducer<BlockchainState, BlockchainAction> = (
     case getType(blockchainActions.initSuccess): {
       const { accounts } = action.payload;
       return { ...state, accounts };
+    }
+    case getType(blockchainActions.updateBnum): {
+      const { bnum } = action.payload;
+      return { ...state, blockNum: bnum };
     }
     case getType(blockchainActions.updateAccountSuccess): {
       const { account } = action.payload;

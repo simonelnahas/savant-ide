@@ -16,6 +16,7 @@ const ButtonWrapper = styled.span`
 
 interface Props {
   activeFile: ContractSrcFile;
+  blockNum: number;
   handleCheck: () => void;
   handleSave: () => void;
 }
@@ -30,7 +31,7 @@ export default class EditorControls extends React.Component<Props> {
   };
 
   render() {
-    const {  activeFile } = this.props;
+    const { activeFile } = this.props;
     const isContractSelected = !!activeFile.name.length;
 
     return (
@@ -40,6 +41,12 @@ export default class EditorControls extends React.Component<Props> {
             ? `${activeFile.name || 'untitled'}.scilla`
             : 'Create a new file, or select an existing one.'}
         </Typography>
+        <Typography
+          style={{ margin: '0 1em' }}
+          variant="body2"
+          color="textSecondary"
+          align="center"
+        >{`Block: ${this.props.blockNum}`}</Typography>
         <ButtonWrapper>
           <IconButton
             disabled={!isContractSelected}
