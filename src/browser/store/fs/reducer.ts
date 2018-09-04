@@ -1,9 +1,8 @@
-import { filter } from 'ramda';
 import { Reducer } from 'redux';
 import { ActionType, getType } from 'typesafe-actions';
 
 import * as fsActions from './actions';
-import { FSState } from './types';
+import { ContractSrcFile, FSState } from './types';
 
 export type FsAction = ActionType<typeof fsActions>;
 
@@ -21,14 +20,17 @@ const fsReducer: Reducer<FSState, FsAction> = (state = initialState, action) => 
     }
 
     case getType(fsActions.initSuccess): {
+      const contracts: { [key: string]: ContractSrcFile } = action.payload.contracts.reduce(
+        (acc, contract) => {
+          return { ...acc, [contract.name]: contract };
+        },
+        {} as { [name: string]: ContractSrcFile },
+      );
+
       return {
         ...state,
-        contracts: {
-          ...state.contracts,
-          ...action.payload.contracts.reduce((acc, contract) => {
-            return { ...acc, [contract.name]: contract };
-          }, {}),
-        },
+        contracts,
+        loading: false,
       };
     }
 
@@ -54,6 +56,7 @@ const fsReducer: Reducer<FSState, FsAction> = (state = initialState, action) => 
       if (error.response) {
         return {
           ...state,
+          loading: false,
           contracts: {
             ...state.contracts,
             [state.activeContract]: { ...active, error: error.response },
@@ -63,6 +66,7 @@ const fsReducer: Reducer<FSState, FsAction> = (state = initialState, action) => 
 
       return {
         ...state,
+        loading: false,
         contracts: {
           ...state.contracts,
           [state.activeContract]: { ...active, error },
@@ -71,12 +75,20 @@ const fsReducer: Reducer<FSState, FsAction> = (state = initialState, action) => 
     }
 
     case getType(fsActions.deleteContractSuccess): {
+      const filtered = Object.keys(state.contracts).reduce(
+        (acc, name) => {
+          if (name === action.payload.name) {
+            return acc;
+          }
+
+          return { ...acc, [name]: state.contracts[name] };
+        },
+        {} as { [key: string]: ContractSrcFile },
+      );
+
       return {
         ...state,
-        contracts: filter(
-          (contract: any) => contract.name !== action.payload.name,
-          state.contracts,
-        ),
+        contracts: filtered,
       };
     }
 

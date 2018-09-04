@@ -19,7 +19,7 @@ export const add = createAction(FSActionTypes.ADD, (resolve) => {
   return (name: string, code: string) => resolve({ name, code });
 });
 export const addSuccess = createAction(FSActionTypes.ADD_SUCCESS, (resolve) => {
-  return (name: string, code: string) => resolve({ name, code });
+  return (name: string, code: string) => resolve({ name, code, error: null });
 });
 export const addError = createAction(FSActionTypes.ADD_ERROR, (resolve) => {
   return (name: string, err: string) => resolve({ error: err });
@@ -51,11 +51,11 @@ export const updateSuccess = createAction(FSActionTypes.UPDATE_SUCCESS, (resolve
     resolve({
       name,
       code,
+      error: null,
     });
 });
 export const updateError = createAction(FSActionTypes.UPDATE_ERROR, (resolve) => {
-  return (error: string) =>
-    resolve({ error });
+  return (error: string) => resolve({ error });
 });
 
 /**
