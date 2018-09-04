@@ -7,7 +7,7 @@ import * as bcActions from './actions';
 import { Account, BlockchainActionTypes } from './types';
 import { ApplicationState } from '../index';
 
-const DEFAULT_ACCOUNT_FUNDS = '88888888';
+const DEFAULT_ACCOUNT_FUNDS = (10 ** 8).toString();
 const DEFAULT_NUM_ACCOUNTS = 20;
 const DEFAULT_BNUM_INTERVAL = 10000;
 const util = new Zilliqa({ nodeUrl: 'https://localhost:8888' }).util;
