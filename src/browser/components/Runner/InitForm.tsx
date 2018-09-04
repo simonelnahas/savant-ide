@@ -9,7 +9,8 @@ import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 
 import { DeploymentResult, Param } from '../../store/contract/types';
-import { Field, MsgField, FieldDict, MsgFieldDict } from '../../util/form';
+import { isField, Field, MsgField, FieldDict, MsgFieldDict } from '../../util/form';
+import { validate as valid } from '../../util/validation';
 
 const StatusWrapper = styled.div`
   width: 100%;
@@ -92,11 +93,10 @@ export default class InitForm extends React.Component<Props, State> {
     const { init } = this.state;
 
     const currentField = init[name];
-    const isValid = this.validate(currentField);
+    const baseField = { ...currentField, value, touched: true };
+    const isValid = this.validate(baseField);
     const newField = {
-      ...currentField,
-      value,
-      touched: true,
+      ...baseField,
       error: !isValid,
     };
     const newInit = { ...init, [name]: newField };
@@ -110,8 +110,9 @@ export default class InitForm extends React.Component<Props, State> {
     const { msg } = this.state;
 
     const currentField = msg[name];
-    const isValid = this.validate(currentField);
-    const newField = { ...currentField, value, touched: true, error: !isValid };
+    const baseField = { ...currentField, value, touched: true };
+    const isValid = this.validate(baseField);
+    const newField = { ...baseField, error: !isValid };
     const newMsg = { ...msg, [name]: newField };
 
     this.setState({ msg: newMsg });
@@ -126,7 +127,11 @@ export default class InitForm extends React.Component<Props, State> {
       return true;
     }
 
-    return field.value.length > 0;
+    if (isField(field)) {
+      return valid(field.type, field.value);
+    }
+
+    return valid('Uint128', field.value);
   };
 
   componentDidUpdate(nextProps: Props) {
@@ -192,7 +197,7 @@ export default class InitForm extends React.Component<Props, State> {
             name="_amount"
             value={msg._amount.value}
           />
-          {msg._amount.error && <FormHelperText>Please fill in a value</FormHelperText>}
+          {msg._amount.error && <FormHelperText>Please fill in a valid value</FormHelperText>}
         </FormControl>
         <Typography align="left" variant="headline">
           Initialisation Parameters:

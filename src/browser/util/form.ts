@@ -21,6 +21,10 @@ export interface MsgFieldDict {
   [key: string]: MsgField;
 }
 
+export const isField = (field: Field | MsgField): field is Field => {
+  return !!(<Field>field).type;
+};
+
 export const toScillaParams = (fields: FieldDict): KVPair[] => {
   return Object.keys(fields).map((name) => {
     return { vname: name, value: fields[name].value, type: fields[name].type };
