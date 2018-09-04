@@ -43,13 +43,20 @@ export function* initContract() {
 
 function* deployContract(action: ActionType<typeof contractActions.deploy>, db: ContractStore) {
   try {
-    const { code, deployer, init, statusCB } = action.payload;
+    const { code, deployer, init, msg, statusCB } = action.payload;
     const { message: abi } = yield api.checkContract(code);
+    const state: ApplicationState = yield select();
+
+    // we need to take this off the depoyer's balance
+    const txAmount = new BN(msg._amount || '0');
 
     const updatedAccount = {
       ...deployer,
       nonce: deployer.nonce + 1,
-      balance: new BN(deployer.balance).sub(DEFAULT_DEPLOY_GAS).toString(10),
+      balance: new BN(deployer.balance)
+        .sub(DEFAULT_DEPLOY_GAS)
+        .sub(txAmount)
+        .toString(10),
     };
 
     const address = hash
@@ -62,9 +69,11 @@ function* deployContract(action: ActionType<typeof contractActions.deploy>, db: 
       abi: JSON.parse(abi),
       balance: new BN(0),
       code,
-      // TODO: use a timer for this.
-      init: [...init, { vname: '_creation_block', type: 'BNum', value: '88' }],
-      state: [{ vname: '_balance', type: 'Uint128', value: '0' }],
+      init: [
+        ...init,
+        { vname: '_creation_block', type: 'BNum', value: state.blockchain.blockNum.toString() },
+      ],
+      state: [{ vname: '_balance', type: 'Uint128', value: txAmount.toString() }],
       address,
     };
 

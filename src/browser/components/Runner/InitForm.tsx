@@ -28,6 +28,7 @@ interface Props {
   abiParams: Param[];
   result: DeploymentResult | null;
   handleSubmit: (init: FieldDict, msg: MsgFieldDict) => void;
+  handleReset: () => void;
 }
 
 interface State {
@@ -66,7 +67,7 @@ export default class InitForm extends React.Component<Props, State> {
       return { ...acc, [name]: { ...field, error: !isValid } };
     }, init);
 
-    const validatedMsg = Object.keys(init).reduce((acc, name) => {
+    const validatedMsg = Object.keys(msg).reduce((acc, name) => {
       const field = msg[name];
       const isValid = this.validate(field, true);
 
@@ -116,27 +117,30 @@ export default class InitForm extends React.Component<Props, State> {
     this.setState({ msg: newMsg });
   };
 
-  reset = () => {
-    this.setState({
-      init: {},
-      msg: {},
-    });
-  };
-
   validate = (field: Field | MsgField, ignoreTouched: boolean = false): boolean => {
-    if (!field.touched && !ignoreTouched) {
-      return true;
-    }
-
     if (!field) {
       return false;
+    }
+
+    if (!field.touched && !ignoreTouched) {
+      return true;
     }
 
     return field.value.length > 0;
   };
 
+  componentDidUpdate(nextProps: Props) {
+    // we hit the reset button; clear out form state.
+    if (!nextProps.result && nextProps.result !== this.props.result) {
+      this.setState({
+        init: {},
+        msg: {},
+      });
+    }
+  }
+
   render() {
-    const { abiParams, result } = this.props;
+    const { abiParams, result, handleReset } = this.props;
     const { init, msg } = this.state;
 
     if (result && result.status === 0) {
@@ -148,7 +152,7 @@ export default class InitForm extends React.Component<Props, State> {
           <Button
             variant="extendedFab"
             aria-label="reset"
-            onClick={this.reset}
+            onClick={handleReset}
             style={{ margin: '3.5em 0' }}
           >
             Reset
@@ -166,7 +170,7 @@ export default class InitForm extends React.Component<Props, State> {
           <Button
             variant="extendedFab"
             aria-label="reset"
-            onClick={this.reset}
+            onClick={handleReset}
             style={{ margin: '3.5em 0' }}
           >
             Try Again

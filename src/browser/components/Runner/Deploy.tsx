@@ -75,6 +75,16 @@ export default class DeployTab extends React.Component<Props, State> {
 
   onDeployResult = (result: DeploymentResult) => this.setState({ result });
 
+  reset = () =>
+    this.setState({
+      activeAccount: null,
+      selected: '',
+      error: '',
+      isChecking: false,
+      abi: null,
+      result: null,
+    });
+
   getAccountOptions = () => {
     const { accounts } = this.props;
 
@@ -133,6 +143,7 @@ export default class DeployTab extends React.Component<Props, State> {
           abi && (
             <InitForm
               key={abi.name}
+              handleReset={this.reset}
               handleSubmit={this.onDeploy}
               abiParams={abi.params}
               result={result}
