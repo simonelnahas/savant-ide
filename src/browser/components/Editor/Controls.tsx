@@ -17,6 +17,7 @@ const ButtonWrapper = styled.span`
 interface Props {
   activeFile: ContractSrcFile;
   blockNum: number;
+  canSave: boolean;
   handleCheck: () => void;
   handleSave: () => void;
 }
@@ -49,7 +50,7 @@ export default class EditorControls extends React.Component<Props> {
         >{`Block: ${this.props.blockNum}`}</Typography>
         <ButtonWrapper>
           <IconButton
-            disabled={!isContractSelected}
+            disabled={!isContractSelected || !this.props.canSave}
             aria-label="save"
             color="primary"
             onClick={this.handleSave}

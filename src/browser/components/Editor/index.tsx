@@ -114,6 +114,7 @@ class ScillaEditor extends React.Component<Props, State> {
         <Controls
           activeFile={contract}
           blockNum={this.props.blocknum}
+          canSave={this.props.contract.code !== this.state.contract.code}
           handleCheck={this.handleCheck}
           handleSave={this.handleSave}
         />
