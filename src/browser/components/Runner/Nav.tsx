@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import CallTab from './Call';
 import DeployTab from './Deploy';
 
-import { Deployer } from '../types';
+import { Caller, Deployer } from '../types';
 import { ContractSrcFile } from '../../store/fs/types';
 import { Account } from '../../store/blockchain/types';
 import { ABI, Contract } from '../../store/contract/types';
@@ -32,8 +32,8 @@ const Content = styled.div`
 `;
 
 interface Props {
-  deployContract: Deployer; 
-  callTransition: (address: string, transition: string, sender: Account, params: any) => void;
+  deployContract: Deployer;
+  callTransition: Caller;
   accounts: { [address: string]: Account };
   deployedContracts: { [address: string]: Contract };
   files: { [name: string]: ContractSrcFile };

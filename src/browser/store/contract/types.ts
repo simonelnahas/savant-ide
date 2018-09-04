@@ -1,13 +1,17 @@
-import BN from 'bn.js';
-
-export const enum DeploymentStatus {
+export const enum ScillaBinStatus {
   SUCCESS,
   FAILURE,
 }
 
 export interface DeploymentResult {
-  status: DeploymentStatus;
+  status: ScillaBinStatus;
   address: string;
+}
+
+export interface CallResult {
+  status: ScillaBinStatus;
+  address: string;
+  error?: string;
 }
 
 export interface Param {
@@ -27,13 +31,34 @@ export interface ABI {
   transitions: Transition[];
 }
 
+export interface ContractEvent {
+  _eventname: string;
+  params: KVPair[];
+}
+
+export interface ContractMessage {
+  _accepted: string;
+  _amount: string;
+  _recipient: string;
+  _tag: string;
+  params: KVPair[];
+}
+
+export interface TransitionCallResponse {
+  events: ContractEvent[];
+  message: ContractMessage;
+  states: KVPair[];
+}
+
 export interface Contract {
   address: string;
-  balance: BN;
   code: string;
   abi: ABI | null;
   init: { [key: string]: any };
-  state: any;
+  state: KVPair[];
+  stateLog: KVPair[][];
+  eventLog: ContractEvent[];
+  messageLog: ContractMessage[];
 }
 
 interface ContractPointer {
@@ -50,6 +75,7 @@ export interface ContractState {
     [address: string]: Contract;
   };
 }
+
 
 export interface KVPair {
   vname: string;

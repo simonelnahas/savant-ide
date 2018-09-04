@@ -1,26 +1,13 @@
 import * as React from 'react';
-import Typography from '@material-ui/core/Typography';
 import { find } from 'ramda';
 import styled from 'styled-components';
 
 import { Account } from '../../store/blockchain/types';
-import { Contract, Transition, KVPair } from '../../store/contract/types';
+import { CallResult, Contract, Transition } from '../../store/contract/types';
 import Select, { Option } from '../Form/Select';
+import { Caller } from '../types';
+import { toMsgFields, toScillaParams, FieldDict, MsgFieldDict } from '../../util/form';
 import TransitionForm from './TransitionForm';
-
-interface Props {
-  // the address of a deployed contract
-  callTransition: (address: string, transition: string, sender: Account, params: KVPair[]) => void;
-  accounts: { [address: string]: Account };
-  deployedContracts: { [address: string]: Contract };
-}
-
-interface State {
-  activeAccount: Account | null;
-  transitionState: { [transition: string]: { [arg: string]: { value: any } } };
-  selectedContract: string; // address of currently selected transition
-  selectedTransition: string;
-}
 
 const Wrapper = styled.div`
   width: 100%;
@@ -30,43 +17,53 @@ const Wrapper = styled.div`
   }
 `;
 
-const toScillaParams = (fields: { [name: string]: { [key: string]: any } }): KVPair[] => {
-  return Object.keys(fields).map((name) => {
-    return { vname: name, value: fields[name].value, type: fields[name].type };
-  });
-};
+interface Props {
+  // the address of a deployed contract
+  callTransition: Caller;
+  accounts: { [address: string]: Account };
+  deployedContracts: { [address: string]: Contract };
+}
 
-export default class CallTab extends React.Component<Props> {
+interface State {
+  activeAccount: Account | null;
+  result: CallResult | null;
+  selectedContract: string; // address of currently selected transition
+  selectedTransition: string;
+}
+
+export default class CallTab extends React.Component<Props, State> {
   state: State = {
     activeAccount: null,
-    transitionState: {},
     selectedContract: '',
     selectedTransition: '',
+    result: null,
   };
 
-  getTransitionOptions = (): Option[] => {
-    const { deployedContracts } = this.props;
-    const { selectedContract } = this.state;
-
-    const abi = deployedContracts[selectedContract].abi;
-
-    if (abi && abi.transitions.length > 0) {
-      return abi.transitions.map((transition) => {
-        return { key: transition.name, value: transition.name };
-      });
-    }
-
-    return [];
-  };
-
-  onCallTransition = (transition: string, params: { [p: string]: any }) => {
+  onCallTransition = (transition: string, params: FieldDict, msg: MsgFieldDict) => {
     console.log(`Calling transition ${transition}`);
     console.log('Parameters: ', params);
+    console.log('Msg: ', msg);
+    const { callTransition } = this.props;
     const { activeAccount, selectedContract } = this.state;
-    const tParams = toScillaParams(params);
 
-    this.props.callTransition(selectedContract, transition, activeAccount as Account, tParams);
+    if (!activeAccount) {
+      return;
+    }
+
+    const tParams = toScillaParams(params);
+    const msgParams = toMsgFields(msg);
+
+    callTransition(
+      selectedContract,
+      transition,
+      tParams,
+      msgParams,
+      activeAccount,
+      this.onCallResult,
+    );
   };
+
+  onCallResult = (result: CallResult) => this.setState({ result });
 
   onSelectAccount: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
     e.preventDefault();
@@ -83,10 +80,19 @@ export default class CallTab extends React.Component<Props> {
     this.setState({ selectedTransition: e.target.value });
   };
 
-  onParameterChange = (transition: string, value: { [key: string]: { value: any } }) => {
-    this.setState({
-      parameters: { ...this.state.transitionState, [transition]: value },
-    });
+  getTransitionOptions = (): Option[] => {
+    const { deployedContracts } = this.props;
+    const { selectedContract } = this.state;
+
+    const abi = deployedContracts[selectedContract].abi;
+
+    if (abi && abi.transitions.length > 0) {
+      return abi.transitions.map((transition) => {
+        return { key: transition.name, value: transition.name };
+      });
+    }
+
+    return [];
   };
 
   getDeployedContractOptions = (): Option[] => {
@@ -111,10 +117,17 @@ export default class CallTab extends React.Component<Props> {
     }));
   };
 
+  reset = () =>
+    this.setState({
+      activeAccount: null,
+      selectedContract: '',
+      selectedTransition: '',
+      result: null,
+    });
 
   render() {
     const { deployedContracts } = this.props;
-    const { activeAccount, selectedContract, selectedTransition } = this.state;
+    const { activeAccount, selectedContract, selectedTransition, result } = this.state;
     const toCall = deployedContracts[selectedContract] || null;
     const abi = toCall && toCall.abi;
 
@@ -135,24 +148,21 @@ export default class CallTab extends React.Component<Props> {
         {abi && (
           <React.Fragment>
             <Select
-              placeholder={abi.name}
+              placeholder={`Select a transition for ${abi.name}`}
               items={this.getTransitionOptions()}
               value={selectedTransition}
               onChange={this.onSelectTransition}
             />
-            {!!selectedTransition.length && (
-              <React.Fragment>
-                <Typography align="left" variant="subheading">
-                  Parameters:
-                </Typography>
+            {activeAccount &&
+              !!selectedTransition.length && (
                 <TransitionForm
                   key={selectedTransition}
+                  handleReset={this.reset}
                   handleSubmit={this.onCallTransition}
-                  handleChange={this.onParameterChange}
+                  result={result}
                   {...find((t) => t.name === selectedTransition, abi.transitions) as Transition}
                 />
-              </React.Fragment>
-            )}
+              )}
           </React.Fragment>
         )}
       </Wrapper>

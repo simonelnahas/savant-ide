@@ -186,7 +186,7 @@ export default class InitForm extends React.Component<Props, State> {
 
     return (
       <React.Fragment>
-        <Typography align="left" variant="headline">
+        <Typography align="left" gutterBottom variant="headline">
           Transaction Parameters:
         </Typography>
         <FormControl error={msg._amount.error}>
@@ -199,7 +199,7 @@ export default class InitForm extends React.Component<Props, State> {
           />
           {msg._amount.error && <FormHelperText>Please fill in a valid value</FormHelperText>}
         </FormControl>
-        <Typography align="left" variant="headline">
+        <Typography align="left" gutterBottom variant="headline">
           Initialisation Parameters:
         </Typography>
         {abiParams.map(({ name, type }) => {

@@ -6,12 +6,13 @@ import BN from 'bn.js';
 import { ApplicationState } from '../index';
 import ContractStore from '../../database/contracts';
 import * as contractActions from './actions';
-import { ContractActionTypes, DeploymentStatus } from './types';
+import { ContractActionTypes, ScillaBinStatus } from './types';
 
 import * as bcActions from '../blockchain/actions';
 import * as api from '../../util/api';
 
 const DEFAULT_DEPLOY_GAS = new BN(50);
+const DEFAULT_CALL_GAS = new BN(10);
 
 type ContractAction = ActionType<typeof contractActions>;
 
@@ -67,13 +68,15 @@ function* deployContract(action: ActionType<typeof contractActions.deploy>, db: 
 
     const contract = {
       abi: JSON.parse(abi),
-      balance: new BN(0),
       code,
       init: [
         ...init,
         { vname: '_creation_block', type: 'BNum', value: state.blockchain.blockNum.toString() },
       ],
       state: [{ vname: '_balance', type: 'Uint128', value: txAmount.toString() }],
+      stateLog: [],
+      eventLog: [],
+      messageLog: [],
       address,
     };
 
@@ -83,49 +86,78 @@ function* deployContract(action: ActionType<typeof contractActions.deploy>, db: 
       yield put(contractActions.deploySuccess(contract)),
     ]);
 
-    statusCB({ status: DeploymentStatus.SUCCESS, address });
+    statusCB({ status: ScillaBinStatus.SUCCESS, address });
   } catch (err) {
     yield put(contractActions.deployError(err));
-    action.payload.statusCB({ status: DeploymentStatus.FAILURE, address: '' });
+    action.payload.statusCB({ status: ScillaBinStatus.FAILURE, address: '' });
   }
 }
 
 function* callTransition(action: ActionType<typeof contractActions.call>, db: ContractStore) {
-  const { address, transition, caller, params } = action.payload;
+  const { address, transition, tParams, msgParams, caller, statusCB } = action.payload;
   try {
-    const appState: ApplicationState = yield select();
-    const contractStorage = appState.contract.contracts[address];
+    const state: ApplicationState = yield select();
+    const contractStorage = state.contract.contracts[address];
     // get init params
     const init = contractStorage.init;
     // get previous state if any
-    const state = contractStorage.state;
-    // TODO: real blockchain state. mock for demo.
+    const contractState = contractStorage.state;
     // get blockchain state
-    const blockchain = [{ vname: 'BLOCKNUMBER', type: 'BNum', value: '100' }];
+    const blockchain = [
+      { vname: 'BLOCKNUMBER', type: 'BNum', value: state.blockchain.blockNum.toString() },
+    ];
+
+    // we need to take this off the caller's balance
+    const txAmount = new BN(msgParams._amount || '0');
+
     // get message
     const message = {
       _tag: transition,
-      _amount: '0',
+      _amount: txAmount.toString(10),
       _sender: `0x${caller.address.toUpperCase()}`,
-      params,
+      params: tParams,
     };
 
     const payload = {
       code: contractStorage.code,
       init: JSON.stringify(init),
       blockchain: JSON.stringify(blockchain),
-      state: JSON.stringify(state),
+      state: JSON.stringify(contractState),
       message: JSON.stringify(message),
     };
 
-    console.log(payload);
-    const res = yield api.callContract(payload);
+    const res: api.CallResponse = yield api.callContract(payload);
 
-    const { message: msg, states: newState } = res;
-    console.log(msg);
-    console.log(newState);
+    const { message: msg } = res;
+
+    const updatedAccount = {
+      ...caller,
+      nonce: caller.nonce + 1,
+      balance: new BN(caller.balance)
+        .sub(DEFAULT_CALL_GAS)
+        .sub(txAmount)
+        .toString(10),
+    };
+
+    const updatedContract: typeof contractStorage = {
+      ...contractStorage,
+      state: msg.states,
+      stateLog: [...contractStorage.stateLog, contractStorage.state],
+      eventLog: [...contractStorage.eventLog, ...msg.events],
+      messageLog: [...contractStorage.messageLog, msg.message],
+    };
+
+    yield db.set(address, updatedContract);
+    yield all([
+      put(bcActions.updateAccount(updatedAccount)),
+      yield put(contractActions.callSuccess(contractStorage.address, updatedContract)),
+    ]);
+
+    statusCB({ status: ScillaBinStatus.SUCCESS, address });
   } catch (err) {
     console.log(err);
+    put(contractActions.callError(address, err));
+    statusCB({ status: ScillaBinStatus.FAILURE, address, error: err });
   }
 }
 

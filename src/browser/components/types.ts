@@ -10,3 +10,12 @@ export type Deployer = (
   deployer: Account,
   resultCb: (result: DeploymentResult) => void,
 ) => void;
+
+export type Caller = (
+  address: string,
+  transition: string,
+  tParams: KVPair[],
+  msgParams: { [key: string]: string },
+  caller: Account,
+  resultCb: (result: DeploymentResult) => void,
+) => void;

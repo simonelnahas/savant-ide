@@ -1,3 +1,14 @@
+import { TransitionCallResponse } from '../store/contract/types';
+
+export interface ResponseMsg {
+  result: 'success' | 'error';
+  message: any;
+}
+
+export interface CallResponse extends Response {
+  message: TransitionCallResponse;
+}
+
 export const enum Status {
   ERROR = 'error',
   SUCCESS = 'success',
@@ -62,7 +73,7 @@ export const checkContract = (contract: string, signal?: AbortSignal) => {
   });
 };
 
-export const callContract = (payload: any, signal?: AbortSignal) => {
+export const callContract = (payload: any, signal?: AbortSignal): Promise<CallResponse> => {
   const defaults = {
     headers: {
       Accept: 'application/json',

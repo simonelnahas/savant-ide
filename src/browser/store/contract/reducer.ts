@@ -41,6 +41,16 @@ const contractReducer: Reducer<ContractState, ContractAction> = (state = initial
       return { ...state, contracts: newIndex, isLoading: false };
     }
 
+    case getType(contractActions.call): {
+      return { ...state, isLoading: true };
+    }
+
+    case getType(contractActions.callSuccess): {
+      const { address, contract } = action.payload;
+      const newIndex = { ...state.contracts, [address]: contract };
+      return { ...state, contracts: newIndex, isLoading: false };
+    }
+
     // for now, just put the entire store into an error state.
     case getType(contractActions.initError):
     case getType(contractActions.deployError): {

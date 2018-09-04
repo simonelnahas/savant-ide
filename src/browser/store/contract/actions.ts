@@ -1,6 +1,6 @@
 import { createAction } from 'typesafe-actions';
 
-import { ContractActionTypes, Contract, DeploymentResult, KVPair } from './types';
+import { CallResult, ContractActionTypes, Contract, DeploymentResult, KVPair } from './types';
 import { Account } from '../blockchain/types';
 
 /**
@@ -35,11 +35,17 @@ export const deployError = createAction(ContractActionTypes.DEPLOY_ERROR, (resol
 });
 
 export const call = createAction(ContractActionTypes.CALL, (resolve) => {
-  return (address: string, transition: string, caller: Account, params: KVPair[]) =>
-    resolve({ address, transition, caller, params });
+  return (
+    address: string,
+    transition: string,
+    tParams: KVPair[],
+    msgParams: { [key: string]: string },
+    caller: Account,
+    statusCB: (result: CallResult) => void,
+  ) => resolve({ address, transition, caller, tParams, msgParams, statusCB });
 });
 export const callSuccess = createAction(ContractActionTypes.CALL_SUCCESS, (resolve) => {
-  return (address: string, state: any) => resolve({ address, state });
+  return (address: string, contract: Contract) => resolve({ address, contract });
 });
 export const callError = createAction(ContractActionTypes.CALL_ERROR, (resolve) => {
   return (address: string, error: any) => resolve({ address, error });

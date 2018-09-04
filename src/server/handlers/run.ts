@@ -13,7 +13,7 @@ export const run = async (req: Request, res: Response, next: NextFunction) => {
     state: makeTempFileName(id, 'json', 'state'),
     message: makeTempFileName(id, 'json', 'message'),
     output: makeTempFileName(id, 'json', 'output'),
-    stdlib: Paths.RUNNER,
+    stdlib: Paths.STDLIB,
   };
 
   const toWrite = Object.keys(checkOpt)
