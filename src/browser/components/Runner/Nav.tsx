@@ -10,6 +10,7 @@ import styled from 'styled-components';
 
 import CallTab from './Call';
 import DeployTab from './Deploy';
+import StateTab from './State';
 
 import { Caller, Deployer } from '../types';
 import { ContractSrcFile } from '../../store/fs/types';
@@ -20,9 +21,14 @@ const Wrapper = styled(Paper)`
   display: flex;
   height: 100%;
   flex-direction: column;
+
+  & .tabs {
+    min-height: 72px;
+  }
 `;
 
 const Content = styled.div`
+  flex: 1 0 auto;
   display: flex;
   padding: 0 1em;
   flex-grow: 1;
@@ -64,7 +70,7 @@ export default class RunnerNav extends React.Component<Props, State> {
           />
         );
       case 1:
-        return null;
+        return <StateTab accounts={this.props.accounts} contracts={this.props.deployedContracts} />;
       case 2:
         return (
           <DeployTab
@@ -82,6 +88,7 @@ export default class RunnerNav extends React.Component<Props, State> {
     return (
       <Wrapper classes={{ root: 'root' }} square>
         <Tabs
+          classes={{ root: 'tabs' }}
           value={this.state.value}
           onChange={this.handleChange}
           fullWidth
