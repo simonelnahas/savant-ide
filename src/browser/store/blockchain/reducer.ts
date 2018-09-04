@@ -10,7 +10,6 @@ const initialState: BlockchainState = {
   error: null,
   loading: false,
   blockNum: 0,
-  current: '',
   accounts: {},
 };
 
@@ -33,13 +32,7 @@ const reducer: Reducer<BlockchainState, BlockchainAction> = (
         },
       };
     }
-    case getType(blockchainActions.setCurrentAccount): {
-      const { address } = action.payload;
-      return {
-        ...state,
-        current: address,
-      };
-    }
+
     default:
       return state;
   }

@@ -75,7 +75,7 @@ interface OwnProps {
 interface MappedProps {
   active: Contract | null;
   files: { [name: string]: ContractSrcFile };
-  activeAccount: Account | null;
+  accounts: { [address: string]: Account };
   deployedContracts: { [address: string]: Contract };
 }
 
@@ -98,7 +98,7 @@ class Runner extends React.Component<Props> {
   }
 
   render() {
-    const { activeAccount, isOpen, files } = this.props;
+    const { isOpen, files } = this.props;
     return (
       <React.Fragment>
         <Closer>
@@ -118,9 +118,9 @@ class Runner extends React.Component<Props> {
         >
           <RunnerNav
             callTransition={this.props.callTransition}
-            activeAccount={activeAccount}
-            abi={(this.props.active && this.props.active.abi) || null}
             deployContract={this.props.deployContract}
+            accounts={this.props.accounts}
+            abi={(this.props.active && this.props.active.abi) || null}
             deployedContracts={this.props.deployedContracts}
             files={files}
           />
@@ -147,10 +147,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 const mapStateToProps = (state: ApplicationState) => {
   const pointer = state.contract.active;
   const files = state.fs.contracts;
-  const activeAccount = state.blockchain.accounts[state.blockchain.current] || null;
+  const accounts = state.blockchain.accounts;
   const deployedContracts = state.contract.contracts;
   const baseMappedProps = {
-    activeAccount,
+    accounts,
     files,
     deployedContracts,
   };

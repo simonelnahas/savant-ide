@@ -22,7 +22,7 @@ const Wrapper = styled.div`
 
 interface Props {
   deployContract: Deployer;
-  activeAccount: Account;
+  accounts: { [address: string]: Account };
   files: { [name: string]: ContractSrcFile };
 }
 
@@ -32,10 +32,12 @@ interface State {
   selected: string;
   abi: ABI | null;
   result: DeploymentResult | null;
+  activeAccount: Account | null;
 }
 
 export default class DeployTab extends React.Component<Props, State> {
   state: State = {
+    activeAccount: null,
     selected: '',
     error: '',
     isChecking: false,
@@ -48,8 +50,20 @@ export default class DeployTab extends React.Component<Props, State> {
     this.setState({ selected: e.target.value });
   };
 
+  onSelectAccount: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
+    e.preventDefault();
+    this.setState({ activeAccount: this.props.accounts[e.target.value] });
+  };
+
   onDeploy = (init: FieldDict, msg: MsgFieldDict) => {
-    const { deployContract, files, activeAccount } = this.props;
+    const { deployContract, files } = this.props;
+    const { activeAccount } = this.state;
+
+    // this case should never arise, but we have to satisfy the typechecker.
+    if (!activeAccount) {
+      return;
+    }
+
     const sourceFile = files[this.state.selected];
     const initParams = toScillaParams(init);
     const msgParams = toMsgFields(msg);
@@ -60,6 +74,17 @@ export default class DeployTab extends React.Component<Props, State> {
   };
 
   onDeployResult = (result: DeploymentResult) => this.setState({ result });
+
+  getAccountOptions = () => {
+    const { accounts } = this.props;
+
+    return Object.keys(accounts).map((address) => ({
+      key: `0x${address.toUpperCase()} (${accounts[address].balance}) ZIL Nonce: ${
+        accounts[address].nonce
+      }`,
+      value: address,
+    }));
+  };
 
   componentDidUpdate(_: Props, prevState: State) {
     if (prevState.selected !== this.state.selected && this.state.selected.length) {
@@ -79,7 +104,7 @@ export default class DeployTab extends React.Component<Props, State> {
 
   render() {
     const { files } = this.props;
-    const { abi, error, selected, result } = this.state;
+    const { activeAccount, abi, error, selected, result } = this.state;
     const options = Object.keys(files).map((name) => ({
       key: name,
       value: name,
@@ -87,6 +112,12 @@ export default class DeployTab extends React.Component<Props, State> {
 
     return (
       <Wrapper>
+        <Select
+          value={(activeAccount && activeAccount.address) || ''}
+          placeholder="Select Account"
+          onChange={this.onSelectAccount}
+          items={this.getAccountOptions()}
+        />
         <Select
           placeholder="Choose a file."
           items={options}
@@ -98,6 +129,7 @@ export default class DeployTab extends React.Component<Props, State> {
             {error}
           </Typography>
         ) : (
+          activeAccount &&
           abi && (
             <InitForm
               key={abi.name}

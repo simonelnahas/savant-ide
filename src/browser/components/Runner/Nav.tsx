@@ -2,7 +2,6 @@ import * as React from 'react';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
 
 import AssignmentIcon from '@material-ui/icons/Description';
 import PlayIcon from '@material-ui/icons/PlayCircleOutline';
@@ -35,7 +34,7 @@ const Content = styled.div`
 interface Props {
   deployContract: Deployer; 
   callTransition: (address: string, transition: string, sender: Account, params: any) => void;
-  activeAccount: Account | null;
+  accounts: { [address: string]: Account };
   deployedContracts: { [address: string]: Contract };
   files: { [name: string]: ContractSrcFile };
   abi: ABI | null;
@@ -55,15 +54,11 @@ export default class RunnerNav extends React.Component<Props, State> {
   };
 
   renderContent = () => {
-    if (!this.props.activeAccount) {
-      return <Typography variant="headline">Please select an account.</Typography>;
-    }
-
     switch (this.state.value) {
       case 0:
         return (
           <CallTab
-            activeAccount={this.props.activeAccount}
+            accounts={this.props.accounts}
             callTransition={this.props.callTransition}
             deployedContracts={this.props.deployedContracts}
           />
@@ -73,7 +68,7 @@ export default class RunnerNav extends React.Component<Props, State> {
       case 2:
         return (
           <DeployTab
-            activeAccount={this.props.activeAccount}
+            accounts={this.props.accounts}
             deployContract={this.props.deployContract}
             files={this.props.files}
           />

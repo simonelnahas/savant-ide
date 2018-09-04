@@ -6,9 +6,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import Toolbar from '@material-ui/core/Toolbar';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Typography from '@material-ui/core/Typography';
-import Select from '../Form/Select';
 
-import { Account } from '../../store/blockchain/types';
 import { ContractSrcFile } from '../../store/fs/types';
 
 const ButtonWrapper = styled.span`
@@ -16,23 +14,10 @@ const ButtonWrapper = styled.span`
   flex-direction: column;
 `;
 
-const SelectWrapper = styled.div`
-  width: 30%;
-  margin: 0 1em;
-
-  & > .root {
-    margin: 0;
-    width: 100%;
-  }
-`;
-
 interface Props {
-  accounts: { [address: string]: Account };
-  activeAccount: Account | null;
   activeFile: ContractSrcFile;
   handleCheck: () => void;
   handleSave: () => void;
-  handleSetCurrentAccount: React.ChangeEventHandler<HTMLSelectElement>;
 }
 
 export default class EditorControls extends React.Component<Props> {
@@ -44,17 +29,8 @@ export default class EditorControls extends React.Component<Props> {
     this.props.handleCheck();
   };
 
-  getAccountOptions = () => {
-    const { accounts } = this.props;
-
-    return Object.keys(accounts).map((address) => ({
-      key: `0x${address.toUpperCase()} (${accounts[address].balance}) ZIL Nonce: ${accounts[address].nonce}`,
-      value: address,
-    }));
-  };
-
   render() {
-    const { activeAccount, activeFile, handleSetCurrentAccount } = this.props;
+    const {  activeFile } = this.props;
     const isContractSelected = !!activeFile.name.length;
 
     return (
@@ -64,14 +40,6 @@ export default class EditorControls extends React.Component<Props> {
             ? `${activeFile.name || 'untitled'}.scilla`
             : 'Create a new file, or select an existing one.'}
         </Typography>
-        <SelectWrapper>
-          <Select
-            value={(activeAccount && activeAccount.address) || ''}
-            placeholder="Select Account"
-            onChange={handleSetCurrentAccount}
-            items={this.getAccountOptions()}
-          />
-        </SelectWrapper>
         <ButtonWrapper>
           <IconButton
             disabled={!isContractSelected}

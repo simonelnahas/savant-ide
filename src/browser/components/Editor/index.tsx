@@ -11,10 +11,8 @@ import styled from 'styled-components';
 
 import Controls from './Controls';
 import { ApplicationState } from '../../store/index';
-import * as bcActions from '../../store/blockchain/actions';
 import * as fsActions from '../../store/fs/actions';
 import { ContractSrcFile } from '../../store/fs/types';
-import { Account } from '../../store/blockchain/types';
 
 const Editor = styled(AceEditor)`
   .error-marker {
@@ -42,13 +40,10 @@ const Wrapper = styled.div`
 
 interface OwnProps {}
 interface MappedProps {
-  activeAccount: Account | null;
-  accounts: { [address: string]: Account };
   contract: ContractSrcFile;
 }
 
 interface DispatchProps {
-  setCurrentAccount: typeof bcActions.setCurrentAccount;
   check: typeof fsActions.check;
   update: typeof fsActions.update;
 }
@@ -89,11 +84,6 @@ class ScillaEditor extends React.Component<Props, State> {
     update(contract.name, contract.code);
   };
 
-  handleSetCurrentAccount: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
-    console.log(`Selected ${e.target.value}`);
-    this.props.setCurrentAccount(e.target.value);
-  };
-
   onChange = (value: string): void => {
     this.setState({ contract: { ...this.state.contract, code: value } });
   };
@@ -117,17 +107,13 @@ class ScillaEditor extends React.Component<Props, State> {
 
   render() {
     const { contract } = this.state;
-    const { activeAccount, accounts } = this.props;
 
     return (
       <Wrapper>
         <Controls
-          activeAccount={activeAccount}
-          accounts={accounts}
           activeFile={contract}
           handleCheck={this.handleCheck}
           handleSave={this.handleSave}
-          handleSetCurrentAccount={this.handleSetCurrentAccount}
         />
         <Editor
           mode="ocaml"
@@ -147,7 +133,6 @@ class ScillaEditor extends React.Component<Props, State> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  setCurrentAccount: (address: string) => dispatch(bcActions.setCurrentAccount(address)),
   update: (name: string, code: string) => dispatch(fsActions.update(name, code)),
   check: (code: string) => dispatch(fsActions.check(code)),
 });
@@ -157,8 +142,6 @@ const mapStateToProps = (state: ApplicationState) => ({
     state.fs.activeContract && state.fs.activeContract.length > 1
       ? state.fs.contracts[state.fs.activeContract]
       : { name: '', code: '' },
-  activeAccount: state.blockchain.accounts[state.blockchain.current] || null,
-  accounts: state.blockchain.accounts,
 });
 
 export default connect(
