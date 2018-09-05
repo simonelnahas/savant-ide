@@ -31,9 +31,7 @@ export const check = async (req: Request, res: Response, next: NextFunction) => 
     if (ScillaCheckerError.isScillaError(err)) {
       res.status(400).json({
         result: 'error',
-        line: err.line,
-        column: err.column,
-        message: err.msg,
+        message: err.messages,
       });
       return;
     }
