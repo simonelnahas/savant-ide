@@ -1,5 +1,4 @@
-import BN from 'bn.js';
-import { parse } from '../../../lib/parser';
+import { parse } from './parser';
 
 import {
   ADTypeKind,
@@ -10,7 +9,9 @@ import {
   PairTypeNode,
   BoolTypeNode,
   NatTypeNode,
-} from '../../../lib/types';
+} from './types';
+
+import { KVPair } from '../store/contract/types';
 
 type PrimValue = string;
 
@@ -82,6 +83,15 @@ interface NatField extends Output, NatTypeNode {
 
 type Field = MapField | NumField | ListField | PairField | BoolField | NatField | ByteField;
 
+export const deserialiseContractState = (outputs: KVPair[]) => {
+  return outputs.reduce((stateObj, kvpair) => {
+    return {
+      ...stateObj,
+      [kvpair.vname]: deserialise(withTypes(kvpair)),
+    };
+  }, {});
+};
+
 /**
  * withTypes
  *
@@ -99,12 +109,12 @@ export const deserialise = (field: Field): any => {
       const [keyType, valType] = field.arguments;
       const res = field.value.reduce((acc, kv) => {
         const { key, val } = kv;
+        const k = <Field>{ value: key, ...keyType };
+        const v = <Field>{ value: val, ...valType };
+
         return {
           ...acc,
-          [deserialise(<Field>{ value: key, ...keyType })]: deserialise(<Field>{
-            value: val,
-            ...valType,
-          }),
+          [deserialise(k)]: deserialise(v),
         };
       }, {});
 
@@ -164,9 +174,13 @@ export const deserialise = (field: Field): any => {
     case NumTypeKind.Uint128:
     case NumTypeKind.Uint256:
     case BCTypeKind.BNum: {
-      return new BN(field.value, 10);
+      return field.value;
     }
 
+    case BCTypeKind.ByStr20:
+    case BCTypeKind.ByStr32:
+    case BCTypeKind.ByStr33:
+    case BCTypeKind.ByStr65:
     case BCTypeKind.Str:
     case BCTypeKind.Address:
     case BCTypeKind.Hash: {
@@ -178,4 +192,3 @@ export const deserialise = (field: Field): any => {
     }
   }
 };
-

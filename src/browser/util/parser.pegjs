@@ -33,6 +33,7 @@ Primitive =
   BNum /
   String / 
   Address / 
+  ByStr /
   Hash) { return makeTypeNode(prim) }
 
 // Numerical Types
@@ -50,5 +51,6 @@ BNum = "BNum"
 String = "String"
 Address = "Address"
 Hash = "Hash"
+ByStr = "ByStr"X:[0-9]+ { return "ByStr" + X.join('') }
 
 _ = [ \t\n]
