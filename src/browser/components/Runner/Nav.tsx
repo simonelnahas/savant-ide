@@ -28,10 +28,10 @@ const Wrapper = styled(Paper)`
 `;
 
 const Content = styled.div`
-  flex: 1 0 auto;
+  overflow: auto;
+  flex: 1 1 auto;
   display: flex;
   padding: 0 1em;
-  flex-grow: 1;
   flex-direction: column;
   justify-content: center;
   align-items: center;
