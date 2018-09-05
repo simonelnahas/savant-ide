@@ -5,6 +5,7 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
+import FormGroup from '@material-ui/core/FormGroup';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 
@@ -22,6 +23,18 @@ const StatusWrapper = styled.div`
   > * {
     width: 100%;
     text-align: center;
+  }
+`;
+
+const Wrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+
+  .form {
+    flex: 1 0 auto;
+    margin: 2em 0;
   }
 `;
 
@@ -185,37 +198,47 @@ export default class InitForm extends React.Component<Props, State> {
     }
 
     return (
-      <React.Fragment>
-        <Typography align="left" gutterBottom variant="headline">
+      <Wrapper>
+        <Typography align="left" gutterBottom variant="title">
           Transaction Parameters:
         </Typography>
-        <FormControl error={msg._amount.error}>
-          <InputLabel htmlFor="_amount">Amount (Uint128)</InputLabel>
-          <Input
-            onChange={this.handleMsgChange}
-            id="_amount"
-            name="_amount"
-            value={msg._amount.value}
-          />
-          {msg._amount.error && <FormHelperText>Please fill in a valid value</FormHelperText>}
-        </FormControl>
-        <Typography align="left" gutterBottom variant="headline">
-          Initialisation Parameters:
-        </Typography>
-        {abiParams.map(({ name, type }) => {
-          const field = init[name];
+        <FormGroup classes={{ root: 'form' }}>
+          <FormControl error={msg._amount.error}>
+            <InputLabel htmlFor="_amount">Amount (Uint128)</InputLabel>
+            <Input
+              onChange={this.handleMsgChange}
+              id="_amount"
+              name="_amount"
+              value={msg._amount.value}
+            />
+            {msg._amount.error && <FormHelperText>Please fill in a valid value</FormHelperText>}
+          </FormControl>
+        </FormGroup>
+        <FormGroup classes={{ root: 'form' }}>
+          <Typography align="left" gutterBottom variant="title">
+            Initialisation Parameters:
+          </Typography>
+          {abiParams.map(({ name, type }) => {
+            const field = init[name];
 
-          return (
-            field && (
-              <FormControl key={name} error={field.error}>
-                <InputLabel htmlFor={name}>{`${name} (${type})`}</InputLabel>
-                <Input onChange={this.handleInitChange} id={name} name={name} value={field.value} />
-                {field.error && <FormHelperText>Please fill in a value</FormHelperText>}
-              </FormControl>
-            )
-          );
-        })}
+            return (
+              field && (
+                <FormControl key={name} error={field.error}>
+                  <InputLabel htmlFor={name}>{`${name} (${type})`}</InputLabel>
+                  <Input
+                    onChange={this.handleInitChange}
+                    id={name}
+                    name={name}
+                    value={field.value}
+                  />
+                  {field.error && <FormHelperText>Please fill in a value</FormHelperText>}
+                </FormControl>
+              )
+            );
+          })}
+        </FormGroup>
         <Button
+          color="primary"
           variant="extendedFab"
           aria-label="Add Contract"
           onClick={this.handleSubmit}
@@ -223,7 +246,7 @@ export default class InitForm extends React.Component<Props, State> {
         >
           Deploy
         </Button>
-      </React.Fragment>
+      </Wrapper>
     );
   }
 }

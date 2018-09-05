@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
+import FormGroup from '@material-ui/core/FormGroup';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Typography from '@material-ui/core/Typography';
@@ -22,6 +23,18 @@ const StatusWrapper = styled.div`
   > * {
     width: 100%;
     text-align: center;
+  }
+`;
+
+const Wrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+
+  .form {
+    flex: 1 0 auto;
+    margin: 2em 0;
   }
 `;
 
@@ -186,50 +199,55 @@ export default class TransitionForm extends React.Component<Props, State> {
     }
 
     return (
-      <React.Fragment>
+      <Wrapper>
         <Typography align="left" gutterBottom variant="headline">
           Transaction Parameters:
         </Typography>
-        <FormControl error={msg._amount.error}>
-          <InputLabel htmlFor="_amount">Amount (Uint128)</InputLabel>
-          <Input
-            onChange={this.handleMsgChange}
-            id="_amount"
-            name="_amount"
-            value={msg._amount.value}
-          />
-          {msg._amount.error && <FormHelperText>Please fill in a valid value</FormHelperText>}
-        </FormControl>
+        <FormGroup classes={{ root: 'form' }}>
+          <FormControl error={msg._amount.error}>
+            <InputLabel htmlFor="_amount">Amount (Uint128)</InputLabel>
+            <Input
+              onChange={this.handleMsgChange}
+              id="_amount"
+              name="_amount"
+              value={msg._amount.value}
+            />
+            {msg._amount.error && <FormHelperText>Please fill in a valid value</FormHelperText>}
+          </FormControl>
+        </FormGroup>
         {!!params.length && (
-          <React.Fragment>
-            <Typography align="left" gutterBottom variant="headline">
-              Transition Parameters:
-            </Typography>
-            {params.map(({ name, type }) => {
-              const field = this.state.params[name];
+          <FormGroup classes={{ root: 'form' }}>
+            <React.Fragment>
+              <Typography align="left" gutterBottom variant="headline">
+                Transition Parameters:
+              </Typography>
+              {params.map(({ name, type }) => {
+                const field = this.state.params[name];
 
-              if (!field) {
-                return null;
-              }
+                if (!field) {
+                  return null;
+                }
 
-              return (
-                field && (
-                  <FormControl key={name} error={field.error}>
-                    <InputLabel htmlFor={name}>{`${name} (${type})`}</InputLabel>
-                    <Input
-                      onChange={this.handleParamsChange}
-                      id={name}
-                      name={name}
-                      value={field.value}
-                    />
-                    {field.error && <FormHelperText>Please fill in a value</FormHelperText>}
-                  </FormControl>
-                )
-              );
-            })}
-          </React.Fragment>
+                return (
+                  field && (
+                    <FormControl key={name} error={field.error}>
+                      <InputLabel htmlFor={name}>{`${name} (${type})`}</InputLabel>
+                      <Input
+                        onChange={this.handleParamsChange}
+                        id={name}
+                        name={name}
+                        value={field.value}
+                      />
+                      {field.error && <FormHelperText>Please fill in a value</FormHelperText>}
+                    </FormControl>
+                  )
+                );
+              })}
+            </React.Fragment>
+          </FormGroup>
         )}
         <Button
+          color="primary"
           variant="extendedFab"
           aria-label="Add Contract"
           onClick={this.handleSubmit}
@@ -237,7 +255,7 @@ export default class TransitionForm extends React.Component<Props, State> {
         >
           Call Transition
         </Button>
-      </React.Fragment>
+      </Wrapper>
     );
   }
 }

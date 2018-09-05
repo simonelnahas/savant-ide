@@ -10,6 +10,12 @@ import { toMsgFields, toScillaParams, FieldDict, MsgFieldDict } from '../../util
 import TransitionForm from './TransitionForm';
 
 const Wrapper = styled.div`
+  margin-top: 2em;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
   width: 100%;
 
   > * {
@@ -135,7 +141,7 @@ export default class CallTab extends React.Component<Props, State> {
       <Wrapper>
         <Select
           value={(activeAccount && activeAccount.address) || ''}
-          placeholder="Select Account"
+          placeholder="Select account"
           onChange={this.onSelectAccount}
           items={this.getAccountOptions()}
         />
