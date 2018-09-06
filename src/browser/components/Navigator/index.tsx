@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import AddIcon from '@material-ui/icons/Add';
+import HelpIcon from '@material-ui/icons/HelpOutlineOutlined';
 import ArrowLeft from '@material-ui/icons/ArrowLeft';
 import Button from '@material-ui/core/Button';
 import Drawer from '@material-ui/core/Drawer';
@@ -15,6 +16,7 @@ import File from './File';
 import { ApplicationState } from '../../store/index';
 import { ContractSrcFile } from '../../store/fs/types';
 import * as fsActions from '../../store/fs/actions';
+import config from '../../config';
 import logo from './scilla-logo-color-transparent.png';
 
 interface OwnProps {}
@@ -138,6 +140,17 @@ class Navigator extends React.Component<Props, State> {
           classes={{ paper: classNames('paper', isOpen ? 'open' : 'closed') }}
         >
           <Logo src={logo} />
+          <Button
+            color="primary"
+            classes={{ root: 'adder' }}
+            aria-label="Documentation"
+            size="small"
+            target="_blank"
+            href={config.SCILLA_DOCS}
+          >
+            <HelpIcon />
+            Scilla Docs
+          </Button>
           <Button
             color="primary"
             classes={{ root: 'adder' }}
