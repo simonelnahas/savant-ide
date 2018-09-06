@@ -35,6 +35,7 @@
   },
   "linterOptions": {
     "exclude": [
+      "*.scilla",
       "config/**/*.js",
       "node_modules/**/*.ts"
     ]

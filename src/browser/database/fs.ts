@@ -8,7 +8,7 @@ export default class FSStore implements KVStore<string, ContractSrcFile> {
   name: string = FS_STORE_NAME;
   db: Promise<DB>;
   constructor() {
-    this.db = idb.open('scilla-ide', 1);
+    this.db = idb.open('scilla-ide');
   }
 
   async tx(mode: 'readonly' | 'readwrite' = 'readwrite') {

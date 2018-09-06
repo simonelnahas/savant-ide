@@ -30,5 +30,5 @@ yarn run start
 - ~Validate inputs for deployment~
 - ~Hook up `/contract/run` response to UI~
 - ~Add `/contract/check` errors to the editor UI as markers~
-- Add snackbar component to notify user that contract is checked
+- ~Add snackbar component to notify user that contract is checked~
 - ~Add makefile~
