@@ -29,7 +29,7 @@ export const addError = createAction(FSActionTypes.ADD_ERROR, (resolve) => {
  * Code checking actions
  */
 export const check = createAction(FSActionTypes.CHECK, (resolve) => {
-  return (code: string) => resolve({ code });
+  return (code: string, cb?: (res: any) => void) => resolve({ code, cb });
 });
 export const checkSuccess = createAction(FSActionTypes.CHECK_SUCCESS);
 export const checkError = createAction(FSActionTypes.CHECK_ERROR, (resolve) => {

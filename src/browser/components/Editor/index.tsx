@@ -11,6 +11,7 @@ import Measure, { ContentRect } from 'react-measure';
 import styled from 'styled-components';
 
 import Controls from './Controls';
+import Notification from './Notification';
 import { ApplicationState } from '../../store/index';
 import * as fsActions from '../../store/fs/actions';
 import { ContractSrcFile } from '../../store/fs/types';
@@ -55,6 +56,8 @@ type Props = OwnProps & MappedProps & DispatchProps;
 interface State {
   contract: ContractSrcFile;
   dimensions: { width: number; height: number };
+  notifications: any[];
+  snackbar: { open: boolean; message: any; key: number };
 }
 
 class ScillaEditor extends React.Component<Props, State> {
@@ -77,12 +80,42 @@ class ScillaEditor extends React.Component<Props, State> {
       height: -1,
       width: -1,
     },
+    notifications: [],
+    snackbar: { open: false, message: null, key: 0 },
   };
 
   handleCheck = () => {
     const { check } = this.props;
     const { contract } = this.state;
-    check(contract.code);
+    check(contract.code, this.handleCheckRes);
+  };
+
+  handleCheckRes = (res: any) => {
+    this.setState((state) => ({ notifications: state.notifications.concat([res]) }));
+
+    if (this.state.snackbar.open) {
+      this.setState((state) => ({ snackbar: { ...state.snackbar, open: false } }));
+      return;
+    }
+
+    this.handleDisplayNext();
+  };
+
+  handleCloseSnackbar = () => {
+    this.setState({ snackbar: { ...this.state.snackbar, open: false } });
+  };
+
+  handleDisplayNext = () => {
+    if (this.state.notifications.length) {
+      const [head, ...tail] = this.state.notifications;
+
+      this.setState({
+        notifications: tail,
+        snackbar: { open: true, message: head, key: new Date().getTime() },
+      });
+
+      return;
+    }
   };
 
   handleSave = () => {
@@ -92,7 +125,6 @@ class ScillaEditor extends React.Component<Props, State> {
   };
 
   handleResize = (contentRect: ContentRect): void => {
-    console.log(contentRect);
     if (contentRect && contentRect.bounds) {
       const { height, width } = contentRect.bounds;
       this.setState({ dimensions: { height, width } });
@@ -126,12 +158,24 @@ class ScillaEditor extends React.Component<Props, State> {
   };
 
   render() {
-    const { contract } = this.state;
+    const { contract, snackbar } = this.state;
 
     return (
       <Measure bounds onResize={this.handleResize}>
         {({ measureRef }) => (
           <Wrapper innerRef={measureRef}>
+            <Notification
+              key={snackbar.key}
+              onClose={this.handleCloseSnackbar}
+              onExited={this.handleDisplayNext}
+              open={snackbar.open}
+              msg={
+                snackbar.open && snackbar.message.result === 'success'
+                  ? 'Type-checking succeeded.'
+                  : 'Type-checking failed.'
+              }
+              variant={snackbar.message && snackbar.message.result}
+            />
             <Controls
               activeFile={contract}
               blockNum={this.props.blocknum}
@@ -149,6 +193,7 @@ class ScillaEditor extends React.Component<Props, State> {
               height={`${this.state.dimensions.height.toString(10)}px`}
               width={`${this.state.dimensions.width.toString(10)}px`}
               value={contract.code}
+              editorProps={{ $blockScrolling: true }}
               readOnly={contract.name.length === 0}
             />
           </Wrapper>
@@ -160,7 +205,7 @@ class ScillaEditor extends React.Component<Props, State> {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   update: (name: string, code: string) => dispatch(fsActions.update(name, code)),
-  check: (code: string) => dispatch(fsActions.check(code)),
+  check: (code: string, cb?: (res: any) => void) => dispatch(fsActions.check(code, cb)),
 });
 
 const mapStateToProps = (state: ApplicationState) => ({

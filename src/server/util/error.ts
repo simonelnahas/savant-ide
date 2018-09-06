@@ -94,7 +94,7 @@ export const parseTypeError = (out: string): ScillaCheckerError | null => {
       const eObj = {
         line: parseInt(line, 10),
         column: parseInt(column, 10),
-        msg: `${matchX[2]}${msg ? '\n' + msg : ''}`,
+        msg: `[${line}:${column}]: ${matchX[2]}${msg ? '\n' + msg : ''}`,
       };
 
       return eObj;

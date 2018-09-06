@@ -57,10 +57,13 @@ export const runner = async (opts: RunOpt) => {
 };
 
 /**
- * async
+ * checker
+ *
+ * Asynchronously invokes `scilla-checker`, returning JSON ABI or a ScillaError with the
+ * parsed error output from the binary.
  *
  * @param {CheckOpt} opts
- * @returns {undefined}
+ * @returns {Promise<string>}
  */
 export const checker = async (opts: BaseOpt) => {
   const cmd = `${Paths.CHECKER} ${opts.code} ${opts.stdlib}`;

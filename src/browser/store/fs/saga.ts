@@ -79,7 +79,7 @@ function* deleteContract(action: ActionType<typeof fsActions.deleteContract>, db
 
 function* checkContract(action: ActionType<typeof fsActions.check>) {
   try {
-    const { code } = action.payload;
+    const { code, cb } = action.payload;
     const res = yield api.checkContract(code);
     const { status, message } = res;
 
@@ -88,9 +88,17 @@ function* checkContract(action: ActionType<typeof fsActions.check>) {
     } else {
       yield put(fsActions.checkSuccess());
     }
+
+    if (cb) {
+      cb(res);
+    }
   } catch (err) {
     // something went wrong at the app level
     yield put(fsActions.checkError(err));
+
+    if (action.payload.cb) {
+      action.payload.cb(err.response);
+    }
   }
 }
 
