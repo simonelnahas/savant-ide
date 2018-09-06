@@ -36,7 +36,7 @@ export default class EditorControls extends React.Component<Props> {
     const isContractSelected = !!activeFile.name.length;
 
     return (
-      <Toolbar variant="dense">
+      <Toolbar variant="dense" style={{ padding: '12px 24px' }}>
         <Typography style={{ flex: 1 }}>
           {activeFile.name
             ? `${activeFile.name || 'untitled'}.scilla`

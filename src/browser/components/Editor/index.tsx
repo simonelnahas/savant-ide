@@ -7,6 +7,7 @@ import 'brace/mode/ocaml';
 import 'brace/ext/searchbox';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import Measure, { ContentRect } from 'react-measure';
 import styled from 'styled-components';
 
 import Controls from './Controls';
@@ -53,6 +54,7 @@ type Props = OwnProps & MappedProps & DispatchProps;
 
 interface State {
   contract: ContractSrcFile;
+  dimensions: { width: number; height: number };
 }
 
 class ScillaEditor extends React.Component<Props, State> {
@@ -71,6 +73,10 @@ class ScillaEditor extends React.Component<Props, State> {
       code: '',
       error: null,
     },
+    dimensions: {
+      height: -1,
+      width: -1,
+    },
   };
 
   handleCheck = () => {
@@ -83,6 +89,14 @@ class ScillaEditor extends React.Component<Props, State> {
     const { update } = this.props;
     const { contract } = this.state;
     update(contract.name, contract.code);
+  };
+
+  handleResize = (contentRect: ContentRect): void => {
+    console.log(contentRect);
+    if (contentRect && contentRect.bounds) {
+      const { height, width } = contentRect.bounds;
+      this.setState({ dimensions: { height, width } });
+    }
   };
 
   onChange = (value: string): void => {
@@ -115,27 +129,31 @@ class ScillaEditor extends React.Component<Props, State> {
     const { contract } = this.state;
 
     return (
-      <Wrapper>
-        <Controls
-          activeFile={contract}
-          blockNum={this.props.blocknum}
-          canSave={this.props.contract.code !== this.state.contract.code}
-          handleCheck={this.handleCheck}
-          handleSave={this.handleSave}
-        />
-        <Editor
-          mode="ocaml"
-          theme="tomorrow"
-          fontSize={16}
-          onChange={this.onChange}
-          name="scilla-editor"
-          annotations={this.getAnnotations()}
-          editorProps={{ $blockScrolling: true }}
-          style={{ flexGrow: 1, width: '100%', height: '' }}
-          value={contract.code}
-          readOnly={contract.name.length === 0}
-        />
-      </Wrapper>
+      <Measure bounds onResize={this.handleResize}>
+        {({ measureRef }) => (
+          <Wrapper innerRef={measureRef}>
+            <Controls
+              activeFile={contract}
+              blockNum={this.props.blocknum}
+              canSave={this.props.contract.code !== this.state.contract.code}
+              handleCheck={this.handleCheck}
+              handleSave={this.handleSave}
+            />
+            <Editor
+              mode="ocaml"
+              theme="tomorrow"
+              fontSize={16}
+              onChange={this.onChange}
+              name="scilla-editor"
+              annotations={this.getAnnotations()}
+              height={`${this.state.dimensions.height.toString(10)}px`}
+              width={`${this.state.dimensions.width.toString(10)}px`}
+              value={contract.code}
+              readOnly={contract.name.length === 0}
+            />
+          </Wrapper>
+        )}
+      </Measure>
     );
   }
 }
