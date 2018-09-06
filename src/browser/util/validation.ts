@@ -14,7 +14,7 @@ const Matchers: { [type: string]: RegExp } = {
 
 const Validators: { [type: string]: RegExp } = {
   ByStrX: /^0x[A-F0-9]{20,65}$/i,
-  String: /w+/i,
+  String: /\w+/i,
   Uint: /^[0-9]+$/,
   Int: /^(-|\+)?[0-9]+$/,
   BNum: /^[1-9]([0-9])*$/,
