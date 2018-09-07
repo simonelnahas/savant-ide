@@ -9,6 +9,7 @@ import {
   PairTypeNode,
   BoolTypeNode,
   NatTypeNode,
+  OptionTypeNode,
 } from './types';
 
 import { KVPair } from '../store/contract/types';
@@ -36,12 +37,18 @@ interface BoolValue {
   constructor: 'True' | 'False';
 }
 
+interface OptionValue {
+  constructor: 'Some' | 'None';
+  argtypes: [string];
+  arguments: [Value];
+}
+
 interface NatValue {
   constructor: 'Zero' | 'Succ';
   arguments: [NatValue] | null;
 }
 
-type Value = PrimValue | MapValue | ListValue | PairValue | BoolValue;
+type Value = PrimValue | MapValue | ListValue | PairValue | OptionValue | BoolValue;
 
 // raw output from scilla
 interface Output {
@@ -73,6 +80,10 @@ interface PairField extends Output, PairTypeNode {
   value: PairValue;
 }
 
+interface OptionField extends Output, OptionTypeNode {
+  value: OptionValue;
+}
+
 interface BoolField extends Output, BoolTypeNode {
   value: BoolValue;
 }
@@ -81,7 +92,15 @@ interface NatField extends Output, NatTypeNode {
   value: NatValue;
 }
 
-type Field = MapField | NumField | ListField | PairField | BoolField | NatField | ByteField;
+type Field =
+  | MapField
+  | NumField
+  | ListField
+  | PairField
+  | OptionField
+  | BoolField
+  | NatField
+  | ByteField;
 
 export const deserialiseContractState = (outputs: KVPair[]) => {
   return outputs.reduce((stateObj, kvpair) => {
@@ -159,6 +178,16 @@ export const deserialise = (field: Field): any => {
       }
 
       return int;
+    }
+
+    case ADTypeKind.Option: {
+      if (field.value.constructor === 'None') {
+        return null;
+      }
+
+      return deserialise(
+        withTypes({ value: field.value.arguments[0], type: field.value.argtypes[0] }),
+      );
     }
 
     case ADTypeKind.Bool: {

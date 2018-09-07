@@ -16,7 +16,7 @@ Pair = "Pair" _* "(" left:Type ")" _* "(" right:Type ")" { return makeTypeNode("
 List = "List" _* "(" of:Type ")" { return makeTypeNode("List", [of]) }
 Nat = "Nat" { return makeTypeNode("Nat"); }
 Bool = "Bool" { return makeTypeNode("Bool"); }
-Option = "Option"
+Option = "Option" _* "(" of:Type ")" { return makeTypeNode("Option", [of]); }
 
 // Map
 Map = "Map" _* "(" ktype:Primitive ")" _* "(" vtype:Type ")" { return makeTypeNode("Map", [ktype, vtype]) }
