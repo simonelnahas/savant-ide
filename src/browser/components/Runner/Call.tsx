@@ -140,6 +140,7 @@ export default class CallTab extends React.Component<Props, State> {
     return (
       <Wrapper>
         <Select
+          copyable
           value={(activeAccount && activeAccount.address) || ''}
           placeholder="Select account"
           onChange={this.onSelectAccount}
