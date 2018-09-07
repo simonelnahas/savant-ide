@@ -11,6 +11,10 @@ if (typeof Promise === 'undefined') {
 // fetch() polyfill for making API calls.
 require('whatwg-fetch');
 
+// AbortController polyfill. Known to be missing in at least Chrome
+// 65.0.3325.181.
+require('abortcontroller-polyfill/dist/polyfill-patch-fetch');
+
 // Object.assign() is commonly used with React.
 // It will use the native implementation if it's present and isn't buggy.
 Object.assign = require('object-assign');
