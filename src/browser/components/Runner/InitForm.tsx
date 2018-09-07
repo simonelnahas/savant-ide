@@ -165,9 +165,10 @@ export default class InitForm extends React.Component<Props, State> {
       return (
         <StatusWrapper>
           <Typography variant="body2">
-            {`Your contract was successfully deployed to ${result.address}`}
+            {`Your contract was successfully deployed to 0x${result.address.toUpperCase()}`}
           </Typography>
           <Button
+            color="primary"
             variant="extendedFab"
             aria-label="reset"
             onClick={handleReset}
