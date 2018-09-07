@@ -136,6 +136,7 @@ function* callTransition(action: ActionType<typeof contractActions.call>, db: Co
       balance: new BN(caller.balance)
         .sub(DEFAULT_CALL_GAS)
         .sub(txAmount)
+        .add(new BN(msg.message._amount))
         .toString(10),
     };
 
