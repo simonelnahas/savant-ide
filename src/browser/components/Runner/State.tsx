@@ -19,8 +19,13 @@ const labelRender = (key: string[]) => {
   return <span>{key.length > 1 ? key[0] : `0x${key[0].toUpperCase()}`}:</span>;
 };
 
-const valueRender = (value: string) => {
-  return <span style={{ width: '100%', whiteSpace: 'pre' }}>{value}</span>;
+const valueRender = (value: string, ...args: any[]) => {
+  console.log(args);
+  if (args[1] === 'code') {
+    return <code style={{ whiteSpace: 'pre' }}>{`\n${value.slice(1, value.length - 2)}`}</code>;
+  }
+
+  return <span>{value}</span>;
 };
 
 const Wrapper = styled.div`
