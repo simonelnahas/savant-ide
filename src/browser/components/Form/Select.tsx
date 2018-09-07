@@ -18,6 +18,7 @@ interface Props extends SelectProps {
 
 const Control = styled(FormControl)`
   && {
+    flex: 0 0 auto;
     margin-bottom: 2em;
   }
 `;

@@ -1,5 +1,16 @@
 import { TransitionCallResponse } from '../store/contract/types';
 
+export interface ErrorObj {
+  line: number;
+  column: number;
+  msg: string;
+}
+
+export interface ErrorMsg {
+  result: 'error';
+  message: ErrorObj[];
+}
+
 export interface ResponseMsg {
   result: 'success' | 'error';
   message: any;
@@ -13,6 +24,16 @@ export const enum Status {
   ERROR = 'error',
   SUCCESS = 'success',
 }
+
+const apiUrl = process.env.REACT_APP_SCILLA_API;
+
+export const formatError = (error: any | ErrorObj[]) => {
+  if (Array.isArray(error)) {
+    return (<ErrorObj[]>error).map(({ msg }) => msg).join('\n');
+  }
+
+  return error.toString();
+};
 
 /**
  * Custom error class with response exposed.
@@ -61,7 +82,7 @@ export const checkContract = (contract: string, signal?: AbortSignal) => {
     signal,
   };
 
-  return request('http://localhost:8080/contract/check', {
+  return request(`${apiUrl}/contract/check`, {
     ...defaults,
     body: JSON.stringify({ code: contract }),
   }).then((res) => {
@@ -83,7 +104,7 @@ export const callContract = (payload: any, signal?: AbortSignal): Promise<CallRe
     signal,
   };
 
-  return request('http://localhost:8080/contract/call', {
+  return request(`${apiUrl}/contract/call`, {
     ...defaults,
     body: JSON.stringify(payload),
   }).then((res) => {

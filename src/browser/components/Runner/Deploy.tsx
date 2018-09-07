@@ -33,7 +33,7 @@ interface Props {
 }
 
 interface State {
-  error: string;
+  error: any;
   isChecking: boolean;
   selected: string;
   abi: ABI | null;
@@ -74,8 +74,6 @@ export default class DeployTab extends React.Component<Props, State> {
     const initParams = toScillaParams(init);
     const msgParams = toMsgFields(msg);
 
-    console.log('deploying with params: \n');
-    console.log(initParams, msgParams);
     deployContract(sourceFile.code, initParams, msgParams, activeAccount, this.onDeployResult);
   };
 
@@ -103,10 +101,10 @@ export default class DeployTab extends React.Component<Props, State> {
   };
 
   componentDidUpdate(_: Props, prevState: State) {
-    if (prevState.selected !== this.state.selected && this.state.selected.length) {
+    if (this.state.selected.length && prevState.selected !== this.state.selected) {
       const { code } = this.props.files[this.state.selected];
       const ctrl = new AbortController();
-      this.setState({ isChecking: true });
+      this.setState({ isChecking: true, error: null });
       api
         .checkContract(code, ctrl.signal)
         .then((res) => {
@@ -140,9 +138,14 @@ export default class DeployTab extends React.Component<Props, State> {
           value={selected}
           onChange={this.onSelectContract}
         />
-        {error.length ? (
-          <Typography color="error" variant="body2">
-            {error}
+        {error && error.length ? (
+          <Typography color="error" variant="body2" style={{ whiteSpace: 'pre-line' }}>
+            {` The following errors were encountered during type-checking:
+
+              ${api.formatError(error)}
+
+              Please correct these errors and try again.
+            `}
           </Typography>
         ) : (
           activeAccount &&

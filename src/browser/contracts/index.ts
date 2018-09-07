@@ -1,5 +1,6 @@
 import auction from './auction.scilla';
 import bookstore from './bookstore.scilla';
+import crowdfunding from './crowdfunding.scilla';
 import fungibleToken from './fungible_token.scilla';
 import helloWorld from './hello_world.scilla';
 import nonFungibleToken from './nonfungible_token.scilla';
@@ -14,6 +15,7 @@ interface ScillaSrc {
 export const defaultContracts: ScillaSrc[] = [
   { name: 'auction', src: auction },
   { name: 'bookstore', src: bookstore },
+  { name: 'crowdfunding', src: crowdfunding },
   { name: 'fungibleToken', src: fungibleToken },
   { name: 'helloWorld', src: helloWorld },
   { name: 'nonFungibleToken', src: nonFungibleToken },
