@@ -19,6 +19,10 @@ const labelRender = (key: string[]) => {
   return <span>{key.length > 1 ? key[0] : `0x${key[0].toUpperCase()}`}:</span>;
 };
 
+const valueRender = (value: string) => {
+  return <span style={{ width: '100%', whiteSpace: 'pre' }}>{value}</span>;
+};
+
 const Wrapper = styled.div`
   width: 100%;
   display: flex;
@@ -90,6 +94,7 @@ export default class StateTree extends React.Component<Props, State> {
             hideRoot
             data={this.getContracts()}
             getItemString={noop}
+            valueRenderer={valueRender}
             labelRenderer={labelRender}
           />
         </div>
