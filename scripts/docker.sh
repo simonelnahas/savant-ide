@@ -19,9 +19,9 @@ echo $TRAVIS_COMMIT
 commit=$(git rev-parse --short=7 ${TRAVIS_COMMIT})
 account_id=$(aws sts get-caller-identity --output text --query 'Account')
 region_id=us-east-1
-registry_url=${account_id}.dkr.ecr.${region_id}.amazonaws.com/scilla-runner-api:${commit}
+registry_url=${account_id}.dkr.ecr.${region_id}.amazonaws.com/scilla-runner-api
 
 eval $(aws ecr get-login --no-include-email --region ${region_id})
-docker build -t ${registry_url} -t scilla-runner-api:${commit} -t scilla-runner-api:latest .
+docker build -t ${registry_url}:latest -t ${registry_url}:${commit} .
 
 docker push ${registry_url}
