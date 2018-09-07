@@ -11,12 +11,15 @@ bucket=scillaide
 files=($(find *))
 
 echo "Emptying bucket..."
-eval $(aws s3 --region ${region} rm s3://${bucket} --recursive)
+aws --region ${region_id} s3 rm s3://${bucket}
 
 for file in "${files[@]}"
 do
-  echo "Uploading ${file} to s3"
-  eval $(aws s3 cp ${file} s3://${bucket}/${file})
+  if [ -d ${file} ]; then
+    continue
+  else
+    aws s3 cp ${file} s3://${bucket}/${file}
+  fi
 done
 
 echo "Done"

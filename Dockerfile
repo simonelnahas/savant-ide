@@ -9,4 +9,4 @@ WORKDIR /scilla-ide
 
 RUN npm install pm2 -g
 
-CMD ["pm2-runtime", "dist/server/app.js"]
+CMD ["pm2-runtime", "dist/server/server.js"]
