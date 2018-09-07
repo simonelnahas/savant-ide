@@ -25,3 +25,6 @@ scilla-bin:
 	git -C scilla pull
 	$(MAKE) -C scilla opamdep
 	$(MAKE) -C scilla all
+
+docker: clean bootstrap scilla-bin
+	docker build . -t scilla-runner-api:$(shell git rev-parse --short=7 HEAD)

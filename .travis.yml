@@ -1,0 +1,29 @@
+language: generic
+sudo: required
+branches:
+  only:
+    - feature/rewrite
+cache:
+  directories:
+    - $HOME/.yarn-cache/
+    - $HOME/.opam
+
+before_install:
+  - ./scripts/scilla-bin.sh
+  - wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sudo sh -s /usr/local/bin
+
+install:
+  - make
+
+script:
+  - yarn test
+
+before_deploy:
+  - pip install --user awscli
+  - export PATH=$PATH:$HOME/.local/bin
+
+deploy:
+  - yarn build:client
+  - ./scripts/deploy.sh
+  - yarn build:server
+  - ./scripts/docker.sh
