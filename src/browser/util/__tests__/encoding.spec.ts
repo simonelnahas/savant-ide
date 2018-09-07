@@ -199,13 +199,13 @@ describe('encoding', () => {
 
     const res = deserialise(withTypes(datum));
     const expected = [
-      [new BN(8, 10), 'eight'],
-      [new BN(8, 10), 'eight'],
-      [new BN(8, 10), 'eight'],
-      [new BN(8, 10), 'eight'],
-      [new BN(8, 10), 'eight'],
-      [new BN(8, 10), 'eight'],
-      [new BN(8, 10), 'eight'],
+      ['8', 'eight'],
+      ['8', 'eight'],
+      ['8', 'eight'],
+      ['8', 'eight'],
+      ['8', 'eight'],
+      ['8', 'eight'],
+      ['8', 'eight'],
     ];
 
     expect(res).toEqual(expected);
@@ -290,10 +290,10 @@ describe('encoding', () => {
 
     const expected = [
       [
-        [new BN(1), '0x12345678901234567890123456789012345678ab'],
-        ['Cloud', new BN('12983471263845836455928349912348')],
+        ['1', '0x12345678901234567890123456789012345678ab'],
+        ['Cloud', '12983471263845836455928349912348'],
       ],
-      [[new BN('2135692384781'), new BN('2135692384785')], [false, 3]],
+      [['2135692384781', '2135692384785'], [false, 3]],
     ];
 
     const res = deserialise(withTypes(datum));
