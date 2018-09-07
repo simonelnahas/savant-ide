@@ -24,6 +24,7 @@ const Wrapper = styled.div`
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
+  min-height: 0;
 
   > .tree-wrapper {
     margin: 1em 0;
