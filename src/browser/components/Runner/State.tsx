@@ -22,7 +22,7 @@ const labelRender = (key: string[]) => {
 const valueRender = (value: string, ...args: any[]) => {
   console.log(args);
   if (args[1] === 'code') {
-    return <code style={{ whiteSpace: 'pre' }}>{`\n${value.slice(1, value.length - 2)}`}</code>;
+    return <code style={{ whiteSpace: 'pre' }}>{`\n${value}`}</code>;
   }
 
   return <span>{value}</span>;
