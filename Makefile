@@ -9,6 +9,10 @@ default: all
 
 all: clean bootstrap scilla-bin
 
+build-js: clean bootstrap
+	yarn build:client
+	yarn build:server
+
 bootstrap:
 	mkdir temp
 	yarn install
