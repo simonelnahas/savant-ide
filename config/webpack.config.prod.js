@@ -147,15 +147,15 @@ module.exports = {
             ),
           },
           {
+            test: /\.scilla$/,
+            use: 'raw-loader',
+          },
+          {
             loader: require.resolve('file-loader'),
             exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/, /\.scilla$/],
             options: {
               name: 'static/media/[name].[hash:8].[ext]',
             },
-          },
-          {
-            test: /\.scilla$/,
-            use: 'raw-loader',
           },
         ],
       },

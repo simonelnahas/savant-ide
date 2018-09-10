@@ -156,7 +156,6 @@ function* callTransition(action: ActionType<typeof contractActions.call>, db: Co
 
     statusCB({ status: ScillaBinStatus.SUCCESS, address });
   } catch (err) {
-    console.log(err);
     put(contractActions.callError(address, err));
     statusCB({ status: ScillaBinStatus.FAILURE, address, error: err });
   }
