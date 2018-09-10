@@ -62,9 +62,19 @@ interface State {
 
 class ScillaEditor extends React.Component<Props, State> {
   static getDerivedStateFromProps(props: Props, state: State) {
-    // a new contract has been loaded
+    // the contract has been deleted; clear state.
+    if (!props.contract) {
+      return { ...state, contract: { name: '', code: '' } };
+    }
+
+    // a new contract has been loaded.
     if (state.contract && state.contract.name !== props.contract.name) {
       return { ...state, contract: props.contract };
+    }
+
+    // the contract was checked, and an error occurred.
+    if (state.contract && state.contract.error !== props.contract.error) {
+      return { ...state, contract: { ...state.contract, error: props.contract.error } };
     }
 
     return null;
@@ -136,7 +146,8 @@ class ScillaEditor extends React.Component<Props, State> {
   };
 
   getAnnotations = (): any => {
-    const { contract } = this.props;
+    const { contract } = this.state;
+    console.log(contract);
 
     if (contract.error && contract.error.message) {
       const markers = contract.error.message.map((err: any) => {
@@ -179,7 +190,7 @@ class ScillaEditor extends React.Component<Props, State> {
             <Controls
               activeFile={contract}
               blockNum={this.props.blocknum}
-              canSave={this.props.contract.code !== this.state.contract.code}
+              canSave={this.props.contract && this.props.contract.code !== this.state.contract.code}
               handleCheck={this.handleCheck}
               handleSave={this.handleSave}
             />
