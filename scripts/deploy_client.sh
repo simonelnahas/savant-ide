@@ -4,14 +4,14 @@ set -e
 
 aws --version
 
-cd build
+
+[ -z ${TRAVIS_BUILD_DIR} ] && BUILD_DIR=./build || BUILD_DIR=${TRAVIS_BUILD_DIR}/build
+
+cd "${BUILD_DIR}"
 
 region_id=us-west-2
 bucket=scillaide
 files=($(find * ! -name "index.html" ! -name "service-worker.js" -type f))
-
-echo "Building client bundle..."
-yarn build:client
 
 echo "Emptying bucket..."
 aws --region ${region_id} s3 rm s3://${bucket}

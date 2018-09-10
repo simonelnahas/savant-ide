@@ -1,47 +1,38 @@
 language: generic
 sudo: required
+services:
+  - docker
+
 branches:
   only:
     - feature/rewrite
+
+before_cache:
+  - >
+    mkdir -p $HOME/docker && docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}} {{.ID}}'
+    | xargs -n 2 -t sh -c 'test -e $HOME/docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/docker/$1.tar.gz'
 cache:
   directories:
+    - $HOME/docker
     - $HOME/.yarn-cache/
-    - $HOME/.opam
-
-addons:
-  apt:
-    packages:
-      - ocaml
-      - curl
-      - build-essential
-      - m4
-      - pkg-config
-      - zlib1g-dev
-      - libgmp-dev
-      - libssl-dev
-      - libboost-system-dev
-      - aspcud
-
-before_install:
-  - wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sudo sh -s /usr/local/bin
-  - git clone https://github.com/zilliqa/scilla
 
 install:
-  - opam init -y
-  - opam switch -y 4.06.0
-  - opam install -y ocaml-migrate-parsetree core cryptokit ppx_sexp_conv yojson batteries angstrom hex ppx_deriving ppx_deriving_yojson menhir oUnit dune stdint fileutils ctypes ctypes-foreign
-  - eval `opam config env`
-  - rm $HOME/.opam/log/*
+  - git clone https://github.com/zilliqa/scilla
 
 script:
+  - yarn install
+  - yarn build:client
   - yarn test
-  - cd scilla && make
 
 before_deploy:
   - pip install --user awscli
   - export PATH=$PATH:$HOME/.local/bin
+  - if [[ -d $HOME/docker ]] && [[ $(ls -1 $HOME/docker/*.tar.gz 2>/dev/null | wc -l) != 0 ]]; then ls $HOME/docker/*.tar.gz | xargs -I {file} sh -c "zcat {file} | docker load"; fi
 
 deploy:
   provider: script
-  script: scripts/deploy.sh
+  skip_cleanup: true
+  script:
+    - ./scripts/deploy.sh
+  on: feature/rewrite
 
