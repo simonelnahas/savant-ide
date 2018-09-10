@@ -49,7 +49,7 @@
     "build:parser": "pegjs -o src/browser/util/parser.js src/browser/util/parser.pegjs ",
     "serve:all": "concurrently -k -p \"[{name}]\" -n \"TS-Server,Client,Server\" -c \"yellow.bold,cyan.bold,green.bold\"  \"yarn watch:server\" \"yarn serve:client\" \"yarn serve:server\"",
     "serve:client": "node scripts/start.js",
-    "serve:server": "nodemon --inspect dist/server/server.js",
+    "serve:server": "nodemon --inspect dist/server/server.js --watch dist/server",
     "watch:server": "yarn build:server -- -w",
     "test": "node scripts/test.js --env=jsdom"
   },
