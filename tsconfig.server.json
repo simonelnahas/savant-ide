@@ -28,6 +28,12 @@
     "src/server/**/*"
   ],
   "exclude": [
+    "public",
+    "dist",
+    "config",
+    "build",
+    "scripts",
+    "temp",
     "node_modules",
     "src/**/*.spec.*"
   ]
