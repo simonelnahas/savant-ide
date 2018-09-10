@@ -9,7 +9,7 @@ interface File {
 const writeFile = promisify(fs.writeFile);
 
 export const makeTempFileName = (id: string, extension: string, suffix?: string): string => {
-  return `${process.env.PWD}/temp/${id}${suffix ? '_' + suffix : ''}.${extension}`;
+  return `${process.cwd()}/temp/${id}${suffix ? '_' + suffix : ''}.${extension}`;
 };
 
 /**
