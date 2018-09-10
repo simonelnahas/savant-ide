@@ -8,15 +8,35 @@ cache:
     - $HOME/.yarn-cache/
     - $HOME/.opam
 
+addons:
+  apt:
+    packages:
+      - ocaml
+      - curl
+      - build-essential
+      - m4
+      - pkg-config
+      - zlib1g-dev
+      - libgmp-dev
+      - libssl-dev
+      - libboost-system-dev
+      - aspcud
+
 before_install:
-  - ./scripts/scilla-bin.sh
   - wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sudo sh -s /usr/local/bin
+  - git clone https://github.com/zilliqa/scilla
 
 install:
   - make
+  - opam init -y
+  - opam switch -y 4.06.0
+  - opam install -y ocaml-migrate-parsetree core cryptokit ppx_sexp_conv yojson batteries angstrom hex ppx_deriving ppx_deriving_yojson menhir oUnit dune stdint fileutils ctypes ctypes-foreign
+  - eval `opam config env`
+  - rm $HOME/.opam/log/*
 
 script:
   - yarn test
+  - cd scilla && make
 
 before_deploy:
   - pip install --user awscli
@@ -24,7 +44,5 @@ before_deploy:
 
 deploy:
   provider: script
-  script: deploy.sh
-  on:
-    branch: feature/rewrite
+  script: scripts/deploy.sh
 
