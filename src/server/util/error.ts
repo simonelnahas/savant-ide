@@ -9,8 +9,8 @@ interface ErrorObj {
   msg: string;
 }
 
-export class ScillaCheckerError extends Error {
-  static isScillaError(obj: any): obj is ScillaCheckerError {
+export class ScillaError extends Error {
+  static isScillaError(obj: any): obj is ScillaError {
     return obj[IS_SCILLA_SENTINEL];
   }
 
@@ -29,13 +29,30 @@ export class ScillaCheckerError extends Error {
   }
 }
 
-export const parseSyntaxError = (out: string): ScillaCheckerError | null => {
+export const parseExecutionError = (out: string): ScillaError | null => {
+  const error = out.split('\n');
+
+  if (error && error.length > 0) {
+    const [, msg,] = error;
+    return new ScillaError([
+      {
+        line: 0,
+        column: 0,
+        msg,
+      },
+    ]);
+  }
+
+  return null;
+};
+
+export const parseSyntaxError = (out: string): ScillaError | null => {
   const error = SYN_ERR_RE.exec(out);
 
   if (error) {
     const [, line, column] = error;
     if (line && column) {
-      return new ScillaCheckerError([
+      return new ScillaError([
         {
           line: parseInt(line, 10),
           column: parseInt(column, 10),
@@ -48,7 +65,7 @@ export const parseSyntaxError = (out: string): ScillaCheckerError | null => {
   return null;
 };
 
-export const parseTypeError = (out: string): ScillaCheckerError | null => {
+export const parseTypeError = (out: string): ScillaError | null => {
   const trace: string[][] = out
     .split(/\n{2,3}/)
     .filter((ln) => !!ln)
@@ -102,7 +119,7 @@ export const parseTypeError = (out: string): ScillaCheckerError | null => {
     .filter((obj) => !!obj);
 
   if (eObjs.length) {
-    return new ScillaCheckerError(eObjs);
+    return new ScillaError(eObjs);
   }
 
   return null;

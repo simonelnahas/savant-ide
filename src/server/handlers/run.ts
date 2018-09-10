@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import uuid from 'uuid/v4';
 
 import { runner, makeTempFileName, writeFiles } from '../util';
+import { ScillaError } from '../util/error';
 import { Paths } from '../constants';
 
 export const run = async (req: Request, res: Response, next: NextFunction) => {
@@ -32,6 +33,14 @@ export const run = async (req: Request, res: Response, next: NextFunction) => {
       message: result,
     });
   } catch (err) {
+    if (ScillaError.isScillaError(err)) {
+      res.status(400).json({
+        result: 'error',
+        message: err.messages,
+      });
+      return;
+    }
+
     res.status(400).json({
       result: 'error',
       message: err.message,

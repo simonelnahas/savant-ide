@@ -9,6 +9,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Typography from '@material-ui/core/Typography';
 
+import { formatError } from '../../util/api';
 import { CallResult, Transition } from '../../store/contract/types';
 import { isField, Field, MsgField, FieldDict, MsgFieldDict } from '../../util/form';
 import { validate as valid } from '../../util/validation';
@@ -181,10 +182,13 @@ export default class TransitionForm extends React.Component<Props, State> {
     if (result && result.status === 1) {
       return (
         <StatusWrapper>
-          <Typography color="error" variant="body2">
-            The call to transition `$
-            {this.props.name}` failed. The following error occured:
-            {result.error}
+          <Typography color="error" variant="body2" style={{ whiteSpace: 'pre-line' }}>
+            {`The call to transition ${this.props.name} failed. The following error occured:
+
+              ${result.error.response ? formatError(result.error.response.message) : result.error}
+
+            Please double check your call parameters and try again.
+            `}
           </Typography>
           <Button
             variant="extendedFab"

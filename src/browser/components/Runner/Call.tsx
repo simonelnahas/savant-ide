@@ -46,9 +46,6 @@ export default class CallTab extends React.Component<Props, State> {
   };
 
   onCallTransition = (transition: string, params: FieldDict, msg: MsgFieldDict) => {
-    console.log(`Calling transition ${transition}`);
-    console.log('Parameters: ', params);
-    console.log('Msg: ', msg);
     const { callTransition } = this.props;
     const { activeAccount, selectedContract } = this.state;
 

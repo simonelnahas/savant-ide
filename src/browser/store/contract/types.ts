@@ -11,7 +11,7 @@ export interface DeploymentResult {
 export interface CallResult {
   status: ScillaBinStatus;
   address: string;
-  error?: string;
+  error?: any;
 }
 
 export interface Param {
