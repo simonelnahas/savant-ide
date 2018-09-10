@@ -23,7 +23,8 @@ before_deploy:
   - export PATH=$PATH:$HOME/.local/bin
 
 deploy:
-  - yarn build:client
-  - ./scripts/deploy.sh
-  - yarn build:server
-  - ./scripts/docker.sh
+  provider: script
+  script: deploy.sh
+  on:
+    branch: feature/rewrite
+

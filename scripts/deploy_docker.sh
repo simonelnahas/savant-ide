@@ -21,7 +21,12 @@ account_id=$(aws sts get-caller-identity --output text --query 'Account')
 region_id=us-east-1
 registry_url=${account_id}.dkr.ecr.${region_id}.amazonaws.com/scilla-runner-api
 
+echo "Compiling server application..."
+yarn build:server
+
+echo "Building container..."
 eval $(aws ecr get-login --no-include-email --region ${region_id})
 docker build -t ${registry_url}:latest -t ${registry_url}:${commit} .
 
+echo "Pushing to ECR..."
 docker push ${registry_url}
