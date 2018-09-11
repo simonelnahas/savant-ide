@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     build-essential \
     m4 \
+    aspcud \
     ocaml \
     opam \
     pkg-config \
