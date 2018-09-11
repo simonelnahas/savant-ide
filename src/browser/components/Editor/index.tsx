@@ -147,7 +147,6 @@ class ScillaEditor extends React.Component<Props, State> {
 
   getAnnotations = (): any => {
     const { contract } = this.state;
-    console.log(contract);
 
     if (contract.error && contract.error.message) {
       const markers = contract.error.message.map((err: any) => {
@@ -181,7 +180,7 @@ class ScillaEditor extends React.Component<Props, State> {
               onExited={this.handleDisplayNext}
               open={snackbar.open}
               msg={
-                snackbar.open && snackbar.message.result === 'success'
+                snackbar.message && snackbar.message.result === 'success'
                   ? 'Type-checking succeeded.'
                   : 'Type-checking failed.'
               }

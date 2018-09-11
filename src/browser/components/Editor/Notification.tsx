@@ -25,9 +25,10 @@ const Content = styled(SnackbarContent)`
 const Notification: React.SFC<Props & SnackbarProps> = (props) => {
   return (
     <Snackbar
-      autoHideDuration={5000}
+      autoHideDuration={3500}
       open={props.open}
       onExited={props.onExited}
+      onClose={props.onClose}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
     >
       <Content
