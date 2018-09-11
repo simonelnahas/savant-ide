@@ -14,7 +14,7 @@ contract Schnorr
 ()
 
 field priv_key : Option (ByStr32) = None {ByStr32}
-field pub_key : Option (ByStr33) = None {ByStr32}
+field pub_key : Option (ByStr33) = None {ByStr33}
 
 transition sign_and_verify (msg : ByStr)
   pubk_o <- pub_key;
@@ -43,6 +43,8 @@ transition sign_and_verify (msg : ByStr)
     end
   | None =>
     (* We don't have a key-pair, generate one and store it. *)
+    (* Note: the builtin function schnorr_gen_key_pair is in fact a thunk. *)
+    (* In future, it will have to be invoked like so: `builtin schnorr_gen_key_pair()` *)
     kpair = builtin schnorr_gen_key_pair;
     privk = fst_f kpair;
     pubk = snd_f kpair;
