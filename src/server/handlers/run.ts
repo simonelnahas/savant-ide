@@ -15,10 +15,11 @@ export const run = async (req: Request, res: Response, next: NextFunction) => {
     message: makeTempFileName(id, 'json', 'message'),
     output: makeTempFileName(id, 'json', 'output'),
     stdlib: Paths.STDLIB,
+    gaslimit: req.body.gaslimit,
   };
 
   const toWrite = Object.keys(checkOpt)
-    .filter((k) => k !== 'stdlib')
+    .filter((k) => k !== 'stdlib' && k !== 'gaslimit')
     .map<{ path: string; data: string }>((k: string) => ({
       path: checkOpt[<keyof typeof checkOpt>k],
       data: req.body[k] || '',

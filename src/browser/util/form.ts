@@ -8,7 +8,7 @@ export interface Field {
 }
 
 export interface MsgField {
-  value: string;
+  value: any;
   touched: boolean;
   error: boolean;
 }
@@ -37,6 +37,6 @@ export const toMsgFields = (fields: MsgFieldDict) => {
       ...acc,
       [fName]: fields[fName].value,
     }),
-    {},
+    {} as { [key: string]: any },
   );
 };

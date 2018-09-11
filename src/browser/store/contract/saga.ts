@@ -94,7 +94,7 @@ function* deployContract(action: ActionType<typeof contractActions.deploy>, db: 
 }
 
 function* callTransition(action: ActionType<typeof contractActions.call>, db: ContractStore) {
-  const { address, transition, tParams, msgParams, caller, statusCB } = action.payload;
+  const { address, transition, tParams, msgParams, caller, gaslimit, statusCB } = action.payload;
   try {
     const state: ApplicationState = yield select();
     const contractStorage = state.contract.contracts[address];
@@ -124,6 +124,7 @@ function* callTransition(action: ActionType<typeof contractActions.call>, db: Co
       blockchain: JSON.stringify(blockchain),
       state: JSON.stringify(contractState),
       message: JSON.stringify(message),
+      gaslimit,
     };
 
     const res: api.CallResponse = yield api.callContract(payload);

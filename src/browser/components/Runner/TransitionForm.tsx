@@ -15,11 +15,12 @@ import { isField, Field, MsgField, FieldDict, MsgFieldDict } from '../../util/fo
 import { validate as valid } from '../../util/validation';
 
 const StatusWrapper = styled.div`
-  width: 100%;
+  flex: 1 0 auto;
   flex-direction: column;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
 
   > * {
     width: 100%;
@@ -61,6 +62,7 @@ export default class TransitionForm extends React.Component<Props, State> {
     ),
     msg: {
       _amount: { value: '0', touched: false, error: false },
+      gaslimit: { value: 2000, touched: false, error: false },
     },
   };
 
@@ -217,6 +219,16 @@ export default class TransitionForm extends React.Component<Props, State> {
               value={msg._amount.value}
             />
             {msg._amount.error && <FormHelperText>Please fill in a valid value</FormHelperText>}
+          </FormControl>
+          <FormControl error={msg._amount.error}>
+            <InputLabel htmlFor="gaslimit">Gas Limit (Uint128)</InputLabel>
+            <Input
+              onChange={this.handleMsgChange}
+              id="gaslimit"
+              name="gaslimit"
+              value={msg.gaslimit.value}
+            />
+            {msg.gaslimit && <FormHelperText>Please fill in a valid value</FormHelperText>}
           </FormControl>
         </FormGroup>
         {!!params.length && (

@@ -17,5 +17,6 @@ export type Caller = (
   tParams: KVPair[],
   msgParams: { [key: string]: string },
   caller: Account,
+  gaslimit: string,
   resultCb: (result: DeploymentResult) => void,
 ) => void;

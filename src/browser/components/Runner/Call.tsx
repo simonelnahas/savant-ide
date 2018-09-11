@@ -54,7 +54,7 @@ export default class CallTab extends React.Component<Props, State> {
     }
 
     const tParams = toScillaParams(params);
-    const msgParams = toMsgFields(msg);
+    const { gaslimit, ...msgParams } = toMsgFields(msg);
 
     callTransition(
       selectedContract,
@@ -62,6 +62,7 @@ export default class CallTab extends React.Component<Props, State> {
       tParams,
       msgParams,
       activeAccount,
+      gaslimit,
       this.onCallResult,
     );
   };

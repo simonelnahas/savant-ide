@@ -52,7 +52,6 @@ function* createContract(action: ActionType<typeof fsActions.add>, db: FSStore) 
     yield db.set(name, action.payload);
     yield put(fsActions.addSuccess(name, code));
   } catch (err) {
-    console.log(err);
     yield put(fsActions.addError(action.payload.name, err));
   }
 }

@@ -41,8 +41,9 @@ export const call = createAction(ContractActionTypes.CALL, (resolve) => {
     tParams: KVPair[],
     msgParams: { [key: string]: string },
     caller: Account,
+    gaslimit: string,
     statusCB: (result: CallResult) => void,
-  ) => resolve({ address, transition, caller, tParams, msgParams, statusCB });
+  ) => resolve({ address, transition, caller, tParams, msgParams, gaslimit, statusCB });
 });
 export const callSuccess = createAction(ContractActionTypes.CALL_SUCCESS, (resolve) => {
   return (address: string, contract: Contract) => resolve({ address, contract });

@@ -19,6 +19,7 @@ interface RunOpt extends BaseOpt {
   state: string;
   message: string;
   output: string;
+  gaslimit: string;
 }
 
 /**
@@ -30,14 +31,16 @@ interface RunOpt extends BaseOpt {
  * @returns {Promise<{ stdout: string, stderr: string }>}
  */
 export const runner = async (opts: RunOpt) => {
+  console.log(opts);
   const cmd = `${Paths.RUNNER} \
-      -init ${opts.init} \
-      -iblockchain ${opts.blockchain} \
-      -istate ${opts.state} \
-      -imessage ${opts.message} \
-      -o ${opts.output} \
       -i ${opts.code} \
-      -libdir=${opts.stdlib}
+      -libdir ${opts.stdlib} \
+      -o ${opts.output} \
+      -init ${opts.init} \
+      -imessage ${opts.message} \
+      -istate ${opts.state} \
+      -iblockchain ${opts.blockchain} \
+      -gaslimit ${opts.gaslimit}
   `;
 
   try {
@@ -112,7 +115,7 @@ export const checker = async (opts: BaseOpt) => {
 const cleanUp = async (files: Partial<RunOpt>) => {
   const paths = Object.keys(files)
     .filter((file) => {
-      return file !== 'stdlib';
+      return file !== 'stdlib' && file !== 'gaslimit';
     })
     .map((file: string) => {
       return unlinkAsync(<string>files[<keyof RunOpt>file]);
