@@ -16,6 +16,7 @@ import File from './File';
 import { ApplicationState } from '../../store/index';
 import { ContractSrcFile } from '../../store/fs/types';
 import * as fsActions from '../../store/fs/actions';
+import { extractDefault } from '../../util/storage';
 import config from '../../config';
 import logo from './scilla-logo-color-transparent.png';
 
@@ -170,7 +171,7 @@ class Navigator extends React.Component<Props, State> {
                 handleDelete={this.handleDelete}
               />
             ) : null}
-            {this.props.contracts.map((file) => {
+            {extractDefault(this.props.contracts).map((file) => {
               return (
                 <File
                   key={file.name}
