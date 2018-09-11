@@ -93,9 +93,9 @@ export default class DeployTab extends React.Component<Props, State> {
     const { accounts } = this.props;
 
     return Object.keys(accounts).map((address) => ({
-      key: `0x${address.toUpperCase()} (Bal: ${accounts[address].balance} ZIL, Nonce: ${
+      key: `0x${address.toUpperCase()} (Balance: ${accounts[address].balance} ZIL, Nonce: ${
         accounts[address].nonce
-      }) `,
+      })`,
       value: address,
     }));
   };
