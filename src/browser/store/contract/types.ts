@@ -56,7 +56,7 @@ export interface Contract {
   abi: ABI | null;
   init: KVPair[];
   state: KVPair[];
-  stateLog: KVPair[][];
+  previousStates: KVPair[][];
   eventLog: ContractEvent[];
   messageLog: ContractMessage[];
 }

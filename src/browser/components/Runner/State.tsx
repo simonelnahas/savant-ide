@@ -76,7 +76,9 @@ export default class StateTree extends React.Component<Props, State> {
             ...contracts[address],
             init: deserialiseContractState(contracts[address].init),
             state: deserialiseContractState(contracts[address].state),
-            stateLog: contracts[address].stateLog.map((state) => deserialiseContractState(state)),
+            stateLog: contracts[address].previousStates.map((state) =>
+              deserialiseContractState(state),
+            ),
           },
         };
       }, {});

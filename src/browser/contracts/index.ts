@@ -13,12 +13,12 @@ interface ScillaSrc {
 }
 
 export const defaultContracts: ScillaSrc[] = [
-  { name: 'auction', src: auction },
-  { name: 'bookstore', src: bookstore },
-  { name: 'crowdfunding', src: crowdfunding },
-  { name: 'fungibleToken', src: fungibleToken },
-  { name: 'helloWorld', src: helloWorld },
-  { name: 'nonFungibleToken', src: nonFungibleToken },
-  { name: 'schnorr', src: schnorr },
-  { name: 'zilGame', src: zilGame },
+  { name: 'HelloWorld', src: helloWorld },
+  { name: 'BookStore', src: bookstore },
+  { name: 'CrowdFunding', src: crowdfunding },
+  { name: 'Auction', src: auction },
+  { name: 'FungibleToken', src: fungibleToken },
+  { name: 'NonFungible', src: nonFungibleToken },
+  { name: 'ZilGame', src: zilGame },
+  { name: 'SchnorrTest', src: schnorr },
 ];

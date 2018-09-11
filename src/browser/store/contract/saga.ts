@@ -74,7 +74,7 @@ function* deployContract(action: ActionType<typeof contractActions.deploy>, db: 
         { vname: '_creation_block', type: 'BNum', value: state.blockchain.blockNum.toString() },
       ],
       state: [{ vname: '_balance', type: 'Uint128', value: txAmount.toString() }],
-      stateLog: [],
+      previousStates: [],
       eventLog: [],
       messageLog: [],
       address,
@@ -144,7 +144,7 @@ function* callTransition(action: ActionType<typeof contractActions.call>, db: Co
     const updatedContract: typeof contractStorage = {
       ...contractStorage,
       state: msg.states,
-      stateLog: [...contractStorage.stateLog, contractStorage.state],
+      previousStates: [...contractStorage.previousStates, contractStorage.state],
       eventLog: [...contractStorage.eventLog, ...msg.events],
       messageLog: [...contractStorage.messageLog, msg.message],
     };
