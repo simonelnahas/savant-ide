@@ -7,6 +7,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Typography from '@material-ui/core/Typography';
 
+// import EventAlerts from './EventAlerts';
 import { ContractSrcFile } from '../../store/fs/types';
 
 const ButtonWrapper = styled.span`
@@ -74,6 +75,13 @@ export default class EditorControls extends React.Component<Props> {
             Check
           </Typography>
         </ButtonWrapper>
+        {/* <ButtonWrapper>
+          <EventAlerts events={[]} />
+          <Typography align="center" color="primary">
+            Events
+          </Typography>
+        </ButtonWrapper>
+        */}
       </Toolbar>
     );
   }
