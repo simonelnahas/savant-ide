@@ -9,26 +9,13 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Typography from '@material-ui/core/Typography';
 
 import Loader from '../Loader';
+import Status from '../Status';
 import TxParams from '../Form/TxParams';
 import InputWrapper from '../Form/InputWrapper';
 import { formatError } from '../../util/api';
 import { CallResult, Transition } from '../../store/contract/types';
 import { isField, Field, MsgField, FieldDict, MsgFieldDict } from '../../util/form';
 import { validate as valid } from '../../util/validation';
-
-const StatusWrapper = styled.div`
-  flex: 1 0 auto;
-  flex-direction: column;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-
-  > * {
-    width: 100%;
-    text-align: center;
-  }
-`;
 
 const Wrapper = styled.div`
   width: 100%;
@@ -177,25 +164,26 @@ export default class TransitionForm extends React.Component<Props, State> {
 
     if (result && result.status === 0) {
       return (
-        <StatusWrapper>
+        <Status>
           <Typography variant="body2">
             {`${this.props.name} at ${result.address} was successfully called.`}
           </Typography>
           <Button
             variant="extendedFab"
+            color="primary"
             aria-label="reset"
             onClick={handleReset}
             style={{ margin: '3.5em 0' }}
           >
             Reset
           </Button>
-        </StatusWrapper>
+        </Status>
       );
     }
 
     if (result && result.status === 1) {
       return (
-        <StatusWrapper>
+        <Status>
           <Typography color="error" variant="body2" style={{ whiteSpace: 'pre-line' }}>
             {`The call to transition ${this.props.name} failed. The following error occured:
 
@@ -206,13 +194,14 @@ export default class TransitionForm extends React.Component<Props, State> {
           </Typography>
           <Button
             variant="extendedFab"
+            color="primary"
             aria-label="reset"
             onClick={handleReset}
             style={{ margin: '3.5em 0' }}
           >
             Try Again
           </Button>
-        </StatusWrapper>
+        </Status>
       );
     }
 

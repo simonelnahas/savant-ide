@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 
@@ -7,6 +8,7 @@ import { ABI, DeploymentResult } from '../../store/contract/types';
 import { ContractSrcFile } from '../../store/fs/types';
 import { Deployer } from '../types';
 
+import Status from '../Status';
 import * as api from '../../util/api';
 import { toMsgFields, toScillaParams, FieldDict, MsgFieldDict } from '../../util/form';
 import Select from '../Form/Select';
@@ -133,6 +135,30 @@ export default class DeployTab extends React.Component<Props, State> {
       value: name,
     }));
 
+    if (error && error.length) {
+      return (
+        <Status>
+          <Typography color="error" variant="body2" style={{ whiteSpace: 'pre-line' }}>
+            {` The following errors were encountered during type-checking:
+
+              ${api.formatError(error)}
+
+              Please correct these errors and try again.
+            `}
+          </Typography>
+          <Button
+            variant="extendedFab"
+            color="primary"
+            aria-label="reset"
+            onClick={this.reset}
+            style={{ margin: '3.5em 0' }}
+          >
+            Try Again
+          </Button>
+        </Status>
+      );
+    }
+
     return (
       <Wrapper>
         <Select
@@ -148,17 +174,7 @@ export default class DeployTab extends React.Component<Props, State> {
           value={selected}
           onChange={this.onSelectContract}
         />
-        {error && error.length ? (
-          <Typography color="error" variant="body2" style={{ whiteSpace: 'pre-line' }}>
-            {` The following errors were encountered during type-checking:
-
-              ${api.formatError(error)}
-
-              Please correct these errors and try again.
-            `}
-          </Typography>
-        ) : (
-          activeAccount &&
+        {activeAccount &&
           abi && (
             <InitForm
               key={abi.name}
@@ -168,8 +184,7 @@ export default class DeployTab extends React.Component<Props, State> {
               abiParams={abi.params}
               result={result}
             />
-          )
-        )}
+          )}
       </Wrapper>
     );
   }
