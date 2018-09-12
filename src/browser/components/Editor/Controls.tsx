@@ -47,7 +47,7 @@ export default class EditorControls extends React.Component<Props> {
           variant="body2"
           color="textSecondary"
           align="center"
-        >{`Block: ${this.props.blockNum}`}</Typography>
+        >{`Block Height: ${this.props.blockNum}`}</Typography>
         <ButtonWrapper>
           <IconButton
             disabled={!isContractSelected || !this.props.canSave}
