@@ -159,7 +159,7 @@ export default class TransitionForm extends React.Component<Props, State> {
     const { msg } = this.state;
 
     if (this.props.isCalling) {
-      return <Loader delay={1001} message="Deploying contract..." />;
+      return <Loader delay={1001} message="Calling transition..." />;
     }
 
     if (result && result.status === 0) {
