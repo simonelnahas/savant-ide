@@ -20,7 +20,6 @@ const labelRender = (key: string[]) => {
 };
 
 const valueRender = (value: string, ...args: any[]) => {
-  console.log(args);
   if (args[1] === 'code') {
     return <code style={{ whiteSpace: 'pre' }}>{`\n${value}`}</code>;
   }
