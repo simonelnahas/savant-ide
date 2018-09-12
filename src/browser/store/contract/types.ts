@@ -47,6 +47,7 @@ export interface ContractMessage {
 export interface TransitionCallResponse {
   events: ContractEvent[];
   message: ContractMessage;
+  gas_remaining: string;
   states: KVPair[];
 }
 

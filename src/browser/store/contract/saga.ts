@@ -11,9 +11,6 @@ import { ContractActionTypes, ScillaBinStatus } from './types';
 import * as bcActions from '../blockchain/actions';
 import * as api from '../../util/api';
 
-const DEFAULT_DEPLOY_GAS = new BN(50);
-const DEFAULT_CALL_GAS = new BN(10);
-
 type ContractAction = ActionType<typeof contractActions>;
 
 export function* initContract() {
@@ -44,35 +41,54 @@ export function* initContract() {
 
 function* deployContract(action: ActionType<typeof contractActions.deploy>, db: ContractStore) {
   try {
-    const { code, deployer, init, msg, statusCB } = action.payload;
+    const { code, deployer, init: pInit, msg, gaslimit, gasprice, statusCB } = action.payload;
     const { message: abi } = yield api.checkContract(code);
+    if (!abi) {
+      throw new Error('ABI could not be parsed.');
+    }
+
     const state: ApplicationState = yield select();
 
     // we need to take this off the depoyer's balance
     const txAmount = new BN(msg._amount || '0');
 
+    const address = hash
+      .sha256()
+      .update(deployer.address + (deployer.nonce + 1).toString())
+      .digest('hex')
+      .slice(-40);
+
+    const init = [
+      ...pInit,
+      { vname: '_creation_block', type: 'BNum', value: state.blockchain.blockNum.toString() },
+    ];
+
+    const blockchain = [
+      { vname: 'BLOCKNUMBER', type: 'BNum', value: state.blockchain.blockNum.toString() },
+    ];
+
+    const payload = {
+      code,
+      init: JSON.stringify(init),
+      blockchain: JSON.stringify(blockchain),
+      gaslimit,
+    };
+
+    const res = yield api.callContract(payload);
+
     const updatedAccount = {
       ...deployer,
       nonce: deployer.nonce + 1,
       balance: new BN(deployer.balance)
-        .sub(DEFAULT_DEPLOY_GAS)
         .sub(txAmount)
+        .sub(new BN(gaslimit - parseInt(res.message.gas_remaining, 10) * gasprice))
         .toString(10),
     };
-
-    const address = hash
-      .sha256()
-      .update(updatedAccount.address + updatedAccount.nonce.toString())
-      .digest('hex')
-      .slice(-40);
 
     const contract = {
       abi: JSON.parse(abi),
       code,
-      init: [
-        ...init,
-        { vname: '_creation_block', type: 'BNum', value: state.blockchain.blockNum.toString() },
-      ],
+      init,
       state: [{ vname: '_balance', type: 'Uint128', value: txAmount.toString() }],
       previousStates: [],
       eventLog: [],
@@ -94,7 +110,17 @@ function* deployContract(action: ActionType<typeof contractActions.deploy>, db: 
 }
 
 function* callTransition(action: ActionType<typeof contractActions.call>, db: ContractStore) {
-  const { address, transition, tParams, msgParams, caller, gaslimit, statusCB } = action.payload;
+  const {
+    address,
+    transition,
+    tParams,
+    msgParams,
+    caller,
+    gaslimit,
+    gasprice,
+    statusCB,
+  } = action.payload;
+
   try {
     const state: ApplicationState = yield select();
     const contractStorage = state.contract.contracts[address];
@@ -135,8 +161,8 @@ function* callTransition(action: ActionType<typeof contractActions.call>, db: Co
       ...caller,
       nonce: caller.nonce + 1,
       balance: new BN(caller.balance)
-        .sub(DEFAULT_CALL_GAS)
         .sub(txAmount)
+        .sub(new BN(gaslimit - parseInt(res.message.gas_remaining, 10) * gasprice))
         .add(new BN(msg.message._amount))
         .toString(10),
     };

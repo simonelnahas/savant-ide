@@ -8,6 +8,8 @@ export type Deployer = (
   initParams: KVPair[],
   msgParams: { [key: string]: string },
   deployer: Account,
+  gaslimit: number,
+  gasprice: number,
   resultCb: (result: DeploymentResult) => void,
 ) => void;
 
@@ -17,6 +19,7 @@ export type Caller = (
   tParams: KVPair[],
   msgParams: { [key: string]: string },
   caller: Account,
-  gaslimit: string,
+  gaslimit: number,
+  gasprice: number,
   resultCb: (result: DeploymentResult) => void,
 ) => void;

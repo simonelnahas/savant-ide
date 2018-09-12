@@ -10,3 +10,4 @@ export const Paths = {
   STDLIB: resolveApp('scilla/src/stdlib/'),
 };
 
+export const OptionalRunnerOpts = ['state', 'message'];

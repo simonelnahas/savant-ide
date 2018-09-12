@@ -73,9 +73,17 @@ export default class DeployTab extends React.Component<Props, State> {
 
     const sourceFile = files[this.state.selected];
     const initParams = toScillaParams(init);
-    const msgParams = toMsgFields(msg);
+    const { gaslimit, gasprice, ...msgParams } = toMsgFields(msg);
 
-    deployContract(sourceFile.code, initParams, msgParams, activeAccount, this.onDeployResult);
+    deployContract(
+      sourceFile.code,
+      initParams,
+      msgParams,
+      activeAccount,
+      gaslimit,
+      gasprice,
+      this.onDeployResult,
+    );
   };
 
   onDeployResult = (result: DeploymentResult) => this.setState({ result });

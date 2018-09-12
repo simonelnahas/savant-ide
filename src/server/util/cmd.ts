@@ -16,8 +16,8 @@ interface BaseOpt {
 interface RunOpt extends BaseOpt {
   init: string;
   blockchain: string;
-  state: string;
-  message: string;
+  state?: string;
+  message?: string;
   output: string;
   gaslimit: string;
 }
@@ -31,16 +31,18 @@ interface RunOpt extends BaseOpt {
  * @returns {Promise<{ stdout: string, stderr: string }>}
  */
 export const runner = async (opts: RunOpt) => {
-  console.log(opts);
+  // mandatory
+  const { code, stdlib, init, blockchain, output, gaslimit, ...optional } = opts;
+
   const cmd = `${Paths.RUNNER} \
-      -i ${opts.code} \
-      -libdir ${opts.stdlib} \
-      -o ${opts.output} \
-      -init ${opts.init} \
-      -imessage ${opts.message} \
-      -istate ${opts.state} \
-      -iblockchain ${opts.blockchain} \
-      -gaslimit ${opts.gaslimit}
+      -i ${code} \
+      -libdir ${stdlib} \
+      -o ${output} \
+      -init ${init} \
+      -iblockchain ${blockchain} \
+      -gaslimit ${gaslimit} \
+      ${optional.state ? '-istate ' + optional.state + ' \\' : ''}
+      ${optional.message ? '-imessage ' + optional.message + ' \\' : ''}
   `;
 
   try {

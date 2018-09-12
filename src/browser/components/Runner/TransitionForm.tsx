@@ -6,10 +6,11 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
 import Typography from '@material-ui/core/Typography';
 
 import Loader from '../Loader';
+import TxParams from '../Form/TxParams';
+import InputWrapper from '../Form/InputWrapper';
 import { formatError } from '../../util/api';
 import { CallResult, Transition } from '../../store/contract/types';
 import { isField, Field, MsgField, FieldDict, MsgFieldDict } from '../../util/form';
@@ -65,6 +66,7 @@ export default class TransitionForm extends React.Component<Props, State> {
     msg: {
       _amount: { value: '0', touched: false, error: false },
       gaslimit: { value: 2000, touched: false, error: false },
+      gasprice: { value: 1, touched: false, error: false },
     },
   };
 
@@ -133,6 +135,10 @@ export default class TransitionForm extends React.Component<Props, State> {
     const newMsg = { ...msg, [name]: newField };
 
     this.setState({ msg: newMsg });
+  };
+
+  handleGasPriceChange = (_: any, value: any) => {
+    this.setState({ msg: { ...this.state.msg, gasprice: { error: false, touched: true, value } } });
   };
 
   validate = (field: Field | MsgField, ignoreTouched: boolean = false): boolean => {
@@ -215,29 +221,12 @@ export default class TransitionForm extends React.Component<Props, State> {
         <Typography align="left" gutterBottom variant="headline">
           Transaction Parameters:
         </Typography>
-        <FormGroup classes={{ root: 'form' }}>
-          <FormControl error={msg._amount.error}>
-            <InputLabel htmlFor="_amount">Amount (Uint128)</InputLabel>
-            <Input
-              onChange={this.handleMsgChange}
-              id="_amount"
-              name="_amount"
-              value={msg._amount.value}
-            />
-            {msg._amount.error && <FormHelperText>Please fill in a valid value</FormHelperText>}
-          </FormControl>
-          <FormControl error={msg._amount.error}>
-            <InputLabel htmlFor="gaslimit">Gas Limit (Uint128)</InputLabel>
-            <Input
-              onChange={this.handleMsgChange}
-              id="gaslimit"
-              name="gaslimit"
-              value={msg.gaslimit.value}
-            />
-            {msg.gaslimit && <FormHelperText>Please fill in a valid value</FormHelperText>}
-          </FormControl>
-        </FormGroup>
-        {!!params.length && (
+        <TxParams
+          values={msg}
+          handleMsgChange={this.handleMsgChange}
+          handleGasPriceChange={this.handleGasPriceChange}
+        />
+        {params && params.length ? (
           <FormGroup classes={{ root: 'form' }}>
             <React.Fragment>
               <Typography align="left" gutterBottom variant="headline">
@@ -252,7 +241,7 @@ export default class TransitionForm extends React.Component<Props, State> {
 
                 return (
                   field && (
-                    <FormControl key={name} error={field.error}>
+                    <InputWrapper key={name} error={field.error}>
                       <InputLabel htmlFor={name}>{`${name} (${type})`}</InputLabel>
                       <Input
                         onChange={this.handleParamsChange}
@@ -261,13 +250,13 @@ export default class TransitionForm extends React.Component<Props, State> {
                         value={field.value}
                       />
                       {field.error && <FormHelperText>Please fill in a value</FormHelperText>}
-                    </FormControl>
+                    </InputWrapper>
                   )
                 );
               })}
             </React.Fragment>
           </FormGroup>
-        )}
+        ) : null}
         <Button
           color="primary"
           variant="extendedFab"

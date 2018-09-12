@@ -24,8 +24,10 @@ export const deploy = createAction(ContractActionTypes.DEPLOY, (resolve) => {
     initParams: KVPair[],
     msgParams: { [key: string]: string },
     deployer: Account,
+    gaslimit: number,
+    gasprice: number,
     statusCB: (result: DeploymentResult) => void,
-  ) => resolve({ code, init: initParams, msg: msgParams, deployer, statusCB });
+  ) => resolve({ code, init: initParams, msg: msgParams, gaslimit, gasprice, deployer, statusCB });
 });
 export const deploySuccess = createAction(ContractActionTypes.DEPLOY_SUCCESS, (resolve) => {
   return (contract: Contract) => resolve({ contract });
@@ -41,9 +43,10 @@ export const call = createAction(ContractActionTypes.CALL, (resolve) => {
     tParams: KVPair[],
     msgParams: { [key: string]: string },
     caller: Account,
-    gaslimit: string,
+    gaslimit: number,
+    gasprice: number,
     statusCB: (result: CallResult) => void,
-  ) => resolve({ address, transition, caller, tParams, msgParams, gaslimit, statusCB });
+  ) => resolve({ address, transition, caller, tParams, msgParams, gaslimit, gasprice, statusCB });
 });
 export const callSuccess = createAction(ContractActionTypes.CALL_SUCCESS, (resolve) => {
   return (address: string, contract: Contract) => resolve({ address, contract });

@@ -142,18 +142,23 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     init: KVPair[],
     msg: { [key: string]: string },
     deployer: Account,
+    gaslimit: number,
+    gasprice: number,
     resultCb: (result: DeploymentResult) => void,
-  ) => dispatch(contractActions.deploy(code, init, msg, deployer, resultCb)),
+  ) => dispatch(contractActions.deploy(code, init, msg, deployer, gaslimit, gasprice, resultCb)),
   callTransition: (
     address: string,
     transition: string,
     tParams: KVPair[],
     msg: { [key: string]: string },
     caller: Account,
-    gaslimit: string,
+    gaslimit: number,
+    gasprice: number,
     resultCb: (result: DeploymentResult) => void,
   ) =>
-    dispatch(contractActions.call(address, transition, tParams, msg, caller, gaslimit, resultCb)),
+    dispatch(
+      contractActions.call(address, transition, tParams, msg, caller, gaslimit, gasprice, resultCb),
+    ),
 });
 
 const mapStateToProps = (state: ApplicationState) => {
