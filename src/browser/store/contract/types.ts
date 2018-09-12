@@ -6,6 +6,7 @@ export const enum ScillaBinStatus {
 export interface DeploymentResult {
   status: ScillaBinStatus;
   address: string;
+  error?: any;
 }
 
 export interface CallResult {

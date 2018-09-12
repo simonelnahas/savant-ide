@@ -3,6 +3,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 
+import Loader from '../Loader';
 import { Account } from '../../store/blockchain/types';
 import { ABI, DeploymentResult } from '../../store/contract/types';
 import { ContractSrcFile } from '../../store/fs/types';
@@ -174,6 +175,7 @@ export default class DeployTab extends React.Component<Props, State> {
           value={selected}
           onChange={this.onSelectContract}
         />
+        {this.state.isChecking && <Loader delay={1001} message="Getting ABI..." />}
         {activeAccount &&
           abi && (
             <InitForm

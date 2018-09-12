@@ -14,6 +14,7 @@ import TxParams from '../Form/TxParams';
 import InputWrapper from '../Form/InputWrapper';
 import { DeploymentResult, Param } from '../../store/contract/types';
 import { isField, Field, MsgField, FieldDict, MsgFieldDict } from '../../util/form';
+import { formatError } from '../../util/api';
 import { validate as valid } from '../../util/validation';
 
 const StatusWrapper = styled.div`
@@ -197,16 +198,22 @@ export default class InitForm extends React.Component<Props, State> {
     if (result && result.status === 1) {
       return (
         <StatusWrapper>
-          <Typography color="error" variant="body2">
-            Your contract could not be deployed.
+          <Typography color="error" variant="body2" style={{ whiteSpace: 'pre-line' }}>
+            {`Failed to deploy contract. The following error occured:
+
+              ${result.error.response ? formatError(result.error.response.message) : result.error}
+
+            Please double check your deployment parameters and try again.
+            `}
           </Typography>
           <Button
             variant="extendedFab"
+            color="primary"
             aria-label="reset"
             onClick={handleReset}
             style={{ margin: '3.5em 0' }}
           >
-            Try Again
+            Reset
           </Button>
         </StatusWrapper>
       );

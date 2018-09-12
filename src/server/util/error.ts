@@ -1,5 +1,6 @@
 const TYPE_ERR_RE = new RegExp(/.*\[(?:.*)?\:([0-9]+\:[0-9]+)\]\:? ((.*)\n?(.*)?)$/);
 const SYN_ERR_RE = new RegExp(/^Syntax error.*line ([0-9]+)\, position ([0-9]+)/);
+const GAS_ERR_RE = new RegExp(/Ran out of gas/g);
 
 export const IS_SCILLA_SENTINEL = '@@__SCILLA_ERROR__@@';
 
@@ -30,10 +31,13 @@ export class ScillaError extends Error {
 }
 
 export const parseExecutionError = (out: string): ScillaError | null => {
+  if (GAS_ERR_RE.exec(out)) {
+    return new ScillaError([{ line: 0, column: 0, msg: 'Out of gas!' }]);
+  }
   const error = out.split('\n');
 
   if (error && error.length > 0) {
-    const [, msg,] = error;
+    const [, msg] = error;
     return new ScillaError([
       {
         line: 0,

@@ -105,7 +105,11 @@ function* deployContract(action: ActionType<typeof contractActions.deploy>, db: 
     statusCB({ status: ScillaBinStatus.SUCCESS, address });
   } catch (err) {
     yield put(contractActions.deployError(err));
-    action.payload.statusCB({ status: ScillaBinStatus.FAILURE, address: '' });
+    action.payload.statusCB({
+      status: ScillaBinStatus.FAILURE,
+      address: '',
+      error: err,
+    });
   }
 }
 

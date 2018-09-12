@@ -47,6 +47,7 @@ export const runner = async (opts: RunOpt) => {
 
   try {
     const { stderr } = await execAsync(cmd);
+
     if (stderr) {
       throw new Error(stderr);
     }
@@ -55,6 +56,7 @@ export const runner = async (opts: RunOpt) => {
     return result;
   } catch (err) {
     const executionError = parseExecutionError(err.stderr);
+
     if (executionError) {
       throw executionError;
     }
