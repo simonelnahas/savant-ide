@@ -9,6 +9,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Typography from '@material-ui/core/Typography';
 
+import Loader from '../Loader';
 import { formatError } from '../../util/api';
 import { CallResult, Transition } from '../../store/contract/types';
 import { isField, Field, MsgField, FieldDict, MsgFieldDict } from '../../util/form';
@@ -43,6 +44,7 @@ const Wrapper = styled.div`
 interface Props extends Transition {
   handleReset: () => void;
   handleSubmit: (transition: string, params: FieldDict, msg: MsgFieldDict) => void;
+  isCalling: boolean;
   result: CallResult | null;
 }
 
@@ -162,6 +164,10 @@ export default class TransitionForm extends React.Component<Props, State> {
   render() {
     const { handleReset, params, result } = this.props;
     const { msg } = this.state;
+
+    if (this.props.isCalling) {
+      return <Loader delay={1001} message="Deploying contract..." />;
+    }
 
     if (result && result.status === 0) {
       return (

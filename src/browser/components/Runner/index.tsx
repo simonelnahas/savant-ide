@@ -77,6 +77,8 @@ interface MappedProps {
   files: { [name: string]: ContractSrcFile };
   accounts: { [address: string]: Account };
   deployedContracts: { [address: string]: Contract };
+  isDeployingContract: boolean;
+  isCallingTransition: boolean;
 }
 
 interface DispatchProps {
@@ -118,7 +120,9 @@ class Runner extends React.Component<Props> {
         >
           <RunnerNav
             callTransition={this.props.callTransition}
+            isCallingTransition={this.props.isCallingTransition}
             deployContract={this.props.deployContract}
+            isDeployingContract={this.props.isDeployingContract}
             accounts={this.props.accounts}
             abi={(this.props.active && this.props.active.abi) || null}
             deployedContracts={this.props.deployedContracts}
@@ -157,10 +161,13 @@ const mapStateToProps = (state: ApplicationState) => {
   const files = state.fs.contracts;
   const accounts = state.blockchain.accounts;
   const deployedContracts = state.contract.contracts;
+
   const baseMappedProps = {
     accounts,
     files,
     deployedContracts,
+    isDeployingContract: state.contract.isDeployingContract,
+    isCallingTransition: state.contract.isCallingTransition,
   };
 
   if (pointer.address) {

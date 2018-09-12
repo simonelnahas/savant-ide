@@ -28,6 +28,7 @@ const Wrapper = styled.div`
 
 interface Props {
   deployContract: Deployer;
+  isDeploying: boolean;
   accounts: { [address: string]: Account };
   files: { [name: string]: ContractSrcFile };
 }
@@ -155,6 +156,7 @@ export default class DeployTab extends React.Component<Props, State> {
               key={abi.name}
               handleReset={this.reset}
               handleSubmit={this.onDeploy}
+              isDeploying={this.props.isDeploying}
               abiParams={abi.params}
               result={result}
             />

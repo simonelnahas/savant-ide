@@ -67,16 +67,6 @@ interface ContractPointer {
   isExecuting: boolean;
 }
 
-export interface ContractState {
-  isLoading: boolean;
-  error: boolean;
-  active: ContractPointer;
-  contracts: {
-    [address: string]: Contract;
-  };
-}
-
-
 export interface KVPair {
   vname: string;
   type: string;
@@ -88,6 +78,17 @@ export interface TransitionParams {
   blockchain: KVPair[];
   state: KVPair[];
   tParams: KVPair[];
+}
+
+export interface ContractState {
+  isLoading: boolean;
+  isCallingTransition: boolean;
+  isDeployingContract: boolean;
+  error: boolean;
+  active: ContractPointer;
+  contracts: {
+    [address: string]: Contract;
+  };
 }
 
 export const enum ContractActionTypes {

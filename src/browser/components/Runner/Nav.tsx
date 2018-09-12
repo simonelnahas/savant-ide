@@ -39,7 +39,9 @@ const Content = styled.div`
 
 interface Props {
   deployContract: Deployer;
+  isDeployingContract: boolean;
   callTransition: Caller;
+  isCallingTransition: boolean;
   accounts: { [address: string]: Account };
   deployedContracts: { [address: string]: Contract };
   files: { [name: string]: ContractSrcFile };
@@ -67,6 +69,7 @@ export default class RunnerNav extends React.Component<Props, State> {
             accounts={this.props.accounts}
             callTransition={this.props.callTransition}
             deployedContracts={this.props.deployedContracts}
+            isCalling={this.props.isCallingTransition}
           />
         );
       case 1:
@@ -75,8 +78,9 @@ export default class RunnerNav extends React.Component<Props, State> {
         return (
           <DeployTab
             accounts={this.props.accounts}
-            deployContract={this.props.deployContract}
             files={this.props.files}
+            deployContract={this.props.deployContract}
+            isDeploying={this.props.isDeployingContract}
           />
         );
       default:

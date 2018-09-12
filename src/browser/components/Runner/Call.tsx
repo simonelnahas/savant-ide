@@ -26,6 +26,7 @@ const Wrapper = styled.div`
 interface Props {
   // the address of a deployed contract
   callTransition: Caller;
+  isCalling: boolean;
   accounts: { [address: string]: Account };
   deployedContracts: { [address: string]: Contract };
 }
@@ -162,6 +163,7 @@ export default class CallTab extends React.Component<Props, State> {
               !!selectedTransition.length && (
                 <TransitionForm
                   key={selectedTransition}
+                  isCalling={this.props.isCalling}
                   handleReset={this.reset}
                   handleSubmit={this.onCallTransition}
                   result={result}

@@ -9,6 +9,8 @@ type ContractAction = ActionType<typeof contractActions>;
 const initialState: ContractState = {
   error: false,
   isLoading: false,
+  isDeployingContract: false,
+  isCallingTransition: false,
   active: { address: '', isChecking: false, isExecuting: false },
   contracts: {},
 };
@@ -30,32 +32,35 @@ const contractReducer: Reducer<ContractState, ContractAction> = (state = initial
       return { ...state, contracts: index, isLoading: false };
     }
 
+    // for now, just put the entire store into an error state.
+    case getType(contractActions.initError): {
+      return { ...state, isLoading: false, error: true };
+      break;
+    }
+
     case getType(contractActions.deploy): {
-      return { ...state, isLoading: true };
+      return { ...state, isDeployingContract: true };
     }
 
     case getType(contractActions.deploySuccess): {
       const { contract } = action.payload;
       const newIndex = { ...state.contracts, [contract.address]: contract };
 
-      return { ...state, contracts: newIndex, isLoading: false };
+      return { ...state, contracts: newIndex, isDeployingContract: false };
+    }
+
+    case getType(contractActions.deployError): {
+      return { ...state, isDeployingContract: false };
     }
 
     case getType(contractActions.call): {
-      return { ...state, isLoading: true };
+      return { ...state, isCallingTransition: true };
     }
 
     case getType(contractActions.callSuccess): {
       const { address, contract } = action.payload;
       const newIndex = { ...state.contracts, [address]: contract };
-      return { ...state, contracts: newIndex, isLoading: false };
-    }
-
-    // for now, just put the entire store into an error state.
-    case getType(contractActions.initError):
-    case getType(contractActions.deployError): {
-      return { ...state, isLoading: false, error: true };
-      break;
+      return { ...state, contracts: newIndex, isCallingTransition: false };
     }
 
     default:

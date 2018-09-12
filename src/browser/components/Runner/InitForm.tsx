@@ -7,8 +7,10 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import Typography from '@material-ui/core/Typography';
+
 import styled from 'styled-components';
 
+import Loader from '../Loader';
 import { DeploymentResult, Param } from '../../store/contract/types';
 import { isField, Field, MsgField, FieldDict, MsgFieldDict } from '../../util/form';
 import { validate as valid } from '../../util/validation';
@@ -43,6 +45,7 @@ interface Props {
   result: DeploymentResult | null;
   handleSubmit: (init: FieldDict, msg: MsgFieldDict) => void;
   handleReset: () => void;
+  isDeploying: boolean;
 }
 
 interface State {
@@ -160,6 +163,10 @@ export default class InitForm extends React.Component<Props, State> {
   render() {
     const { abiParams, result, handleReset } = this.props;
     const { init, msg } = this.state;
+
+    if (this.props.isDeploying) {
+      return <Loader delay={1001} message="Deploying contract..." />;
+    }
 
     if (result && result.status === 0) {
       return (
