@@ -2,9 +2,17 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import IconButton from '@material-ui/core/IconButton';
+
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import SaveIcon from '@material-ui/icons/Save';
 import Toolbar from '@material-ui/core/Toolbar';
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Typography from '@material-ui/core/Typography';
 
 import EventAlerts from './EventAlerts';
@@ -15,6 +23,15 @@ import { ContractSrcFile } from '../../store/fs/types';
 const ButtonWrapper = styled.span`
   display: flex;
   flex-direction: column;
+  margin: 0 0.3em;
+
+  .nuke-btn {
+    background-color: red;
+
+    &:hover {
+      background-color: red;
+    }
+  }
 `;
 
 interface Props {
@@ -27,13 +44,30 @@ interface Props {
   handleSave: () => void;
 }
 
-export default class EditorControls extends React.Component<Props> {
+interface State {
+  isNukeDialogOpen: boolean;
+}
+
+export default class EditorControls extends React.Component<Props, State> {
+  state: State = {
+    isNukeDialogOpen: false,
+  };
+
   handleSave: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     this.props.handleSave();
   };
 
   handleCheck: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     this.props.handleCheck();
+  };
+
+  toggleNukeDialog = () => {
+    this.setState({ isNukeDialogOpen: !this.state.isNukeDialogOpen });
+  };
+
+  handleNuke = () => {
+    indexedDB.deleteDatabase('scilla-ide');
+    document.location.reload();
   };
 
   render() {
@@ -85,6 +119,37 @@ export default class EditorControls extends React.Component<Props> {
             Events
           </Typography>
         </ButtonWrapper>
+        <ButtonWrapper>
+          <IconButton aria-label="save" color="primary" onClick={this.toggleNukeDialog}>
+            <RefreshIcon />
+          </IconButton>
+          <Typography align="center" color="primary">
+            Reset
+          </Typography>
+        </ButtonWrapper>
+        <Dialog
+          open={this.state.isNukeDialogOpen}
+          onClose={this.toggleNukeDialog}
+          scroll="paper"
+          aria-labelledby="scroll-dialog-title"
+        >
+          <DialogTitle id="scroll-dialog-title">Are you sure?</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              This action will reset all state, including all your files, accounts, and deployments.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.toggleNukeDialog} color="primary" variant="contained">
+              Cancel
+            </Button>
+            <ButtonWrapper>
+              <Button onClick={this.handleNuke} variant="contained" classes={{ root: 'nuke-btn' }}>
+                Yes, Nuke.
+              </Button>
+            </ButtonWrapper>
+          </DialogActions>
+        </Dialog>
       </Toolbar>
     );
   }
