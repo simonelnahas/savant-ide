@@ -172,12 +172,22 @@ class File extends React.Component<Props, State> {
                 onFocus={this.handleFocus}
                 onInput={this.handleInput}
                 onKeyDown={this.handleKeyDown}
+                dangerouslySetInnerHTML={{ __html: this.state.name }}
                 style={{
                   color: this.props.isSelected
                     ? this.props.theme.palette.primary.main
                     : this.props.theme.palette.text.primary,
                 }}
-              >{`${this.state.name}.scilla`}</p>
+              />
+              <p
+                style={{
+                  color: this.props.isSelected
+                    ? this.props.theme.palette.primary.main
+                    : this.props.theme.palette.text.primary,
+                }}
+              >
+                .scilla
+              </p>
             </WrappedListText>
           </ListItem>
         </ClickAwayListener>
