@@ -36,6 +36,9 @@ export const deployError = createAction(ContractActionTypes.DEPLOY_ERROR, (resol
   return (error: string) => resolve({ error });
 });
 
+/**
+ * Transition actions
+ */
 export const call = createAction(ContractActionTypes.CALL, (resolve) => {
   return (
     address: string,
@@ -53,4 +56,15 @@ export const callSuccess = createAction(ContractActionTypes.CALL_SUCCESS, (resol
 });
 export const callError = createAction(ContractActionTypes.CALL_ERROR, (resolve) => {
   return (address: string, error: any) => resolve({ address, error });
+});
+
+/**
+ * Event actions
+ */
+export const addEvent = createAction(ContractActionTypes.ADD_EVENT, (resolve) => {
+  return (address: string, name: string, event: { [key: string]: any }) =>
+    resolve({ address, name, event });
+});
+export const clearEvent = createAction(ContractActionTypes.CLEAR_EVENT, (resolve) => {
+  return (id: string) => resolve({ id });
 });

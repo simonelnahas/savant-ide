@@ -7,7 +7,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Typography from '@material-ui/core/Typography';
 
-// import EventAlerts from './EventAlerts';
+import EventAlerts from './EventAlerts';
+import { clearEvent } from '../../store/contract/actions';
+import { Event } from '../../store/contract/types';
 import { ContractSrcFile } from '../../store/fs/types';
 
 const ButtonWrapper = styled.span`
@@ -18,6 +20,8 @@ const ButtonWrapper = styled.span`
 interface Props {
   activeFile: ContractSrcFile;
   blockNum: number;
+  events: { [id: string]: Event };
+  clearEvent: typeof clearEvent;
   canSave: boolean;
   handleCheck: () => void;
   handleSave: () => void;
@@ -75,13 +79,12 @@ export default class EditorControls extends React.Component<Props> {
             Check
           </Typography>
         </ButtonWrapper>
-        {/* <ButtonWrapper>
-          <EventAlerts events={[]} />
+        <ButtonWrapper>
+          <EventAlerts clearEvent={this.props.clearEvent} events={this.props.events} />
           <Typography align="center" color="primary">
             Events
           </Typography>
         </ButtonWrapper>
-        */}
       </Toolbar>
     );
   }

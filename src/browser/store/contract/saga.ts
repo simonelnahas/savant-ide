@@ -6,7 +6,7 @@ import BN from 'bn.js';
 import { ApplicationState } from '../index';
 import ContractStore from '../../database/contracts';
 import * as contractActions from './actions';
-import { ContractActionTypes, ScillaBinStatus } from './types';
+import { ContractActionTypes, ScillaBinStatus, ABI } from './types';
 
 import * as bcActions from '../blockchain/actions';
 import * as api from '../../util/api';
@@ -182,7 +182,16 @@ function* callTransition(action: ActionType<typeof contractActions.call>, db: Co
     yield db.set(address, updatedContract);
     yield all([
       put(bcActions.updateAccount(updatedAccount)),
-      yield put(contractActions.callSuccess(contractStorage.address, updatedContract)),
+      put(contractActions.callSuccess(contractStorage.address, updatedContract)),
+      ...msg.events.map((event) =>
+        put(
+          contractActions.addEvent(
+            contractStorage.address,
+            (contractStorage.abi as ABI).name,
+            event,
+          ),
+        ),
+      ),
     ]);
 
     statusCB({ status: ScillaBinStatus.SUCCESS, address });

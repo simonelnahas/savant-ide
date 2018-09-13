@@ -82,6 +82,12 @@ export interface TransitionParams {
   tParams: KVPair[];
 }
 
+export interface Event {
+  address: string;
+  name: string;
+  event: { [key: string]: any };
+}
+
 export interface ContractState {
   isLoading: boolean;
   isCallingTransition: boolean;
@@ -91,6 +97,7 @@ export interface ContractState {
   contracts: {
     [address: string]: Contract;
   };
+  events: { [id: string]: Event };
 }
 
 export const enum ContractActionTypes {
@@ -106,4 +113,6 @@ export const enum ContractActionTypes {
   CALL = '@contract/CALL',
   CALL_SUCCESS = '@contract/CALL_SUCCESS',
   CALL_ERROR = '@contract/CALL_ERROR',
+  ADD_EVENT = '@contract/ADD_EVENT',
+  CLEAR_EVENT = '@contract/CLEAR_EVENT',
 }

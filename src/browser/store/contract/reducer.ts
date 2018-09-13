@@ -3,6 +3,7 @@ import { ActionType, getType } from 'typesafe-actions';
 
 import * as contractActions from './actions';
 import { Contract, ContractState } from './types';
+import fastHash from 'murmurhash3js';
 
 type ContractAction = ActionType<typeof contractActions>;
 
@@ -13,6 +14,7 @@ const initialState: ContractState = {
   isCallingTransition: false,
   active: { address: '', isChecking: false, isExecuting: false },
   contracts: {},
+  events: {},
 };
 
 const contractReducer: Reducer<ContractState, ContractAction> = (state = initialState, action) => {
@@ -61,6 +63,20 @@ const contractReducer: Reducer<ContractState, ContractAction> = (state = initial
       const { address, contract } = action.payload;
       const newIndex = { ...state.contracts, [address]: contract };
       return { ...state, contracts: newIndex, isCallingTransition: false };
+    }
+
+    case getType(contractActions.addEvent): {
+      const { address, name, event } = action.payload;
+      const id = fastHash.x86.hash32(address + name + JSON.stringify(event));
+
+      return { ...state, events: { ...state.events, [id]: { address, name, event } } };
+    }
+
+    case getType(contractActions.clearEvent): {
+      const { id } = action.payload;
+      const { [id]: evt, ...rest } = state.events;
+
+      return { ...state, events: { ...rest } };
     }
 
     default:

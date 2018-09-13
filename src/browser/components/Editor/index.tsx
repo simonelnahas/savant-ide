@@ -14,7 +14,9 @@ import Controls from './Controls';
 import Notification from './Notification';
 import { ApplicationState } from '../../store/index';
 import * as fsActions from '../../store/fs/actions';
+import * as contractActions from '../../store/contract/actions';
 import { ContractSrcFile } from '../../store/fs/types';
+import { Event } from '../../store/contract/types';
 
 const Editor = styled(AceEditor)`
   .error-marker {
@@ -44,9 +46,11 @@ interface OwnProps {}
 interface MappedProps {
   blocknum: number;
   contract: ContractSrcFile;
+  events: { [id: string]: Event };
 }
 
 interface DispatchProps {
+  clearEvent: typeof contractActions.clearEvent;
   check: typeof fsActions.check;
   update: typeof fsActions.update;
 }
@@ -189,6 +193,8 @@ class ScillaEditor extends React.Component<Props, State> {
             <Controls
               activeFile={contract}
               blockNum={this.props.blocknum}
+              events={this.props.events}
+              clearEvent={this.props.clearEvent}
               canSave={this.props.contract && this.props.contract.code !== this.state.contract.code}
               handleCheck={this.handleCheck}
               handleSave={this.handleSave}
@@ -216,6 +222,7 @@ class ScillaEditor extends React.Component<Props, State> {
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   update: (name: string, code: string) => dispatch(fsActions.update(name, code)),
   check: (code: string, cb?: (res: any) => void) => dispatch(fsActions.check(code, cb)),
+  clearEvent: (id: string) => dispatch(contractActions.clearEvent(id)),
 });
 
 const mapStateToProps = (state: ApplicationState) => ({
@@ -224,6 +231,7 @@ const mapStateToProps = (state: ApplicationState) => ({
     state.fs.activeContract && state.fs.activeContract.length > 1
       ? state.fs.contracts[state.fs.activeContract]
       : { name: '', code: '' },
+  events: state.contract.events,
 });
 
 export default connect(
