@@ -1,15 +1,18 @@
+import classNames from 'classnames';
 import * as React from 'react';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-
 import sanitizer from 'dompurify';
 import styled from 'styled-components';
 
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText, { ListItemTextProps } from '@material-ui/core/ListItemText';
+import { withTheme, WithTheme } from '@material-ui/core/styles';
+
 import Menu from './Menu';
 
-interface Props {
+interface Props extends WithTheme {
   id: string;
+  isSelected?: boolean;
   name: string;
   handleSelect: (id: string) => void;
   handlePersist: (id: string, displayName?: string) => void;
@@ -22,7 +25,7 @@ interface State {
   isMenuOpen: boolean;
 }
 
-const WrappedListText = styled(ListItemText)`
+const WrappedListText = styled<ListItemTextProps>(ListItemText)`
   & .file {
     display: flex;
   }
@@ -30,7 +33,7 @@ const WrappedListText = styled(ListItemText)`
 
 const MAX_FILENAME_LENGTH = 20;
 
-export default class File extends React.Component<Props, State> {
+class File extends React.Component<Props, State> {
   textNode = React.createRef<HTMLParagraphElement>();
   state: State = { isRenaming: false, isMenuOpen: false, name: '' };
   sanitizer = sanitizer;
@@ -45,7 +48,7 @@ export default class File extends React.Component<Props, State> {
     this.setState({ name });
   }
 
-  shouldComponentUpdate(_: Props, nextState: State) {
+  shouldComponentUpdate(nextProps: Props, nextState: State) {
     if (!this.textNode.current) {
       return false;
     }
@@ -53,7 +56,8 @@ export default class File extends React.Component<Props, State> {
     return (
       nextState.name !== this.textNode.current.innerText ||
       this.state.isRenaming !== nextState.isRenaming ||
-      this.state.isMenuOpen !== nextState.isMenuOpen
+      this.state.isMenuOpen !== nextState.isMenuOpen ||
+      this.props.isSelected !== nextProps.isSelected
     );
   }
 
@@ -116,7 +120,6 @@ export default class File extends React.Component<Props, State> {
     // intercept all 'enter' || 'escape' events
     if (e.keyCode === 13 || e.keyCode === 27) {
       e.preventDefault();
-      console.log('handling rename');
       this.textNode.current.blur();
       this.textNode.current.contentEditable = 'false';
       this.props.handlePersist(this.state.name, this.props.id);
@@ -160,16 +163,21 @@ export default class File extends React.Component<Props, State> {
             onContextMenu={this.handleClick}
             style={{ cursor: 'pointer' }}
           >
-            <WrappedListText classes={{ primary: 'file' }}>
+            <WrappedListText
+              classes={{ primary: classNames({ file: true, selected: this.props.isSelected }) }}
+            >
               <p
                 tabIndex={this.state.isRenaming ? 0 : undefined}
                 ref={this.textNode}
                 onFocus={this.handleFocus}
                 onInput={this.handleInput}
                 onKeyDown={this.handleKeyDown}
-                dangerouslySetInnerHTML={{ __html: this.state.name }}
-              />
-              <p>.scilla</p>
+                style={{
+                  color: this.props.isSelected
+                    ? this.props.theme.palette.primary.main
+                    : this.props.theme.palette.text.primary,
+                }}
+              >{`${this.state.name}.scilla`}</p>
             </WrappedListText>
           </ListItem>
         </ClickAwayListener>
@@ -185,3 +193,5 @@ export default class File extends React.Component<Props, State> {
     );
   }
 }
+
+export default withTheme()(File);

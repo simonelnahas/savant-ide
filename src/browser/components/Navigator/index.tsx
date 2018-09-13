@@ -1,4 +1,8 @@
 import * as React from 'react';
+import classNames from 'classnames';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
+import styled from 'styled-components';
 
 import AddIcon from '@material-ui/icons/Add';
 import HelpIcon from '@material-ui/icons/HelpOutlineOutlined';
@@ -7,10 +11,6 @@ import Button from '@material-ui/core/Button';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import classNames from 'classnames';
-import { Dispatch } from 'redux';
-import { connect } from 'react-redux';
-import styled from 'styled-components';
 
 import File from './File';
 import { ApplicationState } from '../../store/index';
@@ -117,7 +117,7 @@ class Navigator extends React.Component<Props, State> {
       return;
     }
 
-    const { contracts} = this.props;
+    const { contracts } = this.props;
 
     if (id) {
       const [active] = contracts.filter((ctr) => ctr.id === id);
@@ -185,6 +185,7 @@ class Navigator extends React.Component<Props, State> {
                   key={file.id}
                   id={file.id}
                   name={file.displayName}
+                  isSelected={file.id === this.props.activeContract}
                   handlePersist={this.handlePersist}
                   handleSelect={this.handleSelect}
                   handleDelete={this.handleDelete}
