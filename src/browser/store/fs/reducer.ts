@@ -22,9 +22,9 @@ const fsReducer: Reducer<FSState, FsAction> = (state = initialState, action) => 
     case getType(fsActions.initSuccess): {
       const contracts: { [key: string]: ContractSrcFile } = action.payload.contracts.reduce(
         (acc, contract) => {
-          return { ...acc, [contract.name]: contract };
+          return { ...acc, [contract.id]: contract };
         },
-        {} as { [name: string]: ContractSrcFile },
+        {} as { [id: string]: ContractSrcFile },
       );
 
       return {
@@ -37,7 +37,7 @@ const fsReducer: Reducer<FSState, FsAction> = (state = initialState, action) => 
     case getType(fsActions.addSuccess): {
       return {
         ...state,
-        contracts: { [action.payload.name]: action.payload, ...state.contracts },
+        contracts: { [action.payload.id]: action.payload, ...state.contracts },
         loading: false,
       };
     }
@@ -45,7 +45,7 @@ const fsReducer: Reducer<FSState, FsAction> = (state = initialState, action) => 
     case getType(fsActions.setSelectedContract): {
       return {
         ...state,
-        activeContract: action.payload.address,
+        activeContract: action.payload.id,
       };
     }
 
@@ -76,14 +76,14 @@ const fsReducer: Reducer<FSState, FsAction> = (state = initialState, action) => 
 
     case getType(fsActions.deleteContractSuccess): {
       const filtered = Object.keys(state.contracts).reduce(
-        (acc, name) => {
-          if (name === action.payload.name) {
+        (acc, id) => {
+          if (id === action.payload.id) {
             return acc;
           }
 
-          return { ...acc, [name]: state.contracts[name] };
+          return { ...acc, [id]: state.contracts[id] };
         },
-        {} as { [key: string]: ContractSrcFile },
+        {} as { [id: string]: ContractSrcFile },
       );
 
       return {
@@ -97,7 +97,7 @@ const fsReducer: Reducer<FSState, FsAction> = (state = initialState, action) => 
         ...state,
         contracts: {
           ...state.contracts,
-          [action.payload.name]: action.payload,
+          [action.payload.id]: action.payload,
         },
       };
     }

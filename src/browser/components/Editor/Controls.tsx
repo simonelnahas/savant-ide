@@ -38,13 +38,13 @@ export default class EditorControls extends React.Component<Props> {
 
   render() {
     const { activeFile } = this.props;
-    const isContractSelected = !!activeFile.name.length;
+    const isContractSelected = !!activeFile.displayName.length;
 
     return (
       <Toolbar variant="dense" style={{ padding: '12px 24px' }}>
         <Typography style={{ flex: 1 }}>
-          {activeFile.name
-            ? `${activeFile.name || 'untitled'}.scilla`
+          {activeFile.displayName
+            ? `${activeFile.displayName || 'untitled'}.scilla`
             : 'Create a new file, or select an existing one.'}
         </Typography>
         <Typography

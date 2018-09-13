@@ -20,29 +20,6 @@ import { extractDefault } from '../../util/storage';
 import config from '../../config';
 import logo from './scilla-logo-color-transparent.png';
 
-interface OwnProps {}
-
-interface MappedProps {
-  error: boolean;
-  isLoading: boolean;
-  contracts: ContractSrcFile[];
-  activeContract: string;
-}
-
-interface DispatchProps {
-  init: typeof fsActions.init;
-  addContract: typeof fsActions.add;
-  selectContract: typeof fsActions.setSelectedContract;
-  deleteContract: typeof fsActions.deleteContract;
-}
-
-type Props = OwnProps & MappedProps & DispatchProps;
-
-interface State {
-  isOpen: boolean;
-  isAdding: boolean;
-}
-
 const ZDrawer = styled(Drawer)`
   & .paper {
     position: relative;
@@ -88,6 +65,30 @@ const Closer = styled.div`
   }
 `;
 
+interface OwnProps {}
+
+interface MappedProps {
+  error: boolean;
+  isLoading: boolean;
+  contracts: ContractSrcFile[];
+  activeContract: string;
+}
+
+interface DispatchProps {
+  init: typeof fsActions.init;
+  addContract: typeof fsActions.add;
+  selectContract: typeof fsActions.setSelectedContract;
+  updateContract: typeof fsActions.update;
+  deleteContract: typeof fsActions.deleteContract;
+}
+
+type Props = OwnProps & MappedProps & DispatchProps;
+
+interface State {
+  isOpen: boolean;
+  isAdding: boolean;
+}
+
 class Navigator extends React.Component<Props, State> {
   state: State = {
     isOpen: true,
@@ -108,26 +109,32 @@ class Navigator extends React.Component<Props, State> {
     this.setState({ isAdding: true });
   };
 
-  handlePersist = (name: string) => {
+  handlePersist = (displayName: string, id?: string) => {
     if (this.state.isAdding) {
       // dispatch add contract
-      console.log('new contract being added');
-      this.props.addContract(name, '');
+      this.props.addContract(displayName, '');
       this.setState({ isAdding: false });
       return;
     }
+
+    const { contracts} = this.props;
+
+    if (id) {
+      const [active] = contracts.filter((ctr) => ctr.id === id);
+      this.props.updateContract(id, displayName, active.code);
+    }
   };
 
-  handleSelect = (address: string) => {
+  handleSelect = (id: string) => {
     // don't select an already-active contract
-    if (this.props.activeContract !== address) {
-      this.props.selectContract(address);
+    if (this.props.activeContract !== id) {
+      this.props.selectContract(id);
       return;
     }
   };
 
-  handleDelete = (address: string) => {
-    this.props.deleteContract(address);
+  handleDelete = (id: string) => {
+    this.props.deleteContract(id);
   };
 
   render() {
@@ -165,6 +172,7 @@ class Navigator extends React.Component<Props, State> {
             {isAdding ? (
               <File
                 key="pending"
+                id=""
                 name=""
                 handlePersist={this.handlePersist}
                 handleSelect={this.handleSelect}
@@ -174,8 +182,9 @@ class Navigator extends React.Component<Props, State> {
             {extractDefault(this.props.contracts).map((file) => {
               return (
                 <File
-                  key={file.name}
-                  name={file.name}
+                  key={file.id}
+                  id={file.id}
+                  name={file.displayName}
                   handlePersist={this.handlePersist}
                   handleSelect={this.handleSelect}
                   handleDelete={this.handleDelete}
@@ -199,7 +208,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   init: () => dispatch(fsActions.init()),
   addContract: (name: string, code: string) => dispatch(fsActions.add(name, code)),
   selectContract: (name: string) => dispatch(fsActions.setSelectedContract(name)),
-  deleteContract: (address: string) => dispatch(fsActions.deleteContract(address)),
+  updateContract: (id: string, displayName: string, code: string) =>
+    dispatch(fsActions.update(id, displayName, code)),
+  deleteContract: (id: string) => dispatch(fsActions.deleteContract(id)),
 });
 
 const mapStateToProps = (state: ApplicationState) => {

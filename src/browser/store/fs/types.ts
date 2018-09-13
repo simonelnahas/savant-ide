@@ -18,7 +18,8 @@ export const enum FSActionTypes {
 }
 
 export interface ContractSrcFile {
-  name: string;
+  id: string;
+  displayName: string;
   code: string;
   error?: any;
 }

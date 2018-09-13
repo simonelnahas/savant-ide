@@ -1,4 +1,5 @@
 import idb from 'idb';
+import uuid from 'uuid';
 import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 //tslint:disable
@@ -28,7 +29,8 @@ export default async function configureStore(initialState = {}) {
 
     const fs = upgradeDB.transaction.objectStore('scilla-ide-fs');
     defaultContracts.forEach(({ name, src }) => {
-      fs.add({ name, code: src }, name);
+      const id = uuid();
+      fs.add({ id, displayName: name, code: src }, id);
     });
   });
 

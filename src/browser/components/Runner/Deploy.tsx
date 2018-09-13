@@ -33,7 +33,7 @@ interface Props {
   deployContract: Deployer;
   isDeploying: boolean;
   accounts: { [address: string]: Account };
-  files: { [name: string]: ContractSrcFile };
+  files: { [id: string]: ContractSrcFile };
 }
 
 interface State {
@@ -112,6 +112,15 @@ export default class DeployTab extends React.Component<Props, State> {
     }));
   };
 
+  getContractOptions = () => {
+    const { files } = this.props;
+
+    return Object.keys(files).map((id) => ({
+      key: `${files[id].displayName}.scilla`,
+      value: id,
+    }));
+  }
+
   componentDidUpdate(_: Props, prevState: State) {
     if (this.state.selected.length && prevState.selected !== this.state.selected) {
       const { code } = this.props.files[this.state.selected];
@@ -129,12 +138,7 @@ export default class DeployTab extends React.Component<Props, State> {
   }
 
   render() {
-    const { files } = this.props;
     const { activeAccount, abi, error, selected, result } = this.state;
-    const options = Object.keys(files).map((name) => ({
-      key: name,
-      value: name,
-    }));
 
     if (error && error.length) {
       return (
@@ -171,7 +175,7 @@ export default class DeployTab extends React.Component<Props, State> {
         />
         <Select
           placeholder="Choose a scilla source file"
-          items={options}
+          items={this.getContractOptions()}
           value={selected}
           onChange={this.onSelectContract}
         />

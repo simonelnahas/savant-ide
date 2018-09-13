@@ -15,7 +15,7 @@ export const extractDefault = (contracts: ContractSrcFile[]): ContractSrcFile[] 
   const defaults: ContractSrcFile[] = [];
 
   const customs = contracts.filter((contract) => {
-    if (DEFAULT_CONTRACTS.indexOf(contract.name) === -1) {
+    if (DEFAULT_CONTRACTS.indexOf(contract.displayName) === -1) {
       return true;
     }
 
@@ -27,7 +27,9 @@ export const extractDefault = (contracts: ContractSrcFile[]): ContractSrcFile[] 
     ...customs,
     ...defaults.sort(
       (fst, snd) =>
-        DEFAULT_CONTRACTS.indexOf(fst.name) > DEFAULT_CONTRACTS.indexOf(snd.name) ? 1 : -1,
+        DEFAULT_CONTRACTS.indexOf(fst.displayName) > DEFAULT_CONTRACTS.indexOf(snd.displayName)
+          ? 1
+          : -1,
     ),
   ];
 };

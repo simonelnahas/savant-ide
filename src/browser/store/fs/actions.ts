@@ -9,20 +9,20 @@ export const initSuccess = createAction(FSActionTypes.INIT_SUCCESS, (resolve) =>
 export const initError = createAction(FSActionTypes.INIT_ERROR);
 
 export const setSelectedContract = createAction(FSActionTypes.SET_SELECTED_CONTRACT, (resolve) => {
-  return (address: string) => resolve({ address });
+  return (id: string) => resolve({ id });
 });
 
 /**
  * Creation actions. These add files to the FS store.
  */
 export const add = createAction(FSActionTypes.ADD, (resolve) => {
-  return (name: string, code: string) => resolve({ name, code });
+  return (displayName: string, code: string) => resolve({ displayName, code });
 });
 export const addSuccess = createAction(FSActionTypes.ADD_SUCCESS, (resolve) => {
-  return (name: string, code: string) => resolve({ name, code, error: null });
+  return (id: string, displayName: string, code: string) => resolve({ id, displayName, code });
 });
 export const addError = createAction(FSActionTypes.ADD_ERROR, (resolve) => {
-  return (name: string, err: string) => resolve({ error: err });
+  return (err: string) => resolve({ error: err });
 });
 
 /**
@@ -40,18 +40,19 @@ export const checkError = createAction(FSActionTypes.CHECK_ERROR, (resolve) => {
  * Update actions
  */
 export const update = createAction(FSActionTypes.UPDATE, (resolve) => {
-  return (name: string, code: string) =>
+  return (id: string, displayName: string, code: string) =>
     resolve({
-      name,
+      id,
+      displayName,
       code,
     });
 });
 export const updateSuccess = createAction(FSActionTypes.UPDATE_SUCCESS, (resolve) => {
-  return (name: string, code: string) =>
+  return (id: string, displayName: string, code: string) =>
     resolve({
-      name,
+      id,
+      displayName,
       code,
-      error: null,
     });
 });
 export const updateError = createAction(FSActionTypes.UPDATE_ERROR, (resolve) => {
@@ -62,11 +63,11 @@ export const updateError = createAction(FSActionTypes.UPDATE_ERROR, (resolve) =>
  * Delete actions
  */
 export const deleteContract = createAction(FSActionTypes.DELETE, (resolve) => {
-  return (name: string) => resolve({ name });
+  return (id: string) => resolve({ id });
 });
 export const deleteContractSuccess = createAction(FSActionTypes.DELETE_SUCCESS, (resolve) => {
-  return (name: string) => resolve({ name });
+  return (id: string) => resolve({ id });
 });
 export const deleteContractError = createAction(FSActionTypes.DELETE_ERROR, (resolve) => {
-  return (name: string) => resolve({ name });
+  return (id: string) => resolve({ id });
 });

@@ -68,11 +68,15 @@ class ScillaEditor extends React.Component<Props, State> {
   static getDerivedStateFromProps(props: Props, state: State) {
     // the contract has been deleted; clear state.
     if (!props.contract) {
-      return { ...state, contract: { name: '', code: '' } };
+      return { ...state, contract: { id: '', displayName: '', code: '' } };
     }
 
     // a new contract has been loaded.
-    if (state.contract && state.contract.name !== props.contract.name) {
+    if (
+      state.contract &&
+      (state.contract.id !== props.contract.id ||
+        state.contract.displayName !== props.contract.displayName)
+    ) {
       return { ...state, contract: props.contract };
     }
 
@@ -86,7 +90,8 @@ class ScillaEditor extends React.Component<Props, State> {
 
   state: State = {
     contract: {
-      name: '',
+      id: '',
+      displayName: '',
       code: '',
       error: null,
     },
@@ -135,7 +140,7 @@ class ScillaEditor extends React.Component<Props, State> {
   handleSave = () => {
     const { update } = this.props;
     const { contract } = this.state;
-    update(contract.name, contract.code);
+    update(contract.id, contract.displayName, contract.code);
   };
 
   handleResize = (contentRect: ContentRect): void => {
@@ -210,7 +215,7 @@ class ScillaEditor extends React.Component<Props, State> {
               width={`${this.state.dimensions.width.toString(10)}px`}
               value={contract.code}
               editorProps={{ $blockScrolling: true }}
-              readOnly={contract.name.length === 0}
+              readOnly={contract.id.length === 0}
             />
           </Wrapper>
         )}
@@ -220,7 +225,8 @@ class ScillaEditor extends React.Component<Props, State> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  update: (name: string, code: string) => dispatch(fsActions.update(name, code)),
+  update: (id: string, displayName: string, code: string) =>
+    dispatch(fsActions.update(id, displayName, code)),
   check: (code: string, cb?: (res: any) => void) => dispatch(fsActions.check(code, cb)),
   clearEvent: (id: string) => dispatch(contractActions.clearEvent(id)),
 });
@@ -230,7 +236,7 @@ const mapStateToProps = (state: ApplicationState) => ({
   contract:
     state.fs.activeContract && state.fs.activeContract.length > 1
       ? state.fs.contracts[state.fs.activeContract]
-      : { name: '', code: '' },
+      : { id: '', displayName: '', code: '' },
   events: state.contract.events,
 });
 

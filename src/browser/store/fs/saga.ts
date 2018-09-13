@@ -1,5 +1,6 @@
 import { actionChannel, call, fork, put, take } from 'redux-saga/effects';
 import { ActionType } from 'typesafe-actions';
+import uuid from 'uuid';
 
 import * as api from '../../util/api';
 import * as fsActions from '../../store/fs/actions';
@@ -48,19 +49,20 @@ export function* initFs() {
 
 function* createContract(action: ActionType<typeof fsActions.add>, db: FSStore) {
   try {
-    const { name, code } = action.payload;
-    yield db.set(name, action.payload);
-    yield put(fsActions.addSuccess(name, code));
+    const { displayName, code } = action.payload;
+    const id = uuid();
+    yield db.set(id, { ...action.payload, id });
+    yield put(fsActions.addSuccess(id, displayName, code));
   } catch (err) {
-    yield put(fsActions.addError(action.payload.name, err));
+    yield put(fsActions.addError(err));
   }
 }
 
 function* updateContract(action: ActionType<typeof fsActions.update>, db: FSStore) {
   try {
     const data = action.payload;
-    yield db.set(data.name, data);
-    yield put(fsActions.updateSuccess(data.name, data.code));
+    yield db.set(data.id, data);
+    yield put(fsActions.updateSuccess(data.id, data.displayName, data.code));
   } catch (err) {
     console.log(err);
   }
@@ -68,9 +70,9 @@ function* updateContract(action: ActionType<typeof fsActions.update>, db: FSStor
 
 function* deleteContract(action: ActionType<typeof fsActions.deleteContract>, db: FSStore) {
   try {
-    const { name } = action.payload;
-    yield db.delete(name);
-    yield put(fsActions.deleteContractSuccess(name));
+    const { id } = action.payload;
+    yield db.delete(id);
+    yield put(fsActions.deleteContractSuccess(id));
   } catch (err) {
     yield put(fsActions.deleteContractError(err));
   }

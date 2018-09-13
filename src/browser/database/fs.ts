@@ -19,9 +19,9 @@ export default class FSStore implements KVStore<string, ContractSrcFile> {
     return Promise.all([transaction, store]);
   }
 
-  async get(address: string) {
+  async get(id: string) {
     const [, store] = await this.tx();
-    const contractObj = await store.get(address);
+    const contractObj = await store.get(id);
 
     return contractObj;
   }
@@ -33,14 +33,14 @@ export default class FSStore implements KVStore<string, ContractSrcFile> {
     return contracts;
   }
 
-  async set(address: string, data: ContractSrcFile) {
+  async set(id: string, data: ContractSrcFile) {
     const [, store] = await this.tx();
-    return store.put(data, address);
+    return store.put(data, id);
   }
 
-  async delete(address: string) {
+  async delete(id: string) {
     const [, store] = await this.tx();
-    return store.delete(address);
+    return store.delete(id);
   }
 
   async clear() {

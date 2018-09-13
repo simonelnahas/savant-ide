@@ -9,10 +9,11 @@ import styled from 'styled-components';
 import Menu from './Menu';
 
 interface Props {
+  id: string;
   name: string;
-  handleSelect: (name: string) => void;
-  handlePersist: (name: string) => void;
-  handleDelete: (name: string) => void;
+  handleSelect: (id: string) => void;
+  handlePersist: (id: string, displayName?: string) => void;
+  handleDelete: (id: string) => void;
 }
 
 interface State {
@@ -77,14 +78,14 @@ export default class File extends React.Component<Props, State> {
   };
 
   handleDelete = () => {
-    this.props.handleDelete(this.props.name);
+    this.props.handleDelete(this.props.id);
   };
 
   handleClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     // left click
     if (e.button === 0) {
-      this.props.handleSelect(this.props.name);
+      this.props.handleSelect(this.props.id);
       return;
     }
 
@@ -113,11 +114,12 @@ export default class File extends React.Component<Props, State> {
     }
 
     // intercept all 'enter' || 'escape' events
-    if ((e.keyCode === 13 || e.keyCode === 27) && this.textNode.current) {
+    if (e.keyCode === 13 || e.keyCode === 27) {
       e.preventDefault();
+      console.log('handling rename');
       this.textNode.current.blur();
       this.textNode.current.contentEditable = 'false';
-      this.props.handlePersist(this.state.name);
+      this.props.handlePersist(this.state.name, this.props.id);
       this.setState({ isRenaming: false });
       return;
     }
