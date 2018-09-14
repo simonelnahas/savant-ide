@@ -27,7 +27,7 @@ export default class Loader extends React.Component<Props> {
           unmountOnExit
         >
           <React.Fragment>
-            <CircularProgress />
+            <CircularProgress style={{ margin: '1em 0' }} />
             <Typography variant="body2">{this.props.message}</Typography>
           </React.Fragment>
         </Fade>

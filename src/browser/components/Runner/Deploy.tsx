@@ -56,7 +56,7 @@ export default class DeployTab extends React.Component<Props, State> {
 
   onSelectContract: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
     e.preventDefault();
-    this.setState({ selected: e.target.value });
+    this.setState({ selected: e.target.value, abi: null, result: null });
   };
 
   onSelectAccount: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
@@ -118,7 +118,7 @@ export default class DeployTab extends React.Component<Props, State> {
       key: `${files[id].displayName}.scilla`,
       value: id,
     }));
-  }
+  };
 
   componentDidUpdate(_: Props, prevState: State) {
     if (this.state.selected.length && prevState.selected !== this.state.selected) {
@@ -178,18 +178,18 @@ export default class DeployTab extends React.Component<Props, State> {
           value={selected}
           onChange={this.onSelectContract}
         />
-        {this.state.isChecking && <Loader delay={1001} message="Getting ABI..." />}
-        {activeAccount &&
-          abi && (
-            <InitForm
-              key={abi.name}
-              handleReset={this.reset}
-              handleSubmit={this.onDeploy}
-              isDeploying={this.props.isDeploying}
-              abiParams={abi.params}
-              result={result}
-            />
-          )}
+        {activeAccount && abi ? (
+          <InitForm
+            key={abi.name}
+            handleReset={this.reset}
+            handleSubmit={this.onDeploy}
+            isDeploying={this.props.isDeploying}
+            abiParams={abi.params}
+            result={result}
+          />
+        ) : (
+          this.state.isChecking && <Loader delay={1001} message="Getting ABI..." />
+        )}
       </Wrapper>
     );
   }
