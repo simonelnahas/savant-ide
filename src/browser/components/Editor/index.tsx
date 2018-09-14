@@ -58,6 +58,7 @@ type Props = OwnProps & MappedProps & DispatchProps;
 
 interface State {
   contract: ContractSrcFile;
+  isChecking: boolean;
   dimensions: { width: number; height: number };
   notifications: any[];
   snackbar: { open: boolean; message: any; key: number };
@@ -94,6 +95,7 @@ class ScillaEditor extends React.Component<Props, State> {
       code: '',
       error: null,
     },
+    isChecking: false,
     dimensions: {
       height: -1,
       width: -1,
@@ -105,14 +107,21 @@ class ScillaEditor extends React.Component<Props, State> {
   handleCheck = () => {
     const { check } = this.props;
     const { contract } = this.state;
+    this.setState({ isChecking: true });
     check(contract.code, this.handleCheckRes);
   };
 
   handleCheckRes = (res: any) => {
-    this.setState((state) => ({ notifications: state.notifications.concat([res]) }));
+    this.setState((state) => ({
+      notifications: state.notifications.concat([res]),
+      isChecking: false,
+    }));
 
     if (this.state.snackbar.open) {
-      this.setState((state) => ({ snackbar: { ...state.snackbar, open: false } }));
+      this.setState((state) => ({
+        snackbar: { ...state.snackbar, open: false },
+        isChecking: false,
+      }));
       return;
     }
 
@@ -199,6 +208,7 @@ class ScillaEditor extends React.Component<Props, State> {
               events={this.props.events}
               clearEvent={this.props.clearEvent}
               canSave={this.props.contract && this.props.contract.code !== this.state.contract.code}
+              isChecking={this.state.isChecking}
               handleCheck={this.handleCheck}
               handleSave={this.handleSave}
             />

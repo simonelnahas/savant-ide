@@ -4,12 +4,13 @@ import styled from 'styled-components';
 import IconButton from '@material-ui/core/IconButton';
 
 import Button from '@material-ui/core/Button';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SaveIcon from '@material-ui/icons/Save';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -38,6 +39,7 @@ interface Props {
   activeFile: ContractSrcFile;
   events: { [id: string]: Event };
   clearEvent: typeof clearEvent;
+  isChecking: boolean;
   canSave: boolean;
   handleCheck: () => void;
   handleSave: () => void;
@@ -94,16 +96,20 @@ export default class EditorControls extends React.Component<Props, State> {
           </Typography>
         </ButtonWrapper>
         <ButtonWrapper>
-          <IconButton
-            disabled={!isContractSelected}
-            aria-label="save"
-            color="primary"
-            onClick={this.handleCheck}
-          >
-            <CheckBoxIcon />
-          </IconButton>
+          {this.props.isChecking ? (
+            <CircularProgress />
+          ) : (
+            <IconButton
+              disabled={!isContractSelected}
+              aria-label="check"
+              color="primary"
+              onClick={this.handleCheck}
+            >
+              <CheckBoxIcon />
+            </IconButton>
+          )}
           <Typography align="center" color="primary">
-            Check
+            {this.props.isChecking ? 'Checking' : 'Check'}
           </Typography>
         </ButtonWrapper>
         <ButtonWrapper>
