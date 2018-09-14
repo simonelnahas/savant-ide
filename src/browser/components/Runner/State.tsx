@@ -7,6 +7,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
 
+import Collapsible from './Collapsible';
 import { Account } from '../../store/blockchain/types';
 import { Contract } from '../../store/contract/types';
 import { deserialiseContractState } from '../../util/encoding';
@@ -21,7 +22,14 @@ const labelRender = (key: string[]) => {
 
 const valueRender = (value: string, ...args: any[]) => {
   if (args[1] === 'code') {
-    return <code style={{ whiteSpace: 'pre' }}>{`\n${value}`}</code>;
+    const expander = (isOpen: boolean) => (
+      <span style={{ color: '#000', cursor: 'pointer' }}>{isOpen ? 'hide' : 'show'}</span>
+    );
+    return (
+      <Collapsible expander={expander}>
+        {() => <code style={{ whiteSpace: 'pre' }}>{`\n${value}`}</code>}
+      </Collapsible>
+    );
   }
 
   return <span>{value}</span>;
