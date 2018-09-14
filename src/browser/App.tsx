@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import Navigator from './components/Navigator';
 import ScillaEditor from './components/Editor';
 import Runner from './components/Runner';
+import Footer from './components/Footer';
 
 const theme = createMuiTheme({
   palette: {
@@ -77,6 +78,7 @@ class App extends React.Component<Props, State> {
             <ScillaEditor />
             <Runner toggle={this.toggleRunner} isOpen={this.state.isRunnerOpen} />
           </Wrapper>
+          <Footer />
         </MuiThemeProvider>
       </Provider>
     );
