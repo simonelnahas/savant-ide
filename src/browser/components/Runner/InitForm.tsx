@@ -12,7 +12,7 @@ import styled from 'styled-components';
 import Loader from '../Loader';
 import TxParams from '../Form/TxParams';
 import InputWrapper from '../Form/InputWrapper';
-import { DeploymentResult, Param } from '../../store/contract/types';
+import { RunnerResult, Param } from '../../store/contract/types';
 import { isField, Field, MsgField, FieldDict, MsgFieldDict } from '../../util/form';
 import { formatError } from '../../util/api';
 import { validate as valid } from '../../util/validation';
@@ -44,7 +44,7 @@ const Wrapper = styled.div`
 
 interface Props {
   abiParams: Param[];
-  result: DeploymentResult | null;
+  result: RunnerResult | null;
   handleSubmit: (init: FieldDict, msg: MsgFieldDict) => void;
   handleReset: () => void;
   isDeploying: boolean;
@@ -179,8 +179,13 @@ export default class InitForm extends React.Component<Props, State> {
     if (result && result.status === 0) {
       return (
         <StatusWrapper>
-          <Typography variant="body2">
+          <Typography variant="body2" align="left">
             {`Your contract was successfully deployed to 0x${result.address.toUpperCase()}`}
+          </Typography>
+          <Typography variant="body2" align="left" style={{ whiteSpace: 'pre' }}>
+            {`Gas used: ${result.gasUsed}\nGas price: ${
+              result.gasPrice
+            }\nTransaction cost: ${result.gasUsed * result.gasPrice} ZIL`}
           </Typography>
           <Button
             color="primary"

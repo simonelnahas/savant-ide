@@ -3,14 +3,10 @@ export const enum ScillaBinStatus {
   FAILURE,
 }
 
-export interface DeploymentResult {
+export interface RunnerResult {
   status: ScillaBinStatus;
-  address: string;
-  error?: any;
-}
-
-export interface CallResult {
-  status: ScillaBinStatus;
+  gasUsed: number;
+  gasPrice: number;
   address: string;
   error?: any;
 }

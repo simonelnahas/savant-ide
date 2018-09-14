@@ -3,7 +3,7 @@ import { find } from 'ramda';
 import styled from 'styled-components';
 
 import { Account } from '../../store/blockchain/types';
-import { CallResult, Contract, Transition } from '../../store/contract/types';
+import { RunnerResult, Contract, Transition } from '../../store/contract/types';
 import Select, { Option } from '../Form/Select';
 import { Caller } from '../types';
 import { toMsgFields, toScillaParams, FieldDict, MsgFieldDict } from '../../util/form';
@@ -33,7 +33,7 @@ interface Props {
 
 interface State {
   activeAccount: Account | null;
-  result: CallResult | null;
+  result: RunnerResult | null;
   selectedContract: string; // address of currently selected transition
   selectedTransition: string;
 }
@@ -69,7 +69,7 @@ export default class CallTab extends React.Component<Props, State> {
     );
   };
 
-  onCallResult = (result: CallResult) => this.setState({ result });
+  onCallResult = (result: RunnerResult) => this.setState({ result });
 
   onSelectAccount: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
     e.preventDefault();
@@ -106,7 +106,7 @@ export default class CallTab extends React.Component<Props, State> {
 
     return Object.keys(deployedContracts).map((address) => {
       const contract = deployedContracts[address];
-      const key = `${address} (${(contract.abi && contract.abi.name) || ''})`;
+      const key = `0x${address.toUpperCase()} (${(contract.abi && contract.abi.name) || ''})`;
       const value = address;
       return { key, value };
     });

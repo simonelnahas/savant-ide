@@ -76,12 +76,14 @@ function* deployContract(action: ActionType<typeof contractActions.deploy>, db: 
 
     const res = yield api.callContract(payload);
 
+    const gasUsed = gaslimit - parseInt(res.message.gas_remaining, 10);
+
     const updatedAccount = {
       ...deployer,
       nonce: deployer.nonce + 1,
       balance: new BN(deployer.balance)
         .sub(txAmount)
-        .sub(new BN(gaslimit - parseInt(res.message.gas_remaining, 10) * gasprice))
+        .sub(new BN(gasUsed * gasprice))
         .toString(10),
     };
 
@@ -102,12 +104,14 @@ function* deployContract(action: ActionType<typeof contractActions.deploy>, db: 
       yield put(contractActions.deploySuccess(contract)),
     ]);
 
-    statusCB({ status: ScillaBinStatus.SUCCESS, address });
+    statusCB({ status: ScillaBinStatus.SUCCESS, address, gasUsed, gasPrice: gasprice });
   } catch (err) {
     yield put(contractActions.deployError(err));
     action.payload.statusCB({
       status: ScillaBinStatus.FAILURE,
       address: '',
+      gasUsed: 0,
+      gasPrice: action.payload.gasprice,
       error: err,
     });
   }
@@ -161,12 +165,14 @@ function* callTransition(action: ActionType<typeof contractActions.call>, db: Co
 
     const { message: msg } = res;
 
+    const gasUsed = gaslimit - parseInt(msg.gas_remaining, 10);
+
     const updatedAccount = {
       ...caller,
       nonce: caller.nonce + 1,
       balance: new BN(caller.balance)
         .sub(txAmount)
-        .sub(new BN(gaslimit - parseInt(res.message.gas_remaining, 10) * gasprice))
+        .sub(new BN(gasUsed * gasprice))
         .add(new BN(msg.message._amount))
         .toString(10),
     };
@@ -194,10 +200,16 @@ function* callTransition(action: ActionType<typeof contractActions.call>, db: Co
       ),
     ]);
 
-    statusCB({ status: ScillaBinStatus.SUCCESS, address });
+    statusCB({ status: ScillaBinStatus.SUCCESS, address, gasUsed, gasPrice: gasprice });
   } catch (err) {
     put(contractActions.callError(address, err));
-    statusCB({ status: ScillaBinStatus.FAILURE, address, error: err });
+    statusCB({
+      status: ScillaBinStatus.FAILURE,
+      address,
+      gasPrice: action.payload.gasprice,
+      gasUsed: 0,
+      error: err,
+    });
   }
 }
 

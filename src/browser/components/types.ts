@@ -1,5 +1,5 @@
 import { Account } from '../store/blockchain/types';
-import { DeploymentResult, KVPair } from '../store/contract/types';
+import { RunnerResult, KVPair } from '../store/contract/types';
 /**
  * Action dispatchers
  */
@@ -10,7 +10,7 @@ export type Deployer = (
   deployer: Account,
   gaslimit: number,
   gasprice: number,
-  resultCb: (result: DeploymentResult) => void,
+  resultCb: (result: RunnerResult) => void,
 ) => void;
 
 export type Caller = (
@@ -21,5 +21,5 @@ export type Caller = (
   caller: Account,
   gaslimit: number,
   gasprice: number,
-  resultCb: (result: DeploymentResult) => void,
+  resultCb: (result: RunnerResult) => void,
 ) => void;

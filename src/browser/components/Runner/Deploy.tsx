@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import Loader from '../Loader';
 import { Account } from '../../store/blockchain/types';
-import { ABI, DeploymentResult } from '../../store/contract/types';
+import { ABI, RunnerResult } from '../../store/contract/types';
 import { ContractSrcFile } from '../../store/fs/types';
 import { Deployer } from '../types';
 
@@ -41,7 +41,7 @@ interface State {
   isChecking: boolean;
   selected: string;
   abi: ABI | null;
-  result: DeploymentResult | null;
+  result: RunnerResult | null;
   activeAccount: Account | null;
 }
 
@@ -89,7 +89,7 @@ export default class DeployTab extends React.Component<Props, State> {
     );
   };
 
-  onDeployResult = (result: DeploymentResult) => this.setState({ result });
+  onDeployResult = (result: RunnerResult) => this.setState({ result });
 
   reset = () =>
     this.setState({

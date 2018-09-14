@@ -13,7 +13,7 @@ import * as bcActions from '../../store/blockchain/actions';
 import * as contractActions from '../../store/contract/actions';
 import { ApplicationState } from '../../store/index';
 import { Account } from '../../store/blockchain/types';
-import { Contract, DeploymentResult, KVPair } from '../../store/contract/types';
+import { Contract, RunnerResult, KVPair } from '../../store/contract/types';
 import { ContractSrcFile } from '../../store/fs/types';
 
 type Props = OwnProps & MappedProps & DispatchProps;
@@ -144,7 +144,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     deployer: Account,
     gaslimit: number,
     gasprice: number,
-    resultCb: (result: DeploymentResult) => void,
+    resultCb: (result: RunnerResult) => void,
   ) => dispatch(contractActions.deploy(code, init, msg, deployer, gaslimit, gasprice, resultCb)),
   callTransition: (
     address: string,
@@ -154,7 +154,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     caller: Account,
     gaslimit: number,
     gasprice: number,
-    resultCb: (result: DeploymentResult) => void,
+    resultCb: (result: RunnerResult) => void,
   ) =>
     dispatch(
       contractActions.call(address, transition, tParams, msg, caller, gaslimit, gasprice, resultCb),

@@ -13,7 +13,7 @@ import Status from '../Status';
 import TxParams from '../Form/TxParams';
 import InputWrapper from '../Form/InputWrapper';
 import { formatError } from '../../util/api';
-import { CallResult, Transition } from '../../store/contract/types';
+import { RunnerResult, Transition } from '../../store/contract/types';
 import { isField, Field, MsgField, FieldDict, MsgFieldDict } from '../../util/form';
 import { validate as valid } from '../../util/validation';
 
@@ -33,7 +33,7 @@ interface Props extends Transition {
   handleReset: () => void;
   handleSubmit: (transition: string, params: FieldDict, msg: MsgFieldDict) => void;
   isCalling: boolean;
-  result: CallResult | null;
+  result: RunnerResult | null;
 }
 
 interface State {
@@ -165,8 +165,13 @@ export default class TransitionForm extends React.Component<Props, State> {
     if (result && result.status === 0) {
       return (
         <Status>
-          <Typography variant="body2">
-            {`${this.props.name} at ${result.address} was successfully called.`}
+          <Typography variant="body2" align="left">
+            {`${this.props.name} at 0x${result.address.toUpperCase()} was successfully called.`}
+          </Typography>
+          <Typography variant="body2" align="left" style={{ whiteSpace: 'pre' }}>
+            {`Gas used: ${result.gasUsed}\nGas price: ${
+              result.gasPrice
+            }\nTransaction cost: ${result.gasUsed * result.gasPrice} ZIL`}
           </Typography>
           <Button
             variant="extendedFab"

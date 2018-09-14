@@ -1,6 +1,6 @@
 import { createAction } from 'typesafe-actions';
 
-import { CallResult, ContractActionTypes, Contract, DeploymentResult, KVPair } from './types';
+import { ContractActionTypes, Contract, RunnerResult, KVPair } from './types';
 import { Account } from '../blockchain/types';
 
 /**
@@ -26,7 +26,7 @@ export const deploy = createAction(ContractActionTypes.DEPLOY, (resolve) => {
     deployer: Account,
     gaslimit: number,
     gasprice: number,
-    statusCB: (result: DeploymentResult) => void,
+    statusCB: (result: RunnerResult) => void,
   ) => resolve({ code, init: initParams, msg: msgParams, gaslimit, gasprice, deployer, statusCB });
 });
 export const deploySuccess = createAction(ContractActionTypes.DEPLOY_SUCCESS, (resolve) => {
@@ -48,7 +48,7 @@ export const call = createAction(ContractActionTypes.CALL, (resolve) => {
     caller: Account,
     gaslimit: number,
     gasprice: number,
-    statusCB: (result: CallResult) => void,
+    statusCB: (result: RunnerResult) => void,
   ) => resolve({ address, transition, caller, tParams, msgParams, gaslimit, gasprice, statusCB });
 });
 export const callSuccess = createAction(ContractActionTypes.CALL_SUCCESS, (resolve) => {
