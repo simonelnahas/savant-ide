@@ -16,6 +16,7 @@ import Select from '../Form/Select';
 import InitForm from './InitForm';
 
 const Wrapper = styled.div`
+  margin-top: 2em;
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;

@@ -38,6 +38,7 @@ const ButtonWrapper = styled.span`
 
 interface Props {
   activeFile: ContractSrcFile;
+  blockNum: number;
   events: { [id: string]: Event };
   clearEvent: typeof clearEvent;
   isChecking: boolean;
@@ -83,6 +84,12 @@ export default class EditorControls extends React.Component<Props, State> {
             ? `${activeFile.displayName || 'untitled'}.scilla`
             : 'Create a new file, or select an existing one.'}
         </Typography>
+        <Typography
+          style={{ margin: '0 1em' }}
+          variant="body2"
+          color="textSecondary"
+          align="center"
+        >{`Block Height: ${this.props.blockNum}`}</Typography>
         <ButtonWrapper>
           <IconButton
             disabled={!isContractSelected || !this.props.canSave}

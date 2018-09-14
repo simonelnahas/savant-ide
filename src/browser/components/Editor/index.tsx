@@ -44,6 +44,7 @@ const Wrapper = styled.div`
 
 interface OwnProps {}
 interface MappedProps {
+  blocknum: number;
   contract: ContractSrcFile;
   events: { [id: string]: Event };
 }
@@ -205,6 +206,7 @@ class ScillaEditor extends React.Component<Props, State> {
             />
             <Controls
               activeFile={contract}
+              blockNum={this.props.blocknum}
               events={this.props.events}
               clearEvent={this.props.clearEvent}
               canSave={this.props.contract && this.props.contract.code !== this.state.contract.code}
@@ -240,6 +242,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 });
 
 const mapStateToProps = (state: ApplicationState) => ({
+  blocknum: state.blockchain.blockNum,
   contract:
     state.fs.activeContract && state.fs.activeContract.length > 1
       ? state.fs.contracts[state.fs.activeContract]

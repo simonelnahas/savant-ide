@@ -74,9 +74,8 @@ interface OwnProps {
 
 interface MappedProps {
   active: Contract | null;
-  accounts: { [address: string]: Account };
-  blockNum: number;
   files: { [name: string]: ContractSrcFile };
+  accounts: { [address: string]: Account };
   deployedContracts: { [address: string]: Contract };
   isDeployingContract: boolean;
   isCallingTransition: boolean;
@@ -120,7 +119,6 @@ class Runner extends React.Component<Props> {
           }}
         >
           <RunnerNav
-            blockNum={this.props.blockNum}
             callTransition={this.props.callTransition}
             isCallingTransition={this.props.isCallingTransition}
             deployContract={this.props.deployContract}
@@ -167,12 +165,10 @@ const mapStateToProps = (state: ApplicationState) => {
   const pointer = state.contract.active;
   const files = state.fs.contracts;
   const accounts = state.blockchain.accounts;
-  const blockNum = state.blockchain.blockNum;
   const deployedContracts = state.contract.contracts;
 
   const baseMappedProps = {
     accounts,
-    blockNum,
     files,
     deployedContracts,
     isDeployingContract: state.contract.isDeployingContract,
