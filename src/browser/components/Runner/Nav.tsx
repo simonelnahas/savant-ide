@@ -2,6 +2,7 @@ import * as React from 'react';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
 
 import AssignmentIcon from '@material-ui/icons/Description';
 import PlayIcon from '@material-ui/icons/PlayCircleOutline';
@@ -38,6 +39,7 @@ const Content = styled.div`
 `;
 
 interface Props {
+  blockNum: number;
   deployContract: Deployer;
   isDeployingContract: boolean;
   callTransition: Caller;
@@ -103,6 +105,12 @@ export default class RunnerNav extends React.Component<Props, State> {
           <Tab icon={<AssignmentIcon />} label="State" />
           <Tab icon={<SendIcon />} label="Deploy" />
         </Tabs>
+        <Typography
+          style={{ margin: '1em 1em' }}
+          variant="body2"
+          color="textSecondary"
+          align="left"
+        >{`Block Height: ${this.props.blockNum}`}</Typography>
         <Content>{this.renderContent()}</Content>
       </Wrapper>
     );
