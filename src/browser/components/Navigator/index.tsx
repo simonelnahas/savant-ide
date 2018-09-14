@@ -65,7 +65,10 @@ const Closer = styled.div`
   }
 `;
 
-interface OwnProps {}
+interface OwnProps {
+  isOpen: boolean;
+  toggle: () => void;
+}
 
 interface MappedProps {
   error: boolean;
@@ -85,13 +88,11 @@ interface DispatchProps {
 type Props = OwnProps & MappedProps & DispatchProps;
 
 interface State {
-  isOpen: boolean;
   isAdding: boolean;
 }
 
 class Navigator extends React.Component<Props, State> {
   state: State = {
-    isOpen: true,
     isAdding: false,
   };
 
@@ -101,7 +102,7 @@ class Navigator extends React.Component<Props, State> {
 
   toggle: React.MouseEventHandler<SVGSVGElement> = (e) => {
     e.preventDefault();
-    this.setState({ isOpen: !this.state.isOpen });
+    this.props.toggle();
   };
 
   handleNew = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -138,7 +139,9 @@ class Navigator extends React.Component<Props, State> {
   };
 
   render() {
-    const { isAdding, isOpen } = this.state;
+    const { isAdding } = this.state;
+    const { isOpen } = this.props;
+
     return (
       <React.Fragment>
         <ZDrawer

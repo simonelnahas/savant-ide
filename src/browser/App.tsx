@@ -55,12 +55,16 @@ interface State {
 
 class App extends React.Component<Props, State> {
   state: State = {
-    isRunnerOpen: false,
+    isRunnerOpen: true,
     isNavigatorOpen: true,
   };
 
   toggleRunner = () => {
     this.setState({ isRunnerOpen: !this.state.isRunnerOpen });
+  };
+
+  toggleNavigator = () => {
+    this.setState({ isNavigatorOpen: !this.state.isNavigatorOpen });
   };
 
   render() {
@@ -69,7 +73,7 @@ class App extends React.Component<Props, State> {
         <MuiThemeProvider theme={theme}>
           <CssBaseline />
           <Wrapper className="App">
-            <Navigator />
+            <Navigator toggle={this.toggleNavigator} isOpen={this.state.isNavigatorOpen} />
             <ScillaEditor />
             <Runner toggle={this.toggleRunner} isOpen={this.state.isRunnerOpen} />
           </Wrapper>
