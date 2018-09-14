@@ -22,6 +22,7 @@ import { Event } from '../../store/contract/types';
 import { ContractSrcFile } from '../../store/fs/types';
 
 const ButtonWrapper = styled.span`
+  align-items: center;
   display: flex;
   flex-direction: column;
   margin: 0 0.3em;
@@ -97,7 +98,7 @@ export default class EditorControls extends React.Component<Props, State> {
         </ButtonWrapper>
         <ButtonWrapper>
           {this.props.isChecking ? (
-            <CircularProgress />
+            <CircularProgress style={{ padding: '12px' }} size={48} thickness={5} />
           ) : (
             <IconButton
               disabled={!isContractSelected}
