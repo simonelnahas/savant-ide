@@ -85,9 +85,9 @@ export default class EditorControls extends React.Component<Props, State> {
             : 'Create a new file, or select an existing one.'}
         </Typography>
         <Typography
-          style={{ margin: '0 1em' }}
-          variant="body2"
-          color="textSecondary"
+          style={{ fontWeight: 500, margin: '0 1em' }}
+          variant="subheading"
+          color="primary"
           align="center"
         >{`Block Height: ${this.props.blockNum}`}</Typography>
         <ButtonWrapper>
