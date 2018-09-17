@@ -38,7 +38,7 @@ cache is not cleared.
 To build and run Savant:
 
 ```
-git clone https://github.com/Zilliqa/savant-ide && cd Scilla-IDE
+git clone https://github.com/Zilliqa/savant-ide && cd savant-ide
 
 # install all dependencies, including system dependencies
 # to use specific branch of scilla, append SCILLA_BRANCH=my_specific_branch:
