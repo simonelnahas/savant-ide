@@ -4,14 +4,14 @@ A souped-up IDE for testing Scilla smart contracts painlessly.
 
 ## Motivation
 
-The [previous iteration](https://ide.zilliqa.com) of our IDE was useful for
+The [previous iteration](https://ide.zilliqa.com) of Scilla IDE was useful for
 context-free testing of arbitrary Scilla smart contracts. However, its user
 experience was not ideal for testing of complex contracts due to the need to
 manually copy-and-paste state transitions and/or manually to adjust parameters
 simulate real blockchain behavior.
 
-We realised this was a time sink for developers coming looking for a quick and
-easy way to try Scilla out. Savant attempts to address this short coming by
+It was a time sink for developers coming looking for a quick and
+easy way to try Scilla out. Savant attempts to address this shortcoming by
 enabling an automated development environment, in-browser, with quick and
 intuitive controls.
 
@@ -56,11 +56,10 @@ Note: the makefile only supports Ubuntu and MacOS.
 - [ ] Additional unit tests.
 - [ ] Account-to-account transfers of ZIL.
 - [ ] Multi-contract calls.
-- [ ] 'REPL' mode that behaves like our IDE, for full control over parameters.
+- [ ] 'REPL' mode that behaves like the IDE, for full control over parameters.
 - [ ] Adjustable block height increment speed.
 
 ## Contributing
 
-We welcome contributions/critiques of the code. If you wish to contribute,
-please submit a PR and we will be happy to review and merge it if it meets our
-requirements.
+Contributions/critiques are welcome. If you wish to contribute,
+please submit a PR.
