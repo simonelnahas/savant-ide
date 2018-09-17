@@ -3,10 +3,6 @@ sudo: required
 services:
   - docker
 
-branches:
-  only:
-    - feature/rewrite
-
 before_cache:
   - >
     mkdir -p $HOME/docker && docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}} {{.ID}}'
@@ -34,5 +30,5 @@ deploy:
   skip_cleanup: true
   script:
     - ./scripts/deploy.sh
-  on: feature/rewrite
+  on: master
 
