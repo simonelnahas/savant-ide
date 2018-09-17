@@ -7,8 +7,8 @@ A souped-up IDE for testing Scilla smart contracts painlessly.
 The [previous iteration](https://ide.zilliqa.com) of Scilla IDE was useful for
 context-free testing of arbitrary Scilla smart contracts. However, its user
 experience was not ideal for testing of complex contracts due to the need to
-manually copy-and-paste state transitions and/or manually to adjust parameters
-simulate real blockchain behavior.
+manually copy-and-paste state transitions and/or to manually adjust parameters
+to simulate real blockchain behavior.
 
 It was a time sink for developers coming looking for a quick and
 easy way to try Scilla out. Savant attempts to address this shortcoming by
@@ -17,13 +17,15 @@ intuitive controls.
 
 ## Features
 
+Savant best works with Chrome browser and supports the following features:
+
 - Fast, in-browser pseudo-blockchain with persistent state, including previous
   calls/events/messages.
 - Intuitive UI for easy deployment/contract invocation.
 - Automatic block height counter for contracts that depend on block height.
 - Simple, persistent file manager for managing your contracts that allows for
   renaming/deletion.
-- Support for `event`s in contracts, with automatic notifications in the UI.
+- Support for `event` in contracts, with automatic notifications in the UI.
 - Support for arbitrary gas price/gas limit in deployment/calls.
 - Toggle between raw Scilla output and native JS representation when viewing
   state.
