@@ -1,6 +1,11 @@
 {
-  "name": "scilla-ide",
+  "name": "savant-ide",
+  "description": "Savant is a browser-based IDE for quickly and painlessly testing Scilla smart contracts.",
+  "keywords": ["scilla", "smart contract", "zilliqa", "blockchain", "IDE"],
   "version": "0.1.0",
+  "license": "GPL-3.0",
+  "homepage": "https://savant-ide.zilliqa.com",
+  "repository": "https://github.com/zilliqa/savant-ide",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.4",
@@ -43,19 +48,6 @@
     "uuid": "^3.3.2",
     "whatwg-fetch": "2.0.3",
     "zilliqa-js": "^0.1.8"
-  },
-  "scripts": {
-    "start": "yarn serve:all",
-    "start:client": "node scripts/start.js",
-    "start:server": "node dist/server/server.js",
-    "build:client": "node scripts/build.js",
-    "build:server": "tsc -p tsconfig.server.json",
-    "build:parser": "pegjs -o src/browser/util/parser.js src/browser/util/parser.pegjs ",
-    "serve:all": "concurrently -k -p \"[{name}]\" -n \"TS-Server,Client,Server\" -c \"yellow.bold,cyan.bold,green.bold\"  \"yarn watch:server\" \"yarn serve:client\" \"yarn serve:server\"",
-    "serve:client": "node scripts/start.js",
-    "serve:server": "nodemon --inspect dist/server/server.js --watch dist/server",
-    "watch:server": "yarn build:server -- -w",
-    "test": "node scripts/test.js --env=jsdom"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.6",
@@ -117,6 +109,19 @@
     "webpack": "3.8.1",
     "webpack-dev-server": "2.9.4",
     "webpack-manifest-plugin": "1.3.2"
+  },
+  "scripts": {
+    "start": "yarn serve:all",
+    "start:client": "node scripts/start.js",
+    "start:server": "node dist/server/server.js",
+    "build:client": "node scripts/build.js",
+    "build:server": "tsc -p tsconfig.server.json",
+    "build:parser": "pegjs -o src/browser/util/parser.js src/browser/util/parser.pegjs ",
+    "serve:all": "concurrently -k -p \"[{name}]\" -n \"TS-Server,Client,Server\" -c \"yellow.bold,cyan.bold,green.bold\"  \"yarn watch:server\" \"yarn serve:client\" \"yarn serve:server\"",
+    "serve:client": "node scripts/start.js",
+    "serve:server": "nodemon --inspect dist/server/server.js --watch dist/server",
+    "watch:server": "yarn build:server -- -w",
+    "test": "node scripts/test.js --env=jsdom"
   },
   "jest": {
     "collectCoverageFrom": [
