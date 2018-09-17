@@ -1,6 +1,6 @@
 ### Savant IDE
 
-A souped-up IDE for testing Scilla smart contracts painlessly.
+A souped-up IDE for testing Scilla smart contracts painlessly. It can be tried out at https://savant-ide.zilliqa.com/.
 
 ## Motivation
 
