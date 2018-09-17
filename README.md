@@ -1,34 +1,66 @@
-### [WIP] Scilla IDE v2.0
+### Savant IDE
 
-A souped-up, Remix-like IDE for testing Scilla smart contracts easily.
+A souped-up IDE for testing Scilla smart contracts painlessly.
 
-## Installation
+## Motivation
+
+The [previous iteration](https://ide.zilliqa.com) of our IDE was useful for
+context-free testing of arbitrary Scilla smart contracts. However, its user
+experience was not ideal for testing of complex contracts due to the need to
+manually copy-and-paste state transitions and/or manually to adjust parameters
+simulate real blockchain behavior.
+
+We realised this was a time sink for developers coming looking for a quick and
+easy way to try Scilla out. Savant attempts to address this short coming by
+enabling an automated development environment, in-browser, with quick and
+intuitive controls.
+
+## Features
+
+- Fast, in-browser pseudo-blockchain with persistent state, including previous
+  calls/events/messages.
+- Intuitive UI for easy deployment/contract invocation.
+- Automatic block height counter for contracts that depend on block height.
+- Simple, persistent file manager for managing your contracts that allows for
+  renaming/deletion.
+- Support for `event`s in contracts, with automatic notifications in the UI.
+- Support for arbitrary gas price/gas limit in deployment/calls.
+- Toggle between raw Scilla output and native JS representation when viewing
+  state.
+
+## Building and running locally
+
+Savant is easy to build and run locally. Because Savant relies on IndexedDB,
+it is possible to use it offline, without suffering a loss of data as long as
+you serve the app from the same address (default: `localhost:3000`), and the
+cache is not cleared.
+
+To build and run Savant:
 
 ```
-git clone https://github.com/Zilliqa/Scilla-IDE && cd Scilla-IDE
+git clone https://github.com/Zilliqa/savant-ide && cd Scilla-IDE
 
-# install all dependencies
-# to use specific branch of scilla, append SCILLA_BRANCH=my_specific_branch
+# install all dependencies, including system dependencies
+# to use specific branch of scilla, append SCILLA_BRANCH=my_specific_branch:
+# make SCILLA_BRANCH=some_other_branch
 make
 
 # start IDE app dev server
 yarn run start
 ```
 
-## TODO
+Note: the makefile only supports Ubuntu and MacOS.
 
-- Test crowdfunding for 1) Withdrawal before deadline [fail] 2) Deadline not reached,
-  owner recovers [fail] 3) User wants to get refund _after_ deadline
-  [success]. Use 2 users - both should contribute different amounts.
-- Add social links as a Footer component.
-- ~Catch errors thrown by malformed syntax/types.~
-- Add link to scilla docs.
-- ~Rename not updating database.~
-- ~Display blocknumber in UI.~
-- ~Move `Select Account` to the right-hand panel. ~
-- ~File name length checks.~
-- ~Validate inputs for deployment~
-- ~Hook up `/contract/run` response to UI~
-- ~Add `/contract/check` errors to the editor UI as markers~
-- ~Add snackbar component to notify user that contract is checked~
-- ~Add makefile~
+## Roadmap
+
+- [] Additional unit tests.
+- [] Account-to-account transfers of ZIL.
+- [] Multi-contract calls.
+- [] 'REPL' mode that behaves like our IDE, for full control over parameters.
+- [] Adjustable block height increment speed.
+
+## Contributing
+
+We welcome contributions/critiques of the code. If you wish to contribute,
+please submit a PR and we will be happy to review and merge it if it meets our
+requirements.
