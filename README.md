@@ -53,11 +53,11 @@ Note: the makefile only supports Ubuntu and MacOS.
 
 ## Roadmap
 
-- [] Additional unit tests.
-- [] Account-to-account transfers of ZIL.
-- [] Multi-contract calls.
-- [] 'REPL' mode that behaves like our IDE, for full control over parameters.
-- [] Adjustable block height increment speed.
+- [ ] Additional unit tests.
+- [ ] Account-to-account transfers of ZIL.
+- [ ] Multi-contract calls.
+- [ ] 'REPL' mode that behaves like our IDE, for full control over parameters.
+- [ ] Adjustable block height increment speed.
 
 ## Contributing
 
