@@ -1,6 +1,8 @@
 ### Savant IDE
 
-A souped-up IDE for testing Scilla smart contracts painlessly. It can be tried out at https://savant-ide.zilliqa.com/.
+A souped-up IDE for testing Scilla smart contracts painlessly. It can be tried out at https://savant-ide.zilliqa.com/. 
+
+Scilla is a smart contract language being developed for Zilliqa. To learn more about the language, visit https://scilla-lang.org/.
 
 ## Motivation
 
@@ -63,5 +65,5 @@ Note: the makefile only supports Ubuntu and MacOS.
 
 ## Contributing
 
-Contributions/critiques are welcome. If you wish to contribute,
+Contributions/critiques are most welcome. If you wish to contribute,
 please submit a PR.
