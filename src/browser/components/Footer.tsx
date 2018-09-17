@@ -59,10 +59,9 @@ class Footer extends React.Component<WithTheme> {
         <Typography variant="subheading" align="center" style={{ flex: '1 1 auto' }}>
           Zilliqa © 2018
         </Typography>
-        {SOCIAL_ICONS.map(({ network, href, icon }) => (
-          <a href={href} target="_blank">
+        {SOCIAL_ICONS.map(({ href, icon }) => (
+          <a key={href} href={href} target="_blank">
             <FontAwesomeIcon
-              key={network}
               icon={icon}
               color={this.props.theme.palette.secondary.main}
               fixedWidth
