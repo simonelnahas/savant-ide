@@ -1,3 +1,8 @@
+
+[![Build Status](https://travis-ci.com/Zilliqa/savant-ide.svg?token=JW9XZmrp42GWiwtgCs9i&branch=master)](https://travis-ci.com/Zilliqa/savant-ide)
+[![License](https://img.shields.io/cran/l/devtools.svg)](https://github.com/Zilliqa/savant-ide/blob/master/LICENSE)
+[![Gitter chat](http://img.shields.io/badge/chat-on%20gitter-077a8f.svg)](https://gitter.im/Zilliqa/SmartContract)
+
 ### Savant IDE
 
 A souped-up IDE for testing Scilla smart contracts painlessly. It can be tried out at https://savant-ide.zilliqa.com/. 
