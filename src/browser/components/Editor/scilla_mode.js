@@ -34,8 +34,8 @@ ace.define(
 
       var keywordMapper = this.createKeywordMapper(
         {
-          'constant.language': builtinConstants,
           keyword: keywords,
+          'constant.language': builtinConstants,
           'storage.type': storage,
           'support.function': builtinFunctions,
           'variable.language': builtinCtor,
@@ -84,7 +84,7 @@ ace.define(
           {
             token: 'keyword.operator',
             regex:
-              '\\+\\.|\\-\\.|\\*\\.|\\/\\.|#|;;|\\+|\\-|\\*|\\*\\*\\/|\\/\\/|%|<<|>>|&|\\||\\^|~|<|>|<=|=>|==|!=|<>|<-|=|:=',
+              '\\+\\.|\\-\\.|\\*\\.|\\/\\.|#|;|\\+|\\-|\\*|\\*\\*\\/|\\/\\/|%|<<|>>|&|\\||\\^|~|<|>|<=|=>|==|!=|<>|<-|=|:=',
           },
           {
             token: 'paren.lparen',
@@ -109,7 +109,6 @@ ace.define(
             defaultToken: 'comment',
           },
         ],
-
         qstring: [
           {
             token: 'string',
