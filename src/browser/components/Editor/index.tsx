@@ -19,9 +19,10 @@ import * as React from 'react';
 // @ts-ignore
 import * as brace from 'brace';
 import AceEditor from 'react-ace';
+import 'brace/ext/searchbox';
+import 'brace/ext/statusbar';
 import 'brace/theme/tomorrow';
 import './scilla_mode';
-import 'brace/ext/searchbox';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import Measure, { ContentRect } from 'react-measure';
@@ -29,6 +30,7 @@ import styled from 'styled-components';
 
 import Controls from './Controls';
 import Notification from './Notification';
+import Statusline from './StatusLine';
 import { ApplicationState } from '../../store/index';
 import * as fsActions from '../../store/fs/actions';
 import * as contractActions from '../../store/contract/actions';
@@ -76,6 +78,7 @@ type Props = OwnProps & MappedProps & DispatchProps;
 
 interface State {
   contract: ContractSrcFile;
+  cursorPos: { line: number; col: number };
   isChecking: boolean;
   dimensions: { width: number; height: number };
   notifications: any[];
@@ -106,6 +109,9 @@ class ScillaEditor extends React.Component<Props, State> {
     return null;
   }
 
+  editor = React.createRef<AceEditor>();
+  statusBar: any = null;
+
   state: State = {
     contract: {
       id: '',
@@ -120,6 +126,7 @@ class ScillaEditor extends React.Component<Props, State> {
     },
     notifications: [],
     snackbar: { open: false, message: null, key: 0 },
+    cursorPos: { line: 0, col: 0 },
   };
 
   handleCheck = () => {
@@ -180,6 +187,10 @@ class ScillaEditor extends React.Component<Props, State> {
     this.setState({ contract: { ...this.state.contract, code: value } });
   };
 
+  onCursorChange = (selection: any): void => {
+    this.setState({ cursorPos: { line: selection.lead.row + 1, col: selection.lead.column } });
+  };
+
   getAnnotations = (): any => {
     const { contract } = this.state;
 
@@ -236,6 +247,8 @@ class ScillaEditor extends React.Component<Props, State> {
               theme="tomorrow"
               fontSize={16}
               onChange={this.onChange}
+              // @ts-ignore
+              onCursorChange={this.onCursorChange}
               name="scilla-editor"
               annotations={this.getAnnotations()}
               height={`${this.state.dimensions.height.toString(10)}px`}
@@ -243,6 +256,13 @@ class ScillaEditor extends React.Component<Props, State> {
               value={contract.code}
               editorProps={{ $blockScrolling: true }}
               readOnly={contract.id.length === 0}
+              innerRef={this.editor}
+            />
+            <Statusline
+              line={this.state.cursorPos.line}
+              col={this.state.cursorPos.col}
+              blockHeight={this.props.blocknum}
+              selectedFile={contract.displayName}
             />
           </Wrapper>
         )}

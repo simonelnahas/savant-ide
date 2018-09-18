@@ -96,11 +96,6 @@ export default class EditorControls extends React.Component<Props, State> {
 
     return (
       <Toolbar variant="dense" style={{ padding: '12px 24px' }}>
-        <Typography style={{ flex: 1 }}>
-          {activeFile.displayName
-            ? `${activeFile.displayName || 'untitled'}.scilla`
-            : 'Create a new file, or select an existing one.'}
-        </Typography>
         <Typography
           style={{ fontWeight: 500, margin: '0 1em' }}
           variant="subheading"
