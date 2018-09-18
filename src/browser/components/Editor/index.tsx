@@ -20,7 +20,7 @@ import * as React from 'react';
 import * as brace from 'brace';
 import AceEditor from 'react-ace';
 import 'brace/theme/tomorrow';
-import 'brace/mode/ocaml';
+import './scilla_mode';
 import 'brace/ext/searchbox';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -232,7 +232,7 @@ class ScillaEditor extends React.Component<Props, State> {
               handleSave={this.handleSave}
             />
             <Editor
-              mode="ocaml"
+              mode="scilla"
               theme="tomorrow"
               fontSize={16}
               onChange={this.onChange}
