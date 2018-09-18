@@ -175,7 +175,6 @@ class File extends React.Component<Props, State> {
         <ClickAwayListener onClickAway={this.handleBlur}>
           <ListItem
             key="item"
-            divider
             onClick={this.handleClick}
             onContextMenu={this.handleClick}
             style={{ cursor: 'pointer' }}
