@@ -96,12 +96,6 @@ export default class EditorControls extends React.Component<Props, State> {
 
     return (
       <Toolbar variant="dense" style={{ padding: '12px 24px' }}>
-        <Typography
-          style={{ fontWeight: 500, margin: '0 1em' }}
-          variant="subheading"
-          color="primary"
-          align="center"
-        >{`Block Height: ${this.props.blockNum}`}</Typography>
         <ButtonWrapper>
           <IconButton
             disabled={!isContractSelected || !this.props.canSave}
