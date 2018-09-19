@@ -19,9 +19,10 @@ import * as React from 'react';
 import AceEditor from 'react-ace';
 // @ts-ignore
 import * as brace from 'brace';
+import 'brace/ext/searchbox';
+import 'brace/ext/keybinding_menu';
 import 'brace/keybinding/emacs';
 import 'brace/keybinding/vim';
-import 'brace/ext/searchbox';
 import 'brace/theme/tomorrow';
 import './scilla_mode';
 import { connect } from 'react-redux';
@@ -63,6 +64,12 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
 `;
+
+const getKeyboardShortcuts: (
+  editor: any,
+) => Array<{ key: string; command: string }> = brace.acequire(
+  'ace/ext/menu_tools/get_editor_keyboard_shortcuts',
+).getEditorKeybordShortcuts;
 
 interface OwnProps {}
 interface MappedProps {
@@ -120,7 +127,6 @@ class ScillaEditor extends React.Component<Props, State> {
   }
 
   editor = React.createRef<AceEditor>();
-  statusBar: any = null;
 
   state: State = {
     contract: {
@@ -139,6 +145,14 @@ class ScillaEditor extends React.Component<Props, State> {
     isChecking: false,
     notifications: [],
     snackbar: { open: false, message: null, key: 0 },
+  };
+
+  getKeyboardShortcuts = (): Array<{ key: string; command: string }> => {
+    if (this.editor.current) {
+      return getKeyboardShortcuts((this.editor.current as any).editor);
+    }
+
+    return [];
   };
 
   handleCheck = () => {
@@ -264,6 +278,7 @@ class ScillaEditor extends React.Component<Props, State> {
               fontSize={this.state.editorFontSize}
               keyMap={this.state.editorKeymap}
               isChecking={this.state.isChecking}
+              getKeyboardShortcuts={this.getKeyboardShortcuts}
               handleCheck={this.handleCheck}
               handleSave={this.handleSave}
               handleSetFontSize={this.handleSetFontSize}

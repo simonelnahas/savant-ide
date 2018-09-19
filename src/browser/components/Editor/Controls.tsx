@@ -67,10 +67,11 @@ interface Props {
   fontSize: number;
   keyMap: Keymap;
   isChecking: boolean;
+  getKeyboardShortcuts: () => Array<{ key: string; command: string }>;
   handleCheck: () => void;
   handleSave: () => void;
   handleSetFontSize: (size: number) => void;
-  handleSetKeymap: (keymap: Keymap) =>  void;
+  handleSetKeymap: (keymap: Keymap) => void;
   handleUpdateBlockNum: typeof blockchainActions.updateBnum;
   handleUpdateBlockTime: typeof blockchainActions.updateBlkTime;
 }
@@ -199,6 +200,7 @@ export default class EditorControls extends React.Component<Props, State> {
           blockTime={this.props.blockTime}
           fontSize={this.props.fontSize}
           keyMap={this.props.keyMap}
+          getKeyboardShortcuts={this.props.getKeyboardShortcuts}
           handleSetFontSize={this.props.handleSetFontSize}
           handleSetKeymap={this.props.handleSetKeymap}
           handleUpdateBlockNum={this.props.handleUpdateBlockNum}

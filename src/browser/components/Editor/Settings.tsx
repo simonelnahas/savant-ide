@@ -35,6 +35,7 @@ import Slider from '@material-ui/lab/Slider';
 import Typography from '@material-ui/core/Typography';
 
 import { Keymap } from './index';
+import KeymapContainer from './Keymap';
 import Select from '../Form/Select';
 
 const Transition: React.SFC<SlideProps> = (props) => {
@@ -73,6 +74,7 @@ interface Props {
   toggle: () => void;
   isOpen: boolean;
   fontSize: number;
+  getKeyboardShortcuts: () => Array<{ key: string; command: string }>;
   handleSetFontSize: (size: number) => void;
   handleSetKeymap: (keymap: Keymap) => void;
   handleUpdateBlockNum: (num: number) => void;
@@ -93,6 +95,10 @@ export default class FullScreenDialog extends React.Component<Props, State> {
       error: null,
     },
   };
+
+  get shortcuts() {
+    return this.props.getKeyboardShortcuts();
+  }
 
   onClose = () => {
     this.props.toggle();
@@ -237,6 +243,10 @@ export default class FullScreenDialog extends React.Component<Props, State> {
               </Control>
             </ListItem>
           </List>
+          <div style={{ padding: '24px' }}>
+            <Typography variant="display2">Shortcuts</Typography>
+            <KeymapContainer bindings={this.shortcuts} />
+          </div>
         </DialogContent>
       </Dialog>
     );
