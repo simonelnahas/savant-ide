@@ -23,10 +23,10 @@ import AccountStore from '../../database/accounts';
 import * as bcActions from './actions';
 import { Account, BlockchainActionTypes } from './types';
 import { ApplicationState } from '../index';
+import config from '../../config';
 
 const DEFAULT_ACCOUNT_FUNDS = (10 ** 8).toString();
 const DEFAULT_NUM_ACCOUNTS = 20;
-const DEFAULT_BNUM_INTERVAL = 10000;
 const util = new Zilliqa({ nodeUrl: 'https://localhost:8888' }).util;
 
 type BlockchainAction = ActionType<typeof bcActions>;
@@ -64,7 +64,10 @@ export function* initBlockchain() {
   yield fork(blocknumCounter);
 
   // block on _all_ actions
-  const chan = yield actionChannel([BlockchainActionTypes.UPDATE_ACCOUNT]);
+  const chan = yield actionChannel([
+    BlockchainActionTypes.UPDATE_ACCOUNT,
+    BlockchainActionTypes.UPDATE_BLK_TIME,
+  ]);
 
   while (true) {
     const action: BlockchainAction = yield take<BlockchainAction>(chan);
@@ -72,6 +75,9 @@ export function* initBlockchain() {
     switch (action.type) {
       case BlockchainActionTypes.UPDATE_ACCOUNT:
         yield call(updateAccount, action, db);
+        break;
+      case BlockchainActionTypes.UPDATE_BLK_TIME:
+        localStorage.setItem(config.LS_BTIME, action.payload.interval.toString());
         break;
       default:
     }
@@ -105,8 +111,8 @@ function* updateAccount(action: ActionType<typeof bcActions.updateAccount>, db: 
 function* blocknumCounter() {
   while (true) {
     try {
-      yield call(delay, DEFAULT_BNUM_INTERVAL);
       const state: ApplicationState = yield select();
+      yield call(delay, state.blockchain.blockTime);
       yield put(bcActions.updateBnum(state.blockchain.blockNum + 1));
     } catch (err) {
       // ignore

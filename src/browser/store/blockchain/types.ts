@@ -25,6 +25,7 @@ export interface BlockchainState {
   error: any;
   loading: boolean;
   blockNum: number;
+  blockTime: number;
   accounts: { [address: string]: Account };
 }
 
@@ -33,6 +34,7 @@ export const enum BlockchainActionTypes {
   INIT_SUCCESS = '@blockchain/INIT_SUCCESS',
   INIT_ERROR = '@blockchain/INIT_ERROR',
   UPDATE_BNUM = '@blockchain/UPDATE_BNUM',
+  UPDATE_BLK_TIME = '@blockchain/UPDATE_BLK_TIME',
   UPDATE_ACCOUNT = '@blockchain/UPDATE_ACCOUNT',
   UPDATE_ACCOUNT_SUCCESS = '@blockchain/UPDATE_ACCOUNT_SUCCESS',
   UPDATE_ACCOUNT_ERROR = '@blockchain/UPDATE_ACCOUNT_ERROR',
