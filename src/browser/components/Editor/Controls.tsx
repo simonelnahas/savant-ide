@@ -140,6 +140,12 @@ export default class EditorControls extends React.Component<Props, State> {
             Reset
           </Typography>
         </ButtonWrapper>
+        <Typography
+          style={{ fontWeight: 500, flex: '1 0 auto', margin: '0 1em' }}
+          variant="subheading"
+          color="primary"
+          align="right"
+        >{`Block Height: ${this.props.blockNum}`}</Typography>
         <Dialog
           open={this.state.isNukeDialogOpen}
           onClose={this.toggleNukeDialog}

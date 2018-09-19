@@ -16,11 +16,10 @@
  */
 
 import * as React from 'react';
+import AceEditor from 'react-ace';
 // @ts-ignore
 import * as brace from 'brace';
-import AceEditor from 'react-ace';
 import 'brace/ext/searchbox';
-import 'brace/ext/statusbar';
 import 'brace/theme/tomorrow';
 import './scilla_mode';
 import { connect } from 'react-redux';
