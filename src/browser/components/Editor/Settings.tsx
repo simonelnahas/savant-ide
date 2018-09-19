@@ -41,6 +41,14 @@ const Transition: React.SFC<SlideProps> = (props) => {
   return <Slide direction="up" {...props} />;
 };
 
+const TitleBar = styled.div`
+  display: flex;
+  padding: 0 24px;
+  flex-direction: row;
+  flex: 1 0 auto;
+  width: 100%;
+`;
+
 const LiText = styled(ListItemText)`
   && {
     width: 20%;
@@ -150,10 +158,14 @@ export default class FullScreenDialog extends React.Component<Props, State> {
     return (
       <Dialog fullScreen open={isOpen} onClose={this.onClose} TransitionComponent={Transition}>
         <DialogContent>
-          <IconButton color="inherit" onClick={this.onClose} aria-label="Close">
-            <CloseIcon />
-          </IconButton>
-          <Typography variant="display2">Settings</Typography>
+          <TitleBar>
+            <Typography variant="display2" style={{ flex: '1 0 auto' }}>
+              Settings
+            </Typography>
+            <IconButton color="primary" onClick={this.onClose} aria-label="Close">
+              <CloseIcon />
+            </IconButton>
+          </TitleBar>
           <List>
             <ListItem>
               <LiText primary="Block Height" secondary="Set current block height" />
