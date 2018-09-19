@@ -96,17 +96,6 @@ export default class EditorControls extends React.Component<Props, State> {
 
     return (
       <Toolbar variant="dense" style={{ padding: '12px 24px' }}>
-        <Typography style={{ flex: 1 }}>
-          {activeFile.displayName
-            ? `${activeFile.displayName || 'untitled'}.scilla`
-            : 'Create a new file, or select an existing one.'}
-        </Typography>
-        <Typography
-          style={{ fontWeight: 500, margin: '0 1em' }}
-          variant="subheading"
-          color="primary"
-          align="center"
-        >{`Block Height: ${this.props.blockNum}`}</Typography>
         <ButtonWrapper>
           <IconButton
             disabled={!isContractSelected || !this.props.canSave}
@@ -151,6 +140,12 @@ export default class EditorControls extends React.Component<Props, State> {
             Reset
           </Typography>
         </ButtonWrapper>
+        <Typography
+          style={{ fontWeight: 500, flex: '1 0 auto', margin: '0 1em' }}
+          variant="subheading"
+          color="primary"
+          align="right"
+        >{`Block Height: ${this.props.blockNum}`}</Typography>
         <Dialog
           open={this.state.isNukeDialogOpen}
           onClose={this.toggleNukeDialog}
