@@ -30,11 +30,15 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SaveIcon from '@material-ui/icons/Save';
+import SettingsIcon from '@material-ui/icons/Settings';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
+import { Keymap } from './index';
 import EventAlerts from './EventAlerts';
+import Settings from './Settings';
 import { clearEvent } from '../../store/contract/actions';
+import * as blockchainActions from '../../store/blockchain/actions';
 import { Event } from '../../store/contract/types';
 import { ContractSrcFile } from '../../store/fs/types';
 
@@ -56,21 +60,31 @@ const ButtonWrapper = styled.span`
 interface Props {
   activeFile: ContractSrcFile;
   blockNum: number;
-  events: { [id: string]: Event };
-  clearEvent: typeof clearEvent;
-  isChecking: boolean;
+  blockTime: number;
   canSave: boolean;
+  clearEvent: typeof clearEvent;
+  events: { [id: string]: Event };
+  fontSize: number;
+  keyMap: Keymap;
+  isChecking: boolean;
+  getKeyboardShortcuts: () => Array<{ key: string; command: string }>;
   handleCheck: () => void;
   handleSave: () => void;
+  handleSetFontSize: (size: number) => void;
+  handleSetKeymap: (keymap: Keymap) => void;
+  handleUpdateBlockNum: typeof blockchainActions.updateBnum;
+  handleUpdateBlockTime: typeof blockchainActions.updateBlkTime;
 }
 
 interface State {
   isNukeDialogOpen: boolean;
+  isSettingsDialogOpen: boolean;
 }
 
 export default class EditorControls extends React.Component<Props, State> {
   state: State = {
     isNukeDialogOpen: false,
+    isSettingsDialogOpen: false,
   };
 
   handleSave: React.MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -88,6 +102,10 @@ export default class EditorControls extends React.Component<Props, State> {
   handleNuke = () => {
     indexedDB.deleteDatabase('scilla-ide');
     document.location.reload();
+  };
+
+  toggleSettingsDialog = () => {
+    this.setState({ isSettingsDialogOpen: !this.state.isSettingsDialogOpen });
   };
 
   render() {
@@ -140,6 +158,14 @@ export default class EditorControls extends React.Component<Props, State> {
             Reset
           </Typography>
         </ButtonWrapper>
+        <ButtonWrapper>
+          <IconButton aria-label="settings" color="primary" onClick={this.toggleSettingsDialog}>
+            <SettingsIcon />
+          </IconButton>
+          <Typography align="center" color="primary">
+            Settings
+          </Typography>
+        </ButtonWrapper>
         <Typography
           style={{ fontWeight: 500, flex: '1 0 auto', margin: '0 1em' }}
           variant="subheading"
@@ -169,6 +195,19 @@ export default class EditorControls extends React.Component<Props, State> {
             </ButtonWrapper>
           </DialogActions>
         </Dialog>
+        <Settings
+          blockNum={this.props.blockNum}
+          blockTime={this.props.blockTime}
+          fontSize={this.props.fontSize}
+          keyMap={this.props.keyMap}
+          getKeyboardShortcuts={this.props.getKeyboardShortcuts}
+          handleSetFontSize={this.props.handleSetFontSize}
+          handleSetKeymap={this.props.handleSetKeymap}
+          handleUpdateBlockNum={this.props.handleUpdateBlockNum}
+          handleUpdateBlockTime={this.props.handleUpdateBlockTime}
+          isOpen={this.state.isSettingsDialogOpen}
+          toggle={this.toggleSettingsDialog}
+        />
       </Toolbar>
     );
   }

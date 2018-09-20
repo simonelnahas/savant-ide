@@ -190,7 +190,7 @@ function* callTransition(action: ActionType<typeof contractActions.call>, db: Co
       balance: new BN(caller.balance)
         .sub(txAmount)
         .sub(new BN(gasUsed * gasprice))
-        .add(new BN(msg.message._amount))
+        .add(new BN((msg.message && msg.message._amount) || '0'))
         .toString(10),
     };
 
@@ -219,7 +219,7 @@ function* callTransition(action: ActionType<typeof contractActions.call>, db: Co
 
     statusCB({ status: ScillaBinStatus.SUCCESS, address, gasUsed, gasPrice: gasprice });
   } catch (err) {
-    put(contractActions.callError(address, err));
+    yield put(contractActions.callError(address, err));
     statusCB({
       status: ScillaBinStatus.FAILURE,
       address,

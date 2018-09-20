@@ -76,6 +76,10 @@ const contractReducer: Reducer<ContractState, ContractAction> = (state = initial
       return { ...state, isCallingTransition: true };
     }
 
+    case getType(contractActions.callError): {
+      return { ...state, isCallingTransition: false };
+    }
+
     case getType(contractActions.callSuccess): {
       const { address, contract } = action.payload;
       const newIndex = { ...state.contracts, [address]: contract };

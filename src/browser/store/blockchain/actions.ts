@@ -35,6 +35,10 @@ export const updateBnum = createAction(
       bnum,
     }),
 );
+export const updateBlkTime = createAction(
+  BlockchainActionTypes.UPDATE_BLK_TIME,
+  (resolve) => (interval: number) => resolve({ interval }),
+);
 
 export const updateAccount = createAction(BlockchainActionTypes.UPDATE_ACCOUNT, (resolve) => {
   return (account: Account) => resolve({ account });

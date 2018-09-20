@@ -20,6 +20,9 @@ import AceEditor from 'react-ace';
 // @ts-ignore
 import * as brace from 'brace';
 import 'brace/ext/searchbox';
+import 'brace/ext/keybinding_menu';
+import 'brace/keybinding/emacs';
+import 'brace/keybinding/vim';
 import 'brace/theme/tomorrow';
 import './scilla_mode';
 import { connect } from 'react-redux';
@@ -30,9 +33,11 @@ import styled from 'styled-components';
 import Controls from './Controls';
 import Notification from './Notification';
 import Statusline from './StatusLine';
-import { ApplicationState } from '../../store/index';
-import * as fsActions from '../../store/fs/actions';
+import config from '../../config';
+import * as blockchainActions from '../../store/blockchain/actions';
 import * as contractActions from '../../store/contract/actions';
+import * as fsActions from '../../store/fs/actions';
+import { ApplicationState } from '../../store/index';
 import { ContractSrcFile } from '../../store/fs/types';
 import { Event } from '../../store/contract/types';
 
@@ -60,14 +65,23 @@ const Wrapper = styled.div`
   flex-direction: column;
 `;
 
+const getKeyboardShortcuts: (
+  editor: any,
+) => Array<{ key: string; command: string }> = brace.acequire(
+  'ace/ext/menu_tools/get_editor_keyboard_shortcuts',
+).getEditorKeybordShortcuts;
+
 interface OwnProps {}
 interface MappedProps {
   blocknum: number;
+  blockTime: number;
   contract: ContractSrcFile;
   events: { [id: string]: Event };
 }
 
 interface DispatchProps {
+  updateBnum: typeof blockchainActions.updateBnum;
+  updateBlkTime: typeof blockchainActions.updateBlkTime;
   clearEvent: typeof contractActions.clearEvent;
   check: typeof fsActions.check;
   update: typeof fsActions.update;
@@ -75,11 +89,15 @@ interface DispatchProps {
 
 type Props = OwnProps & MappedProps & DispatchProps;
 
+export type Keymap = 'vim' | ' emacs' | 'standard';
+
 interface State {
   contract: ContractSrcFile;
   cursorPos: { line: number; col: number };
-  isChecking: boolean;
   dimensions: { width: number; height: number };
+  editorFontSize: number;
+  editorKeymap: Keymap;
+  isChecking: boolean;
   notifications: any[];
   snackbar: { open: boolean; message: any; key: number };
 }
@@ -109,7 +127,6 @@ class ScillaEditor extends React.Component<Props, State> {
   }
 
   editor = React.createRef<AceEditor>();
-  statusBar: any = null;
 
   state: State = {
     contract: {
@@ -118,14 +135,24 @@ class ScillaEditor extends React.Component<Props, State> {
       code: '',
       error: null,
     },
-    isChecking: false,
+    cursorPos: { line: 0, col: 0 },
     dimensions: {
       height: -1,
       width: -1,
     },
+    editorFontSize: parseInt(localStorage.getItem(config.LS_FSIZE) || '16', 10),
+    editorKeymap: (localStorage.getItem(config.LS_KEYMAP) as Keymap) || 'standard',
+    isChecking: false,
     notifications: [],
     snackbar: { open: false, message: null, key: 0 },
-    cursorPos: { line: 0, col: 0 },
+  };
+
+  getKeyboardShortcuts = (): Array<{ key: string; command: string }> => {
+    if (this.editor.current) {
+      return getKeyboardShortcuts((this.editor.current as any).editor);
+    }
+
+    return [];
   };
 
   handleCheck = () => {
@@ -182,6 +209,16 @@ class ScillaEditor extends React.Component<Props, State> {
     }
   };
 
+  handleSetFontSize = (size: number): void => {
+    this.setState({ editorFontSize: size }, () =>
+      localStorage.setItem(config.LS_FSIZE, size.toString()),
+    );
+  };
+
+  handleSetKeymap = (keymap: Keymap): void => {
+    this.setState({ editorKeymap: keymap }, () => localStorage.setItem(config.LS_KEYMAP, keymap));
+  };
+
   onChange = (value: string): void => {
     this.setState({ contract: { ...this.state.contract, code: value } });
   };
@@ -234,17 +271,25 @@ class ScillaEditor extends React.Component<Props, State> {
             <Controls
               activeFile={contract}
               blockNum={this.props.blocknum}
-              events={this.props.events}
+              blockTime={this.props.blockTime}
               clearEvent={this.props.clearEvent}
               canSave={this.props.contract && this.props.contract.code !== this.state.contract.code}
+              events={this.props.events}
+              fontSize={this.state.editorFontSize}
+              keyMap={this.state.editorKeymap}
               isChecking={this.state.isChecking}
+              getKeyboardShortcuts={this.getKeyboardShortcuts}
               handleCheck={this.handleCheck}
               handleSave={this.handleSave}
+              handleSetFontSize={this.handleSetFontSize}
+              handleSetKeymap={this.handleSetKeymap}
+              handleUpdateBlockNum={this.props.updateBnum}
+              handleUpdateBlockTime={this.props.updateBlkTime}
             />
             <Editor
               mode="scilla"
               theme="tomorrow"
-              fontSize={16}
+              fontSize={this.state.editorFontSize}
               onChange={this.onChange}
               // @ts-ignore
               onCursorChange={this.onCursorChange}
@@ -253,6 +298,9 @@ class ScillaEditor extends React.Component<Props, State> {
               height={`${this.state.dimensions.height.toString(10)}px`}
               width={`${this.state.dimensions.width.toString(10)}px`}
               value={contract.code}
+              keyboardHandler={
+                this.state.editorKeymap === 'standard' ? undefined : this.state.editorKeymap
+              }
               editorProps={{ $blockScrolling: true }}
               readOnly={contract.id.length === 0}
               innerRef={this.editor}
@@ -275,10 +323,13 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch(fsActions.update(id, displayName, code)),
   check: (code: string, cb?: (res: any) => void) => dispatch(fsActions.check(code, cb)),
   clearEvent: (id: string) => dispatch(contractActions.clearEvent(id)),
+  updateBnum: (num: number) => dispatch(blockchainActions.updateBnum(num)),
+  updateBlkTime: (interval: number) => dispatch(blockchainActions.updateBlkTime(interval)),
 });
 
 const mapStateToProps = (state: ApplicationState) => ({
   blocknum: state.blockchain.blockNum,
+  blockTime: state.blockchain.blockTime,
   contract:
     state.fs.activeContract && state.fs.activeContract.length > 1
       ? state.fs.contracts[state.fs.activeContract]

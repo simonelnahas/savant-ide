@@ -20,13 +20,19 @@ import { ActionType, getType } from 'typesafe-actions';
 
 import * as blockchainActions from './actions';
 import { BlockchainState } from './types';
+import config from '../../config';
 
 type BlockchainAction = ActionType<typeof blockchainActions>;
+const DEFAULT_BNUM_INTERVAL = 10000;
 
 const initialState: BlockchainState = {
   error: null,
   loading: false,
   blockNum: 1,
+  blockTime: parseInt(
+    localStorage.getItem(config.LS_BTIME) || DEFAULT_BNUM_INTERVAL.toString(),
+    10,
+  ),
   accounts: {},
 };
 
@@ -52,6 +58,10 @@ const reducer: Reducer<BlockchainState, BlockchainAction> = (
           [account.address]: account,
         },
       };
+    }
+    case getType(blockchainActions.updateBlkTime): {
+      const { interval } = action.payload;
+      return { ...state, blockTime: interval };
     }
 
     default:
