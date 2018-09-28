@@ -32,7 +32,7 @@ interface Props extends WithTheme {
   isSelected?: boolean;
   name: string;
   handleSelect: (id: string) => void;
-  handlePersist: (id: string, displayName?: string) => void;
+  handlePersist: (displayName: string, id?: string) => void;
   handleDelete: (id: string) => void;
 }
 
