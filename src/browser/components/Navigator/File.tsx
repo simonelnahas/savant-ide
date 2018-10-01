@@ -79,14 +79,13 @@ class File extends React.Component<Props, State> {
   }
 
   setRenaming = () => {
-    this.setState({ isRenaming: true });
-
-    setTimeout(() => {
+    const setTextNodeEditable = () => {
       if (this.textNode.current) {
         this.textNode.current.contentEditable = 'true';
         this.textNode.current.focus();
       }
-    });
+    };
+    this.setState({ isRenaming: true }, setTextNodeEditable);
   };
 
   handleChange = (e: React.SyntheticEvent<HTMLParagraphElement>, text: string) => {
