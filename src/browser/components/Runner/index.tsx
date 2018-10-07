@@ -153,7 +153,7 @@ class Runner extends React.Component<Props> {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   initBlockchain: () => dispatch(bcActions.init()),
-  initContracts: (name: string, code: string) => dispatch(contractActions.init()),
+  initContracts: (name?: string, code?: string) => dispatch(contractActions.init()),
   deployContract: (
     code: string,
     init: KVPair[],
