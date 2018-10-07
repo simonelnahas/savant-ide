@@ -49,6 +49,7 @@ const WrappedListText = styled<ListItemTextProps>(ListItemText)`
 `;
 
 const MAX_FILENAME_LENGTH = 20;
+const NAME_DEFAULT = 'untitled';
 
 class File extends React.Component<Props, State> {
   textNode = React.createRef<HTMLParagraphElement>();
@@ -98,6 +99,11 @@ class File extends React.Component<Props, State> {
     }
   };
 
+  setDefaultName = (currentTextNode: HTMLElement, nameDefault: string): void => {
+    currentTextNode.innerText = nameDefault;
+    this.setState({ name: this.sanitizer.sanitize(nameDefault) });
+  };
+
   handleDelete = () => {
     this.props.handleDelete(this.props.id);
   };
@@ -137,10 +143,15 @@ class File extends React.Component<Props, State> {
     // intercept all 'enter' || 'escape' events
     if (e.keyCode === 13 || e.keyCode === 27) {
       e.preventDefault();
+      const isInnerTextEmpty = this.textNode.current.innerText === '';
+      if (isInnerTextEmpty) {
+        this.setDefaultName(this.textNode.current, NAME_DEFAULT);
+      }
       this.textNode.current.blur();
       this.textNode.current.contentEditable = 'false';
-      this.props.handlePersist(this.state.name, this.props.id);
       this.setState({ isRenaming: false });
+      const name = this.state.name || NAME_DEFAULT;
+      this.props.handlePersist(name, this.props.id);
       return;
     }
 
@@ -163,9 +174,14 @@ class File extends React.Component<Props, State> {
 
   handleBlur = () => {
     if (this.state.isRenaming && this.textNode.current) {
+      const isInnerTextEmpty = this.textNode.current.innerText === '';
+      if (isInnerTextEmpty) {
+        this.setDefaultName(this.textNode.current, NAME_DEFAULT);
+      }
       this.textNode.current.contentEditable = 'false';
-      this.props.handlePersist(this.state.name);
       this.setState({ isRenaming: false });
+      const name = this.state.name || NAME_DEFAULT;
+      this.props.handlePersist(name);
     }
   };
 
