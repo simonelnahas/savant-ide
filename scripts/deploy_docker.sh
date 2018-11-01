@@ -11,7 +11,7 @@ aws --version
 echo $TRAVIS_COMMIT
 commit=$(git rev-parse --short=7 ${TRAVIS_COMMIT})
 account_id=$(aws sts get-caller-identity --output text --query 'Account')
-region_id=us-east-1
+region_id=us-west-2
 registry_url=${account_id}.dkr.ecr.${region_id}.amazonaws.com/scilla-runner-api
 
 echo "Building container..."
