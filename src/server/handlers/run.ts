@@ -54,7 +54,7 @@ export const run = async (req: Request, res: Response, next: NextFunction) => {
       message: result,
     });
   } catch (err) {
-    if (ScillaError.isScillaError(err)) {
+    if (err instanceof ScillaError) {
       res.status(400).json({
         result: 'error',
         message: err.messages,

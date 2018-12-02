@@ -39,20 +39,18 @@ export const check = async (req: Request, res: Response, next: NextFunction) => 
   try {
     await writeFiles(toWrite);
     const result = await checker(checkOpt);
-
     res.status(200).json({
       result: 'success',
       message: result,
     });
   } catch (err) {
-    if (ScillaError.isScillaError(err)) {
+    if (err instanceof ScillaError) {
       res.status(400).json({
         result: 'error',
         message: err.messages,
       });
       return;
     }
-
     res.status(400).json({
       result: 'error',
       message: err.message,

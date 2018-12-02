@@ -19,7 +19,7 @@ import { exec } from 'child_process';
 import fs from 'fs';
 import { promisify } from 'util';
 import { Paths } from '../constants';
-import { parseExecutionError, parseSyntaxError, parseTypeError, ScillaError } from '../util/error';
+import { parseExecutionError, parseCheckerError } from '../util/error';
 
 const execAsync = promisify(exec);
 const readAsync = promisify(fs.readFile);
@@ -94,34 +94,13 @@ export const runner = async (opts: RunOpt) => {
  * @returns {Promise<string>}
  */
 export const checker = async (opts: BaseOpt) => {
-  const cmd = `${Paths.CHECKER} ${opts.code} ${opts.stdlib}`;
+  const cmd = `${Paths.CHECKER} -libdir ${opts.stdlib} -jsonerrors ${opts.code}`;
 
   try {
-    const { stdout, stderr } = await execAsync(cmd);
-
-    if (stderr.length) {
-      const syntaxError = parseSyntaxError(stderr);
-
-      if (syntaxError) {
-        throw syntaxError;
-      }
-
-      throw new Error(stderr);
-    }
-
-    const typeError = parseTypeError(stdout);
-
-    if (typeError) {
-      throw typeError;
-    }
-
+    const { stdout } = await execAsync(cmd);
     return stdout;
   } catch (err) {
-    if (ScillaError.isScillaError(err)) {
-      throw err;
-    } else {
-      throw new Error(err);
-    }
+    throw parseCheckerError(err.stdout);
   } finally {
     await cleanUp(opts);
   }
