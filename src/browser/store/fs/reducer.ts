@@ -66,6 +66,18 @@ const fsReducer: Reducer<FSState, FsAction> = (state = initialState, action) => 
       };
     }
 
+    case getType(fsActions.checkSuccess): {
+      const active = state.contracts[state.activeContract];
+      return {
+        ...state,
+        loading: false,
+        contracts: {
+          ...state.contracts,
+          [state.activeContract]: { ...active, error: null },
+        },
+      };
+    }
+
     case getType(fsActions.checkError): {
       const { error } = action.payload;
       const active = state.contracts[state.activeContract];
