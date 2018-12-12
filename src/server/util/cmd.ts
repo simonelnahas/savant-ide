@@ -63,6 +63,8 @@ export const runner = async (opts: RunOpt) => {
       init,
       '-iblockchain',
       blockchain,
+      '-gaslimit',
+      parseInt(gaslimit, 10).toString(),
     ];
 
     if (optional.state) {
