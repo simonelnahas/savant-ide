@@ -15,13 +15,13 @@
  * savant-ide.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { exec } from 'child_process';
+import { execFile } from 'child_process';
 import fs from 'fs';
 import { promisify } from 'util';
 import { Paths } from '../constants';
 import { parseExecutionError, parseSyntaxError, parseTypeError, ScillaError } from '../util/error';
 
-const execAsync = promisify(exec);
+const execAsync = promisify(execFile);
 const readAsync = promisify(fs.readFile);
 const unlinkAsync = promisify(fs.unlink);
 
@@ -51,19 +51,29 @@ export const runner = async (opts: RunOpt) => {
   // mandatory
   const { code, stdlib, init, blockchain, output, gaslimit, ...optional } = opts;
 
-  const cmd = `${Paths.RUNNER} \
-      -i ${code} \
-      -libdir ${stdlib} \
-      -o ${output} \
-      -init ${init} \
-      -iblockchain ${blockchain} \
-      -gaslimit ${gaslimit} \
-      ${optional.state ? '-istate ' + optional.state + ' \\' : ''}
-      ${optional.message ? '-imessage ' + optional.message + ' \\' : ''}
-  `;
-
   try {
-    const { stderr } = await execAsync(cmd);
+    const params = [
+      '-i',
+      code,
+      '-libdir',
+      stdlib,
+      '-o',
+      output,
+      '-init',
+      init,
+      '-iblockchain',
+      blockchain,
+    ];
+
+    if (optional.state) {
+      params.push('-istate', optional.state);
+    }
+
+    if (optional.message) {
+      params.push('-imessage', optional.message);
+    }
+
+    const { stderr } = await execAsync(Paths.RUNNER, params);
 
     if (stderr) {
       throw new Error(stderr);
@@ -94,10 +104,8 @@ export const runner = async (opts: RunOpt) => {
  * @returns {Promise<string>}
  */
 export const checker = async (opts: BaseOpt) => {
-  const cmd = `${Paths.CHECKER} ${opts.code} ${opts.stdlib}`;
-
   try {
-    const { stdout, stderr } = await execAsync(cmd);
+    const { stdout, stderr } = await execAsync(Paths.CHECKER, [opts.code, opts.stdlib]);
 
     if (stderr.length) {
       const syntaxError = parseSyntaxError(stderr);
