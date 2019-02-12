@@ -43,7 +43,7 @@ const SOCIAL_ICONS = [
   { network: 'medium', href: 'https://blog.zilliqa.com/', icon: faMedium },
   { network: 'slack', href: 'https://invite.zilliqa.com/', icon: faSlack },
   { network: 'gitter', href: 'https://gitter.im/Zilliqa', icon: faGitter },
-  { network: 'youtube', href: 'https://www.youtube.com/zilliqa', icon: faYoutube },
+  { network: 'youtube', href: 'https://www.youtube.com/channel/UCvinnFbf0u71cajoxKcfZIQ', icon: faYoutube },
   { network: 'telegram', href: 'https://t.me/zilliqachat', icon: faTelegram },
   { network: 'github', href: 'https://www.github.com/Zilliqa', icon: faGithub },
 ];
