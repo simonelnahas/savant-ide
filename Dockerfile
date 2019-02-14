@@ -5,11 +5,14 @@ EXPOSE 8080
 COPY . /scilla-ide
 
 # Install OCaml deps and build scilla binaries
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update \
+    && apt-get install -y software-properties-common \
+    && add-apt-repository ppa:tah83/secp256k1 -y \
+    && add-apt-repository ppa:avsm/ppa -y \
+    && apt-get update && apt-get install -y --no-install-recommends \
     curl \
     build-essential \
     m4 \
-    aspcud \
     ocaml \
     opam \
     pkg-config \
@@ -17,10 +20,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgmp-dev \
     libffi-dev \
     libssl-dev \
+    libsecp256k1-dev \
     libboost-system-dev \
-    apt-transport-https \
-    ca-certificates \
-    software-properties-common \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /scilla-ide/scilla
