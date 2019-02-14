@@ -21,13 +21,15 @@ import fs from 'fs';
 const { NODE_ENV, SCILLA_VERSION = 0 } = process.env;
 const appDirectory = fs.realpathSync(process.cwd());
 const scillaDirectory =
-  NODE_ENV === 'production' ? `/scilla/${SCILLA_VERSION}` : path.resolve(appDirectory, 'scilla');
+  NODE_ENV === 'production'
+    ? `/scilla/${SCILLA_VERSION}`
+    : path.resolve(appDirectory, '..', 'scilla');
 const resolveScilla = (relativePath: string) => path.resolve(scillaDirectory, relativePath);
 
 export const Paths = {
   CHECKER: resolveScilla('bin/scilla-checker'),
-  RUNNER: resolveScilla('scilla/bin/scilla-runner'),
-  STDLIB: resolveScilla('scilla/src/stdlib/'),
+  RUNNER: resolveScilla('bin/scilla-runner'),
+  STDLIB: resolveScilla('src/stdlib/'),
 };
 
 export const OptionalRunnerOpts = ['state', 'message'];
