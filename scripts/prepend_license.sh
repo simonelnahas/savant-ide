@@ -4,7 +4,7 @@ set -e
 
 BANNER='/**
  * This file is part of savant-ide.
- * Copyright (c) 2018 - present Zilliqa Research Pvt. Ltd.
+ * Copyright (c) 2018 - present Zilliqa Research Pte. Ltd.
  *
  * savant-ide is free software: you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
@@ -27,7 +27,7 @@ quoteSubst() {
 }
 
 hasBanner() {
-  if grep -Fxq ' * Copyright (c) 2018 - present Zilliqa Research Pvt. Ltd.' "$1"
+  if grep -Fxq ' * Copyright (c) 2018 - present Zilliqa Research Pte. Ltd.' "$1"
   then
     echo 0
   else
