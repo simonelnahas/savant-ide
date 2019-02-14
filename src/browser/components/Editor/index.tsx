@@ -229,7 +229,6 @@ class ScillaEditor extends React.Component<Props, State> {
 
   getAnnotations = (): any => {
     const { contract } = this.state;
-
     if (contract.error && contract.error.message) {
       const markers = contract.error.message.map((err: any) => {
         const row = parseInt(err.line, 10);

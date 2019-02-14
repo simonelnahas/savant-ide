@@ -15,11 +15,7 @@
  * savant-ide.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-const TYPE_ERR_RE = new RegExp(/.*\[(?:.*)?\:([0-9]+\:[0-9]+)\]\:? ((.*)\n?(.*)?)$/);
-const SYN_ERR_RE = new RegExp(/^Syntax error.*line ([0-9]+)\, position ([0-9]+)/);
 const GAS_ERR_RE = new RegExp(/Ran out of gas/g);
-
-export const IS_SCILLA_SENTINEL = '@@__SCILLA_ERROR__@@';
 
 interface ErrorObj {
   line: number;
@@ -27,17 +23,29 @@ interface ErrorObj {
   msg: string;
 }
 
-export class ScillaError extends Error {
-  static isScillaError(obj: any): obj is ScillaError {
-    return obj[IS_SCILLA_SENTINEL];
-  }
+interface CheckerErrorObj {
+  error_message: string;
+  start_location: {
+    file: string;
+    line: number;
+    column: number;
+  };
+  end_location: {
+    file: string;
+    line: number;
+    column: number;
+  };
+}
 
-  [IS_SCILLA_SENTINEL]: boolean = true;
+export class ScillaError extends Error {
   messages: ErrorObj[];
+  __proto__: Error;
 
   constructor(messages: ErrorObj[]) {
+    const trueProto = new.target.prototype;
     super();
     this.messages = messages;
+    this.__proto__ = trueProto;
   }
 
   toString() {
@@ -67,81 +75,19 @@ export const parseExecutionError = (out: string): ScillaError | null => {
   return null;
 };
 
-export const parseSyntaxError = (out: string): ScillaError | null => {
-  const error = SYN_ERR_RE.exec(out);
-
-  if (error) {
-    const [, line, column] = error;
-    if (line && column) {
-      return new ScillaError([
-        {
-          line: parseInt(line, 10),
-          column: parseInt(column, 10),
-          msg: `[${line}:${column}]: Syntax error`,
-        },
-      ]);
-    }
+export const parseCheckerError = (out: string): ScillaError | null => {
+  const data = JSON.parse(out);
+  const errors = data.errors;
+  if (!errors.length) {
+    return null;
   }
-
-  return null;
-};
-
-export const parseTypeError = (out: string): ScillaError | null => {
-  const trace: string[][] = out
-    .split(/(?<!\:)\n{2,3}/)
-    .filter((ln) => !!ln)
-    .map((err) => {
-      const replaced = err.replace(/\[/g, '@@[');
-      return replaced.split('@@').filter((ln) => !!ln);
-    })
-    .slice(1)
-    .filter((msg) => !!msg);
-
-  const eObjs = trace
-    .map((err) => {
-      const [x, ...xs] = err;
-      const matchX = TYPE_ERR_RE.exec(x.trim());
-
-      if (!matchX) {
-        throw new Error(`Could not parse error ${out}`);
-      }
-
-      const [line, column] = matchX && matchX[1].split(':');
-
-      const msg = xs.length
-        ? xs
-            .map((msg) => {
-              if (!msg) {
-                return null;
-              }
-
-              const trimmed = msg.replace(/\t\r\n/g, '').trim();
-              const match = TYPE_ERR_RE.exec(trimmed);
-
-              if (match) {
-                const [lineXs, colXs] = match[1].split(':');
-                return `[${lineXs}:${colXs}]: ${match[2]}`;
-              }
-
-              return null;
-            })
-            .filter((x) => !!x)
-            .join('\n')
-        : '';
-
-      const eObj = {
-        line: parseInt(line, 10),
-        column: parseInt(column, 10),
-        msg: `[${line}:${column}]: ${matchX[2]}${msg ? '\n' + msg : ''}`,
+  return new ScillaError(
+    errors.map((error: CheckerErrorObj) => {
+      return {
+        line: error.start_location.line + 1,
+        column: error.start_location.column + 1,
+        msg: error.error_message,
       };
-
-      return eObj;
-    })
-    .filter((obj) => !!obj);
-
-  if (eObjs.length) {
-    return new ScillaError(eObjs);
-  }
-
-  return null;
+    }),
+  );
 };

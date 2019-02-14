@@ -1,34 +1,8 @@
-FROM ubuntu:16.04
+FROM zilliqa/scilla:latest
 
 EXPOSE 8080
 
 COPY . /scilla-ide
-
-# Install OCaml deps and build scilla binaries
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    build-essential \
-    m4 \
-    aspcud \
-    ocaml \
-    opam \
-    pkg-config \
-    zlib1g-dev \
-    libgmp-dev \
-    libffi-dev \
-    libssl-dev \
-    libboost-system-dev \
-    apt-transport-https \
-    ca-certificates \
-    software-properties-common \
-    && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /scilla-ide/scilla
-
-RUN make opamdep && echo \
-    ". ~/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true " >> ~/.bashrc && \
-    eval `opam config env` && make
-
 
 # Install node.js v10.x
 WORKDIR /scilla-ide
@@ -94,5 +68,8 @@ RUN set -ex \
   && rm yarn-v$YARN_VERSION.tar.gz.asc yarn-v$YARN_VERSION.tar.gz
 
 RUN yarn global add pm2 && yarn install && yarn build:server
+
+ENV NODE_ENV "production"
+ENV SCILLA_VERSION "0"
 
 CMD ["pm2-runtime", "dist/server/server.js"]
