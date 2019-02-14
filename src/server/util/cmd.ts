@@ -107,23 +107,7 @@ export const runner = async (opts: RunOpt) => {
  */
 export const checker = async (opts: BaseOpt) => {
   try {
-    const { stdout, stderr } = await execAsync(Paths.CHECKER, ['-libdir', opts.stdlib, opts.code]);
-
-    if (stderr.length) {
-      const syntaxError = parseSyntaxError(stderr);
-
-      if (syntaxError) {
-        throw syntaxError;
-      }
-
-      throw new Error(stderr);
-    }
-
-    const typeError = parseTypeError(stdout);
-
-    if (typeError) {
-      throw typeError;
-    }
+    const { stdout } = await execAsync(Paths.CHECKER, ['-libdir', opts.stdlib, '-jsonerrors', opts.code]);
 
     return stdout;
   } catch (err) {
