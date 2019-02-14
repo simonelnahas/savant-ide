@@ -107,7 +107,7 @@ export const runner = async (opts: RunOpt) => {
  */
 export const checker = async (opts: BaseOpt) => {
   try {
-    const { stdout, stderr } = await execAsync(Paths.CHECKER, [opts.code, opts.stdlib]);
+    const { stdout, stderr } = await execAsync(Paths.CHECKER, ['-libdir', opts.stdlib, opts.code]);
 
     if (stderr.length) {
       const syntaxError = parseSyntaxError(stderr);
