@@ -1,35 +1,8 @@
-FROM ubuntu:16.04
+FROM zilliqa/scilla:latest
 
 EXPOSE 8080
 
 COPY . /scilla-ide
-
-# Install OCaml deps and build scilla binaries
-RUN apt-get update \
-    && apt-get install -y software-properties-common \
-    && add-apt-repository ppa:tah83/secp256k1 -y \
-    && add-apt-repository ppa:avsm/ppa -y \
-    && apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    build-essential \
-    m4 \
-    ocaml \
-    opam \
-    pkg-config \
-    zlib1g-dev \
-    libgmp-dev \
-    libffi-dev \
-    libssl-dev \
-    libsecp256k1-dev \
-    libboost-system-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /scilla-ide/scilla
-
-RUN make opamdep && echo \
-    ". ~/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true " >> ~/.bashrc && \
-    eval `opam config env` && make
-
 
 # Install node.js v10.x
 WORKDIR /scilla-ide
