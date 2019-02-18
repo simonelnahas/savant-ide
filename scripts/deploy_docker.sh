@@ -9,19 +9,21 @@ aws --version
 [[ -z "$TRAVIS_COMMIT" ]] && TRAVIS_COMMIT=HEAD
 echo $TRAVIS_COMMIT
 
-commit=$(git rev-parse --short=7 ${TRAVIS_COMMIT})
+commit=$(git rev-parse --short=7 $TRAVIS_COMMIT)
+
+# AWS global settings
 account_id=$(aws sts get-caller-identity --output text --query 'Account')
 region_id=us-west-2
-registry_url=${account_id}.dkr.ecr.${region_id}.amazonaws.com/scilla-runner-api
+
 # ECS settings
+registry_url=${account_id}.dkr.ecr.${region_id}.amazonaws.com/scilla-runner-api
 application=ScillaIDE
 deployment_grp=scilla-runner-api
 cluster=scilla-runner-api
 service=scilla-runner-api
-AWS_ECS="aws ecs"
 
 function getCurrentTaskDefinition() {
-  TASK_DEFINITION=$($AWS_ECS describe-task-definition --task-def scilla-runner-api)
+  TASK_DEFINITION=$(aws ecs describe-task-definition --task-def scilla-runner-api)
 }
 
 function createNewTaskDefJson() {
@@ -90,4 +92,3 @@ createNewTaskDefJson
 createNewAppSpec
 deploy
 
-# ecs-deploy -r $region_id -c $cluster -n $service -i "$registry_url:latest"
