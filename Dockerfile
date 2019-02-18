@@ -1,6 +1,8 @@
 FROM zilliqa/scilla:latest
 
 EXPOSE 8080
+# PM2 default health check endpoint is at host:9615/
+EXPOSE 9615
 
 COPY . /scilla-ide
 
@@ -72,4 +74,4 @@ RUN yarn global add pm2 && yarn install && yarn build:server
 ENV NODE_ENV "production"
 ENV SCILLA_VERSION "0"
 
-CMD ["pm2-runtime", "dist/server/server.js"]
+CMD ["pm2-runtime", "dist/server/server.js", "--web"]
