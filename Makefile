@@ -54,5 +54,5 @@ scilla-bin: ocaml-dep scilla-src scilla-dep
 	$(MAKE) -C scilla all
 
 # Builds a Docker container for running the scilla-runner API.
-docker: bootstrap scilla-src
+docker: bootstrap
 	docker build . -t scilla-runner-api:$(shell git rev-parse --short=7 HEAD)
