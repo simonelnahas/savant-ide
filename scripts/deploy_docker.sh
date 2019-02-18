@@ -27,4 +27,4 @@ echo "Deploying to ECS..."
 curl https://raw.githubusercontent.com/silinternational/ecs-deploy/master/ecs-deploy | sudo tee /usr/bin/ecs-deploy
 sudo chmod +x /usr/bin/ecs-deploy
 
-ecs-deploy -c $cluster -n $service -i "$registry_url:latest"
+ecs-deploy -r $region_id -c $cluster -n $service -i "$registry_url:latest"
