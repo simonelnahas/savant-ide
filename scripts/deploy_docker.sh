@@ -71,6 +71,7 @@ EOF
 
 function deploy() {
   aws ecs deploy \
+    --region $region_id \
     --cluster $cluster \
     --service $service \
     --task-definition ./task-defn.json \
