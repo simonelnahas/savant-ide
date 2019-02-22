@@ -17,7 +17,7 @@
 
 export default {
   IDB_VERSION: 2,
-  SCILLA_VERSION: 0,
+  SCILLA_VERSION: '0',
   SCILLA_DOCS: 'https://scilla.readthedocs.io/en/latest/',
   LS_BTIME: 'scilla-ide:blockTime',
   LS_KEYMAP: 'scilla-ide:keyMap',

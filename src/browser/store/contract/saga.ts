@@ -27,7 +27,7 @@ import { ContractActionTypes, ScillaBinStatus, ABI } from './types';
 
 import * as bcActions from '../blockchain/actions';
 import * as api from '../../util/api';
-import { SCILLA_VERSION } from '../../config';
+import config from '../../config';
 
 type ContractAction = ActionType<typeof contractActions>;
 
@@ -80,7 +80,7 @@ function* deployContract(action: ActionType<typeof contractActions.deploy>, db: 
       ...pInit,
       { vname: '_this_address', type: 'ByStr20', value: `0x${address.toString()}` },
       { vname: '_creation_block', type: 'BNum', value: state.blockchain.blockNum.toString() },
-      { vname: '_scilla_version', type: 'Uint32', value: SCILLA_VERSION },
+      { vname: '_scilla_version', type: 'Uint32', value: config.SCILLA_VERSION },
     ];
 
     const blockchain = [
