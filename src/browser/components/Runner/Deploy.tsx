@@ -146,7 +146,13 @@ export default class DeployTab extends React.Component<Props, State> {
       api
         .checkContract(code, ctrl.signal)
         .then((res) => {
-          this.setState({ isChecking: false, abi: JSON.parse(res.message) });
+          if (res.result === 'error') {
+            throw new Error(res.message);
+          }
+
+          const { contract_info } = JSON.parse(res.message);
+
+          this.setState({ isChecking: false, abi: contract_info });
         })
         .catch((err) => {
           this.setState({ error: err.response ? err.response.message : err });

@@ -61,9 +61,9 @@ interface State {
 export default class TransitionForm extends React.Component<Props, State> {
   state: State = {
     params: this.props.params.reduce(
-      (acc, { name, type }) => ({
+      (acc, { vname, type }) => ({
         ...acc,
-        [name]: { value: '', type, touched: false, error: false },
+        [vname]: { value: '', type, touched: false, error: false },
       }),
       {},
     ),
@@ -243,8 +243,8 @@ export default class TransitionForm extends React.Component<Props, State> {
               <Typography align="left" gutterBottom variant="headline">
                 Transition Parameters:
               </Typography>
-              {params.map(({ name, type }) => {
-                const field = this.state.params[name];
+              {params.map(({ vname, type }) => {
+                const field = this.state.params[vname];
 
                 if (!field) {
                   return null;
