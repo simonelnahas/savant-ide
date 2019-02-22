@@ -75,9 +75,9 @@ interface State {
 export default class InitForm extends React.Component<Props, State> {
   state: State = {
     init: this.props.abiParams.reduce(
-      (acc, { name, type }) => ({
+      (acc, { vname, type }) => ({
         ...acc,
-        [name]: { value: '', type, touched: false, error: false },
+        [vname]: { value: '', type, touched: false, error: false },
       }),
       {},
     ),
@@ -256,17 +256,17 @@ export default class InitForm extends React.Component<Props, State> {
             <Typography align="left" gutterBottom variant="title">
               Initialisation Parameters:
             </Typography>
-            {abiParams.map(({ name, type }) => {
-              const field = init[name];
+            {abiParams.map(({ vname, type }) => {
+              const field = init[vname];
 
               return (
                 field && (
-                  <InputWrapper key={name} error={field.error}>
-                    <InputLabel htmlFor={name}>{`${name} (${type})`}</InputLabel>
+                  <InputWrapper key={vname} error={field.error}>
+                    <InputLabel htmlFor={vname}>{`${vname} (${type})`}</InputLabel>
                     <Input
                       onChange={this.handleInitChange}
-                      id={name}
-                      name={name}
+                      id={vname}
+                      name={vname}
                       value={field.value}
                     />
                     {field.error && <FormHelperText>Please fill in a value</FormHelperText>}

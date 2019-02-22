@@ -107,7 +107,14 @@ export const runner = async (opts: RunOpt) => {
  */
 export const checker = async (opts: BaseOpt) => {
   try {
-    const { stdout } = await execAsync(Paths.CHECKER, ['-libdir', opts.stdlib, '-jsonerrors', opts.code]);
+    const { stdout } = await execAsync(Paths.CHECKER, [
+      '-libdir',
+      opts.stdlib,
+      '-contractinfo',
+      '-cf',
+      '-jsonerrors',
+      opts.code,
+    ]);
 
     return stdout;
   } catch (err) {

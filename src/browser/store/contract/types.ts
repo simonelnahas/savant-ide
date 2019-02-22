@@ -29,7 +29,7 @@ export interface RunnerResult {
 }
 
 export interface Param {
-  name: string;
+  vname: string;
   type: string;
 }
 
