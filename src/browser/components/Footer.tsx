@@ -52,11 +52,6 @@ class Footer extends React.Component<WithTheme> {
   render() {
     return (
       <Wrapper>
-        <Typography variant="subheading">
-          <a href="https://ide.zilliqa.com" target="_blank">
-            Old IDE
-          </a>
-        </Typography>
         <Typography variant="subheading" align="center" style={{ flex: '1 1 auto' }}>
           Zilliqa © 2018
         </Typography>
