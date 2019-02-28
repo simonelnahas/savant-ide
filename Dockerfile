@@ -1,4 +1,4 @@
-FROM zilliqa/scilla:latest
+FROM zilliqa/scilla:v0.2.0
 
 EXPOSE 8080
 # PM2 default health check endpoint is at host:9615/
