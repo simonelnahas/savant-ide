@@ -11,7 +11,7 @@ Scilla is a smart contract language being developed for Zilliqa. To learn more a
 
 ## Motivation
 
-The [previous iteration](https://ide.zilliqa.com) of Scilla IDE was useful for
+The previous iteration of Scilla IDE was useful for
 context-free testing of arbitrary Scilla smart contracts. However, its user
 experience was not ideal for testing of complex contracts due to the need to
 manually copy-and-paste state transitions and/or to manually adjust parameters
