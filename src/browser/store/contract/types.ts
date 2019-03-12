@@ -34,12 +34,12 @@ export interface Param {
 }
 
 export interface Transition {
-  name: string;
+  vname: string;
   params: Param[];
 }
 
 export interface ABI {
-  name: string;
+  vname: string;
   fields: Param[];
   params: Param[];
   transitions: Transition[];

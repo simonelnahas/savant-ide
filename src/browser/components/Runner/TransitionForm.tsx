@@ -107,7 +107,7 @@ export default class TransitionForm extends React.Component<Props, State> {
       return;
     }
 
-    this.props.handleSubmit(this.props.name, params, msg);
+    this.props.handleSubmit(this.props.vname, params, msg);
   };
 
   handleParamsChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -183,7 +183,7 @@ export default class TransitionForm extends React.Component<Props, State> {
       return (
         <Status>
           <Typography variant="body2" align="left">
-            {`${this.props.name} at 0x${result.address.toUpperCase()} was successfully called.`}
+            {`${this.props.vname} at 0x${result.address.toUpperCase()} was successfully called.`}
           </Typography>
           <Typography variant="body2" align="left" style={{ whiteSpace: 'pre' }}>
             {`Gas used: ${result.gasUsed}\nGas price: ${
@@ -207,7 +207,7 @@ export default class TransitionForm extends React.Component<Props, State> {
       return (
         <Status>
           <Typography color="error" variant="body2" style={{ whiteSpace: 'pre-line' }}>
-            {`The call to transition ${this.props.name} failed. The following error occured:
+            {`The call to transition ${this.props.vname} failed. The following error occured:
 
               ${result.error.response ? formatError(result.error.response.message) : result.error}
 
@@ -252,12 +252,12 @@ export default class TransitionForm extends React.Component<Props, State> {
 
                 return (
                   field && (
-                    <InputWrapper key={name} error={field.error}>
-                      <InputLabel htmlFor={name}>{`${name} (${type})`}</InputLabel>
+                    <InputWrapper key={vname} error={field.error}>
+                      <InputLabel htmlFor={vname}>{`${vname} (${type})`}</InputLabel>
                       <Input
                         onChange={this.handleParamsChange}
-                        id={name}
-                        name={name}
+                        id={vname}
+                        name={vname}
                         value={field.value}
                       />
                       {field.error && <FormHelperText>Please fill in a value</FormHelperText>}
