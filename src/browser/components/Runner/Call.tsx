@@ -108,7 +108,6 @@ export default class CallTab extends React.Component<Props, State> {
     const { selectedContract } = this.state;
 
     const abi = deployedContracts[selectedContract].abi;
-    console.log('ABI: ', JSON.stringify(abi, null, 4));
 
     if (abi && abi.transitions.length > 0) {
       return abi.transitions.map((transition) => {
