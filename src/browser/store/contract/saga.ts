@@ -60,8 +60,8 @@ export function* initContract() {
 function* deployContract(action: ActionType<typeof contractActions.deploy>, db: ContractStore) {
   try {
     const { code, deployer, init: pInit, msg, gaslimit, gasprice, statusCB } = action.payload;
-    const { message: abi } = yield api.checkContract(code);
-    if (!abi) {
+    const { message: result } = yield api.checkContract(code);
+    if (!result) {
       throw new Error('ABI could not be parsed.');
     }
 
@@ -108,7 +108,7 @@ function* deployContract(action: ActionType<typeof contractActions.deploy>, db: 
     };
 
     const contract = {
-      abi: JSON.parse(abi),
+      abi: JSON.parse(result).contract_info,
       code,
       init,
       state: [{ vname: '_balance', type: 'Uint128', value: txAmount.toString() }],
@@ -213,7 +213,7 @@ function* callTransition(action: ActionType<typeof contractActions.call>, db: Co
         put(
           contractActions.addEvent(
             contractStorage.address,
-            (contractStorage.abi as ABI).name,
+            (contractStorage.abi as ABI).vname,
             event,
           ),
         ),

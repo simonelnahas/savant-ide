@@ -204,7 +204,7 @@ export default class DeployTab extends React.Component<Props, State> {
         />
         {activeAccount && abi ? (
           <InitForm
-            key={abi.name}
+            key={abi.vname}
             handleReset={this.reset}
             handleSubmit={this.onDeploy}
             isDeploying={this.props.isDeploying}

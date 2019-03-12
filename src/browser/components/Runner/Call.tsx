@@ -108,10 +108,11 @@ export default class CallTab extends React.Component<Props, State> {
     const { selectedContract } = this.state;
 
     const abi = deployedContracts[selectedContract].abi;
+    console.log('ABI: ', JSON.stringify(abi, null, 4));
 
     if (abi && abi.transitions.length > 0) {
       return abi.transitions.map((transition) => {
-        return { key: transition.name, value: transition.name };
+        return { key: transition.vname, value: transition.vname };
       });
     }
 
@@ -123,7 +124,7 @@ export default class CallTab extends React.Component<Props, State> {
 
     return Object.keys(deployedContracts).map((address) => {
       const contract = deployedContracts[address];
-      const key = `0x${address.toUpperCase()} (${(contract.abi && contract.abi.name) || ''})`;
+      const key = `0x${address.toUpperCase()} (${(contract.abi && contract.abi.vname) || ''})`;
       const value = address;
       return { key, value };
     });
@@ -172,7 +173,7 @@ export default class CallTab extends React.Component<Props, State> {
         {abi && (
           <React.Fragment>
             <Select
-              placeholder={`Select a transition for ${abi.name}`}
+              placeholder={`Select a transition for ${abi.vname}`}
               items={this.getTransitionOptions()}
               value={selectedTransition}
               onChange={this.onSelectTransition}
@@ -185,7 +186,7 @@ export default class CallTab extends React.Component<Props, State> {
                   handleReset={this.reset}
                   handleSubmit={this.onCallTransition}
                   result={result}
-                  {...find((t) => t.name === selectedTransition, abi.transitions) as Transition}
+                  {...find((t) => t.vname === selectedTransition, abi.transitions) as Transition}
                 />
               )}
           </React.Fragment>
