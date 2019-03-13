@@ -118,7 +118,7 @@ export const checker = async (opts: BaseOpt) => {
 
     return stdout;
   } catch (err) {
-    throw parseCheckerError(err.stdout);
+    throw parseCheckerError(err.stderr);
   } finally {
     await cleanUp(opts);
   }
