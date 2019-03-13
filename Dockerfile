@@ -1,4 +1,4 @@
-FROM zilliqa/scilla:v0.2.0
+FROM 648273915458.dkr.ecr.us-west-2.amazonaws.com/scilla:latest
 
 EXPOSE 8080
 # PM2 default health check endpoint is at host:9615/
