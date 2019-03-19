@@ -84,8 +84,8 @@ export const parseCheckerError = (out: string): ScillaError | null => {
   return new ScillaError(
     errors.map((error: CheckerErrorObj) => {
       return {
-        line: error.start_location.line + 1,
-        column: error.start_location.column + 1,
+        line: error.start_location.line,
+        column: error.start_location.column,
         msg: error.error_message,
       };
     }),
