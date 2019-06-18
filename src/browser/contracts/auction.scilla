@@ -4,7 +4,7 @@ scilla_version 0
 (*               Associated library                *)
 (***************************************************)
 
-import BoolUtils
+import BoolUtils as BoolU
 
 library OpenAuction
 
@@ -13,7 +13,7 @@ let blk_leq =
   fun (blk2 : BNum) =>
     let bc1 = builtin blt blk1 blk2 in 
     let bc2 = builtin eq blk1 blk2 in 
-    orb bc1 bc2
+    BoolU.orb bc1 bc2
 
 
 let one_msg = 
@@ -62,7 +62,7 @@ transition Bid ()
     in builtin badd endtime one;
   e <- ended;
   in_time = blk_leq after_end blk;
-  flag1 = orb in_time e;
+  flag1 = BoolU.orb in_time e;
   early = blk_leq blk auctionStart;
   match early with
   | True =>
@@ -149,8 +149,8 @@ transition AuctionEnd ()
   e <- ended;
   t1 = builtin badd auctionStart biddingTime;
   t2 = blk_leq t1 blk;
-  t3 = negb e;
-  t4 = andb t2 t3;
+  t3 = BoolU.negb e;
+  t4 = BoolU.andb t2 t3;
   match t4 with
   | False =>
     msg  = {_tag : ""; _recipient : _sender; _amount : Uint128 0; code : auction_is_still_on_code};
