@@ -15,11 +15,8 @@
  * savant-ide.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import errorHandler from 'errorhandler';
 
 import app from './app';
-
-app.use(errorHandler());
 
 // Launch scilla server
 app.listen(app.get('port'), () => {
