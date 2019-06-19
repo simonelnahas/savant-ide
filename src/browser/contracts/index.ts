@@ -18,6 +18,7 @@
 import auction from './auction.scilla';
 import bookstore from './bookstore.scilla';
 import crowdfunding from './crowdfunding.scilla';
+import ecdsa from './ecdsa.scilla';
 import fungibleToken from './fungible_token.scilla';
 import helloWorld from './hello_world.scilla';
 import nonFungibleToken from './nonfungible_token.scilla';
@@ -38,4 +39,5 @@ export const defaultContracts: ScillaSrc[] = [
   { name: 'NonFungible', src: nonFungibleToken },
   { name: 'ZilGame', src: zilGame },
   { name: 'SchnorrTest', src: schnorr },
+  { name: 'ECDSATest', src: ecdsa },
 ];

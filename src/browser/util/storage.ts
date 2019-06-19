@@ -26,6 +26,7 @@ const DEFAULT_CONTRACTS = [
   'NonFungible',
   'ZilGame',
   'SchnorrTest',
+  'ECDSATest',
 ];
 
 export const extractDefault = (contracts: ContractSrcFile[]): ContractSrcFile[] => {

@@ -17,6 +17,7 @@
 
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import errorHandler from 'errorhandler';
 import express, { Handler, Request, Response, NextFunction } from 'express';
 import fs from 'fs';
 import lusca from 'lusca';
@@ -42,6 +43,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
+if (process.env.NODE_ENV === 'development') {
+  app.use(errorHandler());
+}
 
 app.post('/contract/check', wrapAsync(check));
 app.post('/contract/call', wrapAsync(run));
