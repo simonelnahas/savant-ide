@@ -36,7 +36,7 @@ function createNewTaskDefJson() {
 
     # Some options in task definition should only be included in new definition if present in
     # current definition. If found in current definition, append to JQ filter.
-    CONDITIONAL_OPTIONS=(networkMode taskRoleArn placementConstraints)
+    CONDITIONAL_OPTIONS=(networkMode executionRoleArn taskRoleArn placementConstraints)
     for i in "${CONDITIONAL_OPTIONS[@]}"; do
       re=".*${i}.*"
       if [[ "$DEF" =~ $re ]]; then
