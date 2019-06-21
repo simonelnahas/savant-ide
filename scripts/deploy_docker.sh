@@ -16,14 +16,15 @@ account_id=$(aws sts get-caller-identity --output text --query 'Account')
 region_id=us-west-2
 
 # ECS settings
-registry_url=${account_id}.dkr.ecr.${region_id}.amazonaws.com/scilla-runner-api
-application=ScillaIDE
-deployment_grp=scilla-runner-api
-cluster=scilla-runner-api
-service=scilla-runner-api
+registry_url=${account_id}.dkr.ecr.${region_id}.amazonaws.com/savant-ide-api
+application=savant-ide-api
+deployment_grp=savant-ide-api
+cluster=savant-ide-api
+service=savant-ide-api
+task=savant-ide-api
 
 function getCurrentTaskDefinition() {
-  TASK_DEFINITION=$(aws ecs describe-task-definition --task-def scilla-runner-api)
+  TASK_DEFINITION=$(aws ecs describe-task-definition --task-def $task)
 }
 
 function createNewTaskDefJson() {
@@ -58,7 +59,7 @@ function createNewAppSpec() {
         "Properties": {
           "TaskDefinition": "{{ PLACEHOLDER }}",
           "LoadBalancerInfo": {
-            "ContainerName": "scilla-runner",
+            "ContainerName": "savant-ide-api",
             "ContainerPort": 8080
           }
         }

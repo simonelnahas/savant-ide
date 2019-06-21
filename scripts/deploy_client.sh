@@ -10,7 +10,7 @@ aws --version
 cd "${BUILD_DIR}"
 
 region_id=us-west-2
-bucket=scillaide
+bucket=savant-ide
 files=($(find * ! -name "index.html" ! -name "service-worker.js" -type f))
 
 echo "Emptying bucket..."
