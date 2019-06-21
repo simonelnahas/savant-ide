@@ -32,7 +32,7 @@ function createNewTaskDefJson() {
     DEF=$( echo "$TASK_DEFINITION" | jq '.taskDefinition' )
 
     # Default JQ filter for new task definition
-    NEW_DEF_JQ_FILTER="family: .family, volumes: .volumes, containerDefinitions: .containerDefinitions"
+    NEW_DEF_JQ_FILTER="family: .family, volumes: .volumes, containerDefinitions: .containerDefinitions, memory: .memory, cpu: .cpu"
 
     # Some options in task definition should only be included in new definition if present in
     # current definition. If found in current definition, append to JQ filter.
