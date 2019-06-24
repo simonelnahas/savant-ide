@@ -18,7 +18,7 @@ region_id=us-west-2
 # ECS settings
 registry_url=${account_id}.dkr.ecr.${region_id}.amazonaws.com/savant-ide-api
 application=savant-ide-api
-deployment_grp=savant-ide-api
+deployment_grp=savant-ide-api-prod
 cluster=savant-ide-api
 service=savant-ide-api
 task=savant-ide-api
