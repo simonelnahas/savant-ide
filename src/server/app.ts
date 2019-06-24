@@ -37,7 +37,7 @@ if (!fs.existsSync(temp)) {
 }
 
 // configure express
-app.set('port', process.env.PORT || 8080);
+app.set('port', process.env.NODE_PORT || 8080);
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

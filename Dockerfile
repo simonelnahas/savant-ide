@@ -72,6 +72,7 @@ RUN set -ex \
 RUN yarn global add pm2 && yarn install && yarn build:server
 
 ENV NODE_ENV "production"
+ENV NODE_PORT "8080"
 ENV SCILLA_VERSION "0"
 
 CMD ["pm2-runtime", "dist/server/server.js", "--web"]
