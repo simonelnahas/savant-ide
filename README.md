@@ -62,7 +62,7 @@ Note: the makefile only supports Ubuntu and MacOS.
 
 # Architecture
 
-![](https://raw.githubusercontent.com/zilliqa/savant-ide/blob/dev/savant.svg)
+![](https://raw.githubusercontent.com/Zilliqa/savant-ide/dev/savant.svg)
 
 In order to ease deployment, the project is deployed to AWS using
 a combination of the following technologies:
