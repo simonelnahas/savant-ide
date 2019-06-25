@@ -31,6 +31,5 @@ deploy:
   script:
     - ./scripts/deploy.sh
   on:
-    all_branches: true
-    condition: $TRAVIS_BRANCH =~ ^master|dev
+    branch: master
 
