@@ -1,5 +1,9 @@
 FROM zilliqa/scilla:v0.3.0
 
+EXPOSE 8080
+# PM2 default health check endpoint is at host:9615/
+EXPOSE 9615
+
 COPY . /scilla-ide
 
 # Install node.js v10.x
