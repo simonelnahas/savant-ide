@@ -60,13 +60,61 @@ yarn run start
 
 Note: the makefile only supports Ubuntu and MacOS.
 
+# Architecture
+
+![](https://raw.githubusercontent.com/zilliqa/savant-ide/blob/dev/savant.svg)
+
+In order to ease deployment, the project is deployed to AWS using
+a combination of the following technologies:
+
+- ECS/ECR
+- Fargate
+- CodeDeploy
+- S3
+- CloudFront
+
+The AWS network topology is simple and consists of the following:
+
+- 2x private subnets with NAT
+- 2x public subnets with internet gateway
+- 1x ALB (internet-facing)
+
+A single ALB is provisioned over the two public subnets, making it
+reachable via DNS. It listens only for TCP connections on 443. At any point in
+time, the ALB routes incoming requests to one of two target groups:
+
+1. `savant-ide-api-tg-blue`
+2. `savant-ide-api-tg-green`
+
+This facilitates so-called blue/green (a.k.a canary) deployments via
+CodeDeploy. Please note that Fargate cluster **must** be in private subnets,
+while the ALB must be in a public subnet(s). This is because the ALB is unable
+to find publicly routable ECS tasks in public subnets!
+
+## Frontend
+
+The frontend is built with the usual Webpack workflow which can be easily
+inspected from the webpack config. Once compiled, all static assets are simply
+synced to a public s3 bucket that sits behind a CloudFront distribution.
+
+## Backend
+
+On each successful Travis build, a new image of the backend API is pushed to
+ECR. This new image is then deployed to ECS via a pre-configured CodeDeploy
+application.
+
+ECS tasks are deployed powered by a Fargate. The new task is registered on the
+empty target group, which then receives ALB traffic.  After 5 minutes, if
+health checks pass (by performing a GET request on port 9615), the old task is
+removed. Otherwise, a rollback occurs.
+
 ## Roadmap
 
 - [ ] Additional unit tests.
 - [ ] Account-to-account transfers of ZIL.
 - [ ] Multi-contract calls.
 - [ ] 'REPL' mode that behaves like the IDE, for full control over parameters.
-- [ ] Adjustable block height increment speed.
+- [x] Adjustable block height increment speed.
 
 ## Contributing
 
