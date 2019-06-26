@@ -15,12 +15,13 @@
  * savant-ide.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 import app from './app';
 
 // Launch scilla server
-app.listen(app.get('port'), () => {
-  console.log('Scilla is running at http://localhost:%d', app.get('port'));
+const port = process.env.NODE_PORT ? parseInt(process.env.NODE_PORT, 10) : 8080;
+const host = process.env.NODE_HOST || '0.0.0.0';
+app.listen(port, host, () => {
+  console.log(`Scilla is running at ${host}:${port}`);
 });
 
 export default app;

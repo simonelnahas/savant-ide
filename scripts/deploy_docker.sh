@@ -16,14 +16,15 @@ account_id=$(aws sts get-caller-identity --output text --query 'Account')
 region_id=us-west-2
 
 # ECS settings
-registry_url=${account_id}.dkr.ecr.${region_id}.amazonaws.com/scilla-runner-api
-application=ScillaIDE
-deployment_grp=scilla-runner-api
-cluster=scilla-runner-api
-service=scilla-runner-api
+registry_url=${account_id}.dkr.ecr.${region_id}.amazonaws.com/savant-ide-api
+application=savant-ide-api
+deployment_grp=savant-ide-api-prod
+cluster=savant-ide-api
+service=savant-ide-api
+task=savant-ide-api
 
 function getCurrentTaskDefinition() {
-  TASK_DEFINITION=$(aws ecs describe-task-definition --task-def scilla-runner-api)
+  TASK_DEFINITION=$(aws ecs describe-task-definition --task-def $task)
 }
 
 function createNewTaskDefJson() {
@@ -31,11 +32,11 @@ function createNewTaskDefJson() {
     DEF=$( echo "$TASK_DEFINITION" | jq '.taskDefinition' )
 
     # Default JQ filter for new task definition
-    NEW_DEF_JQ_FILTER="family: .family, volumes: .volumes, containerDefinitions: .containerDefinitions"
+    NEW_DEF_JQ_FILTER="family: .family, volumes: .volumes, containerDefinitions: .containerDefinitions, memory: .memory, cpu: .cpu, requiresCompatibilities: .requiresCompatibilities"
 
     # Some options in task definition should only be included in new definition if present in
     # current definition. If found in current definition, append to JQ filter.
-    CONDITIONAL_OPTIONS=(networkMode taskRoleArn placementConstraints)
+    CONDITIONAL_OPTIONS=(networkMode executionRoleArn taskRoleArn placementConstraints)
     for i in "${CONDITIONAL_OPTIONS[@]}"; do
       re=".*${i}.*"
       if [[ "$DEF" =~ $re ]]; then
@@ -58,7 +59,7 @@ function createNewAppSpec() {
         "Properties": {
           "TaskDefinition": "{{ PLACEHOLDER }}",
           "LoadBalancerInfo": {
-            "ContainerName": "scilla-runner",
+            "ContainerName": "savant-ide-api",
             "ContainerPort": 8080
           }
         }
