@@ -69,7 +69,7 @@ RUN set -ex \
   && ln -s /opt/yarn-v$YARN_VERSION/bin/yarnpkg /usr/local/bin/yarnpkg \
   && rm yarn-v$YARN_VERSION.tar.gz.asc yarn-v$YARN_VERSION.tar.gz
 
-RUN yarn global add pm2 && yarn install && yarn build:server
+RUN yarn global add pm2@3.5.1 && yarn install && yarn build:server
 
 ENV NODE_ENV "production"
 ENV NODE_PORT "8080"
