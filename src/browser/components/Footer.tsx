@@ -53,7 +53,7 @@ class Footer extends React.Component<WithTheme> {
     return (
       <Wrapper>
         <Typography variant="subheading" align="center" style={{ flex: '1 1 auto' }}>
-          Zilliqa © 2018
+          Zilliqa © 2019
         </Typography>
         {SOCIAL_ICONS.map(({ href, icon }) => (
           <a key={href} href={href} target="_blank">
